@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # 1. BASE DE DADES (MySQL)
+  mysql:
+    image: mysql:8.0
+    container_name: nexe_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: nexe_db
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: nexe_user
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - nexe_db_data:/var/lib/mysql
+    networks:
+      - nexe_network
+
+  # 2. BACKEND (Laravel / PHP)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nexe_backend
+    restart: unless-stopped
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=nexe_db       # Apunta al nom del contenidor de dalt
+      - DB_PORT=3306
+      - DB_DATABASE=nexe_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - nexe_network
+    # Aquesta comanda manté el Laravel actiu escoltant al port 8000
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # 3. FRONTEND (Angular 20 / Node)
+  frontend:
+    image: node:20
+    container_name: nexe_frontend
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "4200:4200"
+    # Instal·la dependències (si falten) i aixeca l'Angular exposant-lo cap a fora
+    command: sh -c "npm install && npx ng serve --host 0.0.0.0 --port 4200"
+    networks:
+      - nexe_network
+
+# Creem una xarxa interna perquè els contenidors es puguin parlar entre ells
+networks:
+  nexe_network:
+    driver: bridge
+
+# Creem un volum persistent perquè no es perdin els usuaris si apagues el Docker
+volumes:
+  nexe_db_data:
