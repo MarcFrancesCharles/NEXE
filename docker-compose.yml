@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. BASE DE DADES (MySQL)
   mysql:
@@ -27,7 +25,7 @@ services:
     restart: unless-stopped
     environment:
       - DB_CONNECTION=mysql
-      - DB_HOST=nexe_db       # Apunta al nom del contenidor de dalt
+      - DB_HOST=nexe_db
       - DB_PORT=3306
       - DB_DATABASE=nexe_db
       - DB_USERNAME=root
@@ -40,7 +38,6 @@ services:
       - mysql
     networks:
       - nexe_network
-    # Aquesta comanda manté el Laravel actiu escoltant al port 8000
     command: php artisan serve --host=0.0.0.0 --port=8000
 
   # 3. FRONTEND (Angular 20 / Node)
@@ -51,18 +48,22 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       - "4200:4200"
-    # Instal·la dependències (si falten) i aixeca l'Angular exposant-lo cap a fora
-    command: sh -c "npm install && npx ng serve --host 0.0.0.0 --port 4200"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    # Usem 'npm run start' perquè agafi el --poll que hem posat al package.json
+    command: sh -c "npm install && npm run start"
     networks:
       - nexe_network
 
-# Creem una xarxa interna perquè els contenidors es puguin parlar entre ells
+# Xarxa interna
 networks:
   nexe_network:
     driver: bridge
 
-# Creem un volum persistent perquè no es perdin els usuaris si apagues el Docker
+# Volums persistents (NOMÉS els noms del volum)
 volumes:
   nexe_db_data:

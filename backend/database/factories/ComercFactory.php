@@ -4,20 +4,15 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comerc>
- */
 class ComercFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            //
+            // Generem dades falses realistes per als nostres comerços de prova
+            'nom_comercial' => fake()->company(),
+            'cif' => fake()->unique()->bothify('B########'), // Format de CIF espanyol bàsic
+            'coord_gps' => fake()->latitude() . ', ' . fake()->longitude(),
         ];
     }
 }

@@ -1,0 +1,40 @@
+<div class="shop-dashboard" *ngIf="!carregant; else loader">
+  
+  <header class="shop-header">
+    <div class="shop-title">
+      <h1>Panell de Comerç</h1>
+      <h2>{{ botiga?.nom_comercial || 'La meva botiga' }}</h2>
+    </div>
+    <div class="shop-status">
+      <span class="badge active">Botiga Activa</span>
+    </div>
+  </header>
+
+  <div class="grid-actions">
+    <div class="action-card outline-blue">
+      <div class="icon">📢</div>
+      <h3>Crear Oferta</h3>
+      <p>Publica un nou descompte per atreure clients del barri.</p>
+      <button class="btn-primary">Nova Oferta</button>
+    </div>
+
+    <div class="action-card outline-green">
+      <div class="icon">📷</div>
+      <h3>Validar Descompte</h3>
+      <p>Escaneja el codi d'un client per aplicar l'oferta.</p>
+      <button class="btn-success">Obrir Escàner</button>
+    </div>
+
+    <div class="action-card outline-purple">
+      <div class="icon">📊</div>
+      <h3>Rendiment</h3>
+      <p>Mira quanta gent ha visitat o fet servir ofertes teves.</p>
+      <button class="btn-outline">Veure dades</button>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loader>
+  <div class="loading">Carregant el panell de control...</div>
+</ng-template>

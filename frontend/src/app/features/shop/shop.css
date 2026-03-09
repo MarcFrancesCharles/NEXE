@@ -1,0 +1,147 @@
+/* --- CONTENIDOR PRINCIPAL --- */
+.shop-dashboard {
+  animation: slideUp 0.5s ease-out;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* --- CAPÇALERA DEL PANELL --- */
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.shop-title h1 {
+  font-size: 1rem;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.shop-title h2 {
+  font-size: 2.5rem;
+  color: var(--text-main, #0f172a);
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+/* Etiqueta d'estat de la botiga */
+.badge.active {
+  background: #dcfce7;
+  color: #166534;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 1px solid #bbf7d0;
+  box-shadow: 0 2px 4px rgba(22, 101, 52, 0.1);
+}
+
+/* --- GRID D'ACCIONS (LES TARGETES) --- */
+.grid-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.action-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 5px solid transparent;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+}
+
+/* Colors de les línies superiors */
+.outline-blue { border-top-color: #3b82f6; }
+.outline-green { border-top-color: #10b981; }
+.outline-purple { border-top-color: #8b5cf6; }
+
+.action-card .icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+.action-card h3 {
+  font-size: 1.5rem;
+  color: var(--text-main, #0f172a);
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.action-card p {
+  color: var(--text-muted, #64748b);
+  flex-grow: 1; /* Empeny el botó cap a baix */
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* --- BOTONS ESPECÍFICS DEL PANELL --- */
+.action-card button {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border: none;
+}
+.btn-primary:hover { background: #2563eb; }
+
+.btn-success {
+  background: #10b981;
+  color: white;
+  border: none;
+}
+.btn-success:hover { background: #059669; }
+
+.btn-outline {
+  background: transparent;
+  color: #0f172a;
+  border: 2px solid #e2e8f0;
+}
+.btn-outline:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+  background: #f5f3ff;
+}
+
+/* Animacions i Responsive */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .shop-header {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .shop-title h2 { font-size: 2rem; }
+  .action-card { padding: 2rem 1.5rem; }
+}

@@ -1,0 +1,32 @@
+<div class="auth-wrapper">
+  <div class="auth-side-image login-bg">
+    <div class="badge">Hola de nou!</div>
+    <h1>Bentornat a la teva comunitat.</h1>
+    <p>Inicia sessió per gestionar els teus punts i veure les teves recompenses.</p>
+  </div>
+
+  <div class="auth-content">
+    <div class="form-container">
+      <h2>Inicia sessió</h2>
+      <form [formGroup]="loginForm" (ngSubmit)="entrar()">
+        <div class="form-group">
+          <label>Correu electrònic</label>
+          <input type="email" formControlName="correu" placeholder="el-teu@correu.cat">
+        </div>
+        <div class="form-group">
+          <label>Contrasenya</label>
+          <input type="password" formControlName="contrasenya" placeholder="********">
+        </div>
+
+        @if (errorMsg) {
+          <div class="alert-error">{{ errorMsg }}</div>
+        }
+
+        <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || loading">
+          {{ loading ? 'Entrant...' : 'Entrar' }}
+        </button>
+      </form>
+      <p class="footer-text">Encara no tens compte? <a routerLink="/register">Registra't</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="explore-container">
+  
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Compra al barri, <br><span class="highlight">guanya a la ciutat.</span></h1>
+      <p>Descobreix els millors comerços de proximitat i bescanvia els teus punts per ofertes exclusives.</p>
+      
+      <div class="search-bar">
+        <input type="text" placeholder="Què busques avui? (Fruiteria, Forn, Moda...)">
+        <button class="btn-search">Buscar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="shops-section">
+    <div class="section-header">
+      <h2>Comerços destacats</h2>
+      <p>Prop de Lleida</p>
+    </div>
+
+    @if (loading) {
+      <div class="loader">Carregant comerços locals...</div>
+    } @else {
+      <div class="shop-grid">
+        @for (comerc of comerces; track comerc.id_comerc) {
+          <div class="shop-card">
+            <div class="shop-image">
+              <div class="category-tag">{{ comerc.categoria?.nom_cat }}</div>
+            </div>
+            <div class="shop-info">
+              <h3>{{ comerc.nom_comercial }}</h3>
+              <p class="location">📍 {{ comerc.direccio || 'Lleida, Centre' }}</p>
+              <div class="shop-footer">
+                <span class="points-badge">Lliurament de punts</span>
+                <button class="btn-outline-sm">Veure botiga</button>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <p>Encara no hi ha comerços registrats en aquesta zona.</p>
+          </div>
+        }
+      </div>
+    }
+  </section>
+</div>

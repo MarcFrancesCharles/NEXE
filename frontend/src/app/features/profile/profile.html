@@ -1,0 +1,61 @@
+<div class="profile-container" *ngIf="!carregant; else loader">
+  
+  <header class="profile-header">
+    <h1>Hola, {{ usuari?.nom }}! </h1>
+    <p>Aquest és el resum de la teva activitat a NEXE.</p>
+  </header>
+
+  <div class="dashboard-grid">
+    <div class="stat-card points-card">
+      <div class="icon">💎</div>
+      <div class="stat-content">
+        <span class="stat-label">Saldo actual</span>
+        <h2 class="stat-value">{{ usuari?.perfil?.punts_totals || 0 }} <span>punts</span></h2>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <h3>Sumar Punts</h3>
+      <p>Introdueix el codi del tiquet de la teva compra.</p>
+      
+      <div class="input-box">
+        <input type="text" [(ngModel)]="codiQR" placeholder="Ex: QR-123456">
+        <button (click)="validarTiquet()" [disabled]="!codiQR">Validar</button>
+      </div>
+
+      <div *ngIf="missatge" [class]="'alert ' + tipusMissatge">
+        {{ missatge }}
+      </div>
+    </div>
+  </div>
+
+  <div class="transactions-section">
+    <h3>Historial de moviments</h3>
+    
+    <div class="transaction-list">
+      @for (tx of usuari?.transaccions; track tx.id_transaccio) {
+        <div class="tx-item">
+          <div class="tx-icon">
+            {{ tx.tipus === 'ACUMULACIO' ? '📈' : '🛍️' }}
+          </div>
+          <div class="tx-info">
+            <span class="tx-title">{{ tx.tipus === 'ACUMULACIO' ? 'Tiquet escanejat' : 'Oferta bescanviada' }}</span>
+            <span class="tx-date">{{ tx.created_at | date:'dd/MM/yyyy - HH:mm' }}</span>
+          </div>
+          <div class="tx-points" [class.positive]="tx.punts > 0" [class.negative]="tx.punts < 0">
+            {{ tx.punts > 0 ? '+' : '' }}{{ tx.punts }} pts
+          </div>
+        </div>
+      } @empty {
+        <div class="empty-state-tx">
+          <p>Encara no tens cap moviment. Escaneja el teu primer tiquet per començar!</p>
+        </div>
+      }
+    </div>
+  </div>
+
+</div>
+
+<ng-template #loader>
+  <div class="loading-state">Carregant el teu perfil...</div>
+</ng-template>

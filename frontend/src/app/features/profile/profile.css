@@ -1,0 +1,163 @@
+/* --- CONTENIDOR I ANIMACIONS --- */
+.profile-container { 
+  animation: slideUp 0.5s ease-out; 
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.profile-header { margin-bottom: 2.5rem; }
+.profile-header h1 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 0.2rem; }
+.profile-header p { color: var(--text-muted); font-size: 1.1rem; }
+
+/* --- SISTEMA DE TARGETES (GRID) --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Base per a totes les targetes blanques */
+.stat-card, .action-card, .transactions-section {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  transition: box-shadow 0.3s ease;
+}
+
+.stat-card:hover, .action-card:hover, .transactions-section:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+}
+
+/* --- TARGETA DE PUNTS (Estil Targeta Premium) --- */
+.points-card {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+/* Cercle decoratiu de fons */
+.points-card::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.points-card .icon { font-size: 2.5rem; margin-bottom: 1rem; position: relative; z-index: 2; }
+.stat-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; position: relative; z-index: 2;}
+.stat-value { font-size: 4rem; font-weight: 800; margin: 0; line-height: 1; position: relative; z-index: 2;}
+.stat-value span { font-size: 1.2rem; font-weight: 500; opacity: 0.8; }
+
+/* --- TARGETA D'ESCANEIG --- */
+.action-card h3 { margin-top: 0; font-size: 1.5rem; color: var(--text-main); }
+.action-card p { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+.input-box { display: flex; gap: 10px; }
+.input-box input {
+  flex: 1;
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  font-size: 1rem;
+}
+.input-box input:focus { background: #ffffff; border-color: var(--p-500); }
+
+.input-box button {
+  background: var(--text-main); /* Botó negre elegant */
+  color: white;
+  border-radius: 14px;
+  padding: 0 1.5rem;
+}
+.input-box button:hover:not(:disabled) { background: #000000; }
+.input-box button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Alertes */
+.alert { margin-top: 1.5rem; padding: 1rem 1.2rem; border-radius: 12px; font-weight: 500; }
+.alert.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+/* --- HISTORIAL DE MOVIMENTS (Estil N26/Revolut) --- */
+.transactions-section { padding: 2rem 2.5rem; }
+.transactions-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--text-main);
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 1rem;
+}
+
+.transaction-list { display: flex; flex-direction: column; }
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+.tx-item:last-child { border-bottom: none; }
+
+/* Efecte Hover d'indentació */
+.tx-item:hover {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 1.2rem 1rem;
+  margin: 0 -1rem; /* Compensa el padding perquè no es mogui la llista */
+}
+
+/* Icones de l'historial segons si suma o resta */
+.tx-icon {
+  font-size: 1.4rem;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  margin-right: 1.2rem;
+  background: #f1f5f9;
+}
+.tx-item:has(.positive) .tx-icon { background: #ecfdf5; color: #10b981; }
+.tx-item:has(.negative) .tx-icon { background: #eff6ff; color: #3b82f6; }
+
+.tx-info { flex: 1; display: flex; flex-direction: column; }
+.tx-title { font-weight: 600; color: var(--text-main); font-size: 1.1rem; }
+.tx-date { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+.tx-points { font-weight: 800; font-size: 1.25rem; }
+.tx-points.positive { color: #10b981; }
+.tx-points.negative { color: #1e293b; } /* Negre suau en lloc de vermell agressiu per quan gastes */
+
+.empty-state-tx {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+  font-weight: 500;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .stat-card, .action-card, .transactions-section { padding: 1.5rem; }
+  .stat-value { font-size: 3rem; }
+}

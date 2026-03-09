@@ -1,0 +1,46 @@
+<div class="auth-wrapper">
+  <div class="auth-side-image">
+    <div class="badge">NEXE Community</div>
+    <h1>Uneix-te a la revolució del comerç local.</h1>
+    <p>Guanya punts, ajuda els teus veïns i descobreix ofertes úniques.</p>
+  </div>
+
+  <div class="auth-content">
+    <div class="form-container">
+      <h2>Crea el teu compte</h2>
+      <p class="subtitle">Comença a estalviar avui mateix.</p>
+
+      <form [formGroup]="regForm" (ngSubmit)="enviar()">
+        <div class="form-group">
+          <label>Nom complet</label>
+          <input type="text" formControlName="nom" placeholder="Ex: Joan Garcia">
+        </div>
+
+        <div class="form-group">
+          <label>Correu electrònic</label>
+          <input type="email" formControlName="correu" placeholder="correu@exemple.cat">
+          @if (regForm.get('correu')?.touched && regForm.get('correu')?.invalid) {
+            <span class="err">Introdueix un correu vàlid</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label>Contrasenya</label>
+          <input type="password" formControlName="contrasenya" placeholder="Mínim 8 caràcters">
+        </div>
+
+        @if (errorMsg) {
+          <div class="alert-error">{{ errorMsg }}</div>
+        }
+
+        <button type="submit" class="btn btn-primary" [disabled]="regForm.invalid || loading">
+          {{ loading ? 'Creant compte...' : 'Registrar-me ara' }}
+        </button>
+      </form>
+
+      <p class="footer-text">
+        Ja tens compte? <a routerLink="/login">Inicia sessió</a>
+      </p>
+    </div>
+  </div>
+</div>
