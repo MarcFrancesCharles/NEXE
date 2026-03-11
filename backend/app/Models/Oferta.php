@@ -11,14 +11,16 @@ class Oferta extends Model
 
     protected $table = 'ofertas';
     protected $primaryKey = 'id_oferta';
-
+    
     protected $fillable = [
         'id_comerc',
         'titol',
+        'descripcio',
         'cost_punts',
         'estat',
+        'data_fi',
+        'imatge'
     ];
-
     // Pertany a un COMERÇ 
     public function comerc()
     {

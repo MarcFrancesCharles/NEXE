@@ -1,147 +1,286 @@
-/* --- CONTENIDOR PRINCIPAL --- */
+/* CONTENEDOR PRINCIPAL */
 .shop-dashboard {
-  animation: slideUp 0.5s ease-out;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 2rem 0;
+  padding: 2.5rem 1.5rem;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
 }
 
-/* --- CAPÇALERA DEL PANELL --- */
-.shop-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 3.5rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid #e2e8f0;
+/* CABECERA */
+.dashboard-header {
+  margin-bottom: 2.5rem;
 }
-
-.shop-title h1 {
-  font-size: 1rem;
-  color: var(--text-muted, #64748b);
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 0.5rem;
-  font-weight: 700;
-}
-
-.shop-title h2 {
-  font-size: 2.5rem;
-  color: var(--text-main, #0f172a);
-  margin: 0;
+.dashboard-header h1 {
+  font-size: 2.2rem;
   font-weight: 800;
-  letter-spacing: -1px;
+  color: #0f172a;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+.dashboard-header p {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin: 0;
 }
 
-/* Etiqueta d'estat de la botiga */
-.badge.active {
-  background: #dcfce7;
-  color: #166534;
-  padding: 0.6rem 1.2rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  border: 1px solid #bbf7d0;
-  box-shadow: 0 2px 4px rgba(22, 101, 52, 0.1);
-}
-
-/* --- GRID D'ACCIONS (LES TARGETES) --- */
+/* GRID DE TARJETAS */
 .grid-actions {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 4rem;
 }
 
 .action-card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 2.5rem 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-top: 5px solid transparent;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .action-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Colors de les línies superiors */
-.outline-blue { border-top-color: #3b82f6; }
-.outline-green { border-top-color: #10b981; }
-.outline-purple { border-top-color: #8b5cf6; }
+.icon-circle {
+  font-size: 1.8rem;
+  background-color: #f8fafc;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+  border: 1px solid #f1f5f9;
+}
 
-.action-card .icon {
-  font-size: 3rem;
+.card-text {
+  flex-grow: 1;
   margin-bottom: 1.5rem;
-  display: inline-block;
 }
-
-.action-card h3 {
-  font-size: 1.5rem;
-  color: var(--text-main, #0f172a);
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.action-card p {
-  color: var(--text-muted, #64748b);
-  flex-grow: 1; /* Empeny el botó cap a baix */
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-/* --- BOTONS ESPECÍFICS DEL PANELL --- */
-.action-card button {
-  width: 100%;
-  padding: 1rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-  border: none;
-}
-.btn-primary:hover { background: #2563eb; }
-
-.btn-success {
-  background: #10b981;
-  color: white;
-  border: none;
-}
-.btn-success:hover { background: #059669; }
-
-.btn-outline {
-  background: transparent;
+.card-text h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #0f172a;
-  border: 2px solid #e2e8f0;
+  margin: 0 0 0.4rem 0;
 }
-.btn-outline:hover {
-  border-color: #8b5cf6;
-  color: #8b5cf6;
-  background: #f5f3ff;
+.card-text p {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
 }
 
-/* Animacions i Responsive */
+/* BOTONES */
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+.btn-primary {
+  background-color: #10b981; /* Verde esmeralda */
+  color: #ffffff;
+}
+.btn-primary:hover { background-color: #059669; }
+
+.btn-secondary {
+  background-color: #f1f5f9; /* Gris claro */
+  color: #334155;
+}
+.btn-secondary:hover { background-color: #e2e8f0; }
+
+/* SECCIÓN DE LA TABLA */
+.offers-section {
+  animation: slideUp 0.5s ease-out;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.section-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+.badge-count {
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* LA TABLA EN SÍ */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.dashboard-table th {
+  background-color: #f8fafc;
+  padding: 1rem 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  border-bottom: 2px solid #e2e8f0;
+}
+.dashboard-table td {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+.dashboard-table tr:last-child td { border-bottom: none; }
+.dashboard-table tr:hover { background-color: #f8fafc; }
+
+/* ETIQUETAS Y TEXTO DE LA TABLA */
+.fw-bold { font-weight: 600; color: #0f172a; }
+.text-muted { color: #64748b; }
+
+.points-badge {
+  background-color: #fef08a; /* Amarillo suave */
+  color: #854d0e;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.status-badge.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* ESTADO VACÍO (Sin ofertas) */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+}
+.empty-state .icon-large { font-size: 3.5rem; margin-bottom: 1rem; }
+.empty-state p { color: #64748b; margin-bottom: 1.5rem; font-size: 1.1rem; }
+
+/* ANIMACIONES */
 @keyframes slideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ACCIONS DE LA TAULA --- */
+.text-right { text-align: right; }
+.table-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icon.edit:hover { background-color: #fef08a; transform: scale(1.1); }
+.btn-icon.delete:hover { background-color: #fee2e2; transform: scale(1.1); }
+
+/* --- POP-UP (MODAL) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: white; width: 100%; max-width: 500px;
+  border-radius: 20px; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: slideUpModal 0.3s ease-out;
+}
+
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.modal-header h3 { margin: 0; font-size: 1.4rem; color: #0f172a; }
+.close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; }
+
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #334155; font-size: 0.9rem; }
+.form-control { width: 100%; padding: 0.8rem; border: 2px solid #e2e8f0; border-radius: 10px; font-family: inherit; }
+.form-control:focus { outline: none; border-color: #10b981; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+.modal-actions button { width: auto; padding: 0.8rem 1.5rem; }
+
+@keyframes slideUpModal {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-  .shop-header {
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: flex-start;
-  }
-  .shop-title h2 { font-size: 2rem; }
-  .action-card { padding: 2rem 1.5rem; }
+/* --- IMATGES A LA TAULA --- */
+.td-amb-imatge { display: flex; align-items: center; gap: 1rem; }
+.img-thumbnail { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0; }
+.img-placeholder { width: 45px; height: 45px; border-radius: 8px; background: #f8fafc; border: 1px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+/* --- POP-UP (MODAL) --- */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; animation: fadeIn 0.2s ease-out;
 }
+.modal-content {
+  background: white; width: 100%; max-width: 500px;
+  border-radius: 20px; padding: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: slideUpModal 0.3s ease-out;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.modal-header h3 { margin: 0; font-size: 1.4rem; color: #0f172a; }
+.close-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748b; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #334155; font-size: 0.9rem; }
+.form-control { width: 100%; padding: 0.8rem; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; }
+.form-control:focus { outline: none; border-color: #10b981; }
+.file-upload-group { background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px dashed #cbd5e1; }
+.file-input { padding: 0.5rem; background: white; border: none; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; }
+.modal-actions button { width: auto; padding: 0.8rem 1.5rem; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUpModal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

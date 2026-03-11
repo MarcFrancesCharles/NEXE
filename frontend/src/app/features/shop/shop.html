@@ -1,40 +1,137 @@
-<div class="shop-dashboard" *ngIf="!carregant; else loader">
+<div class="shop-dashboard">
   
-  <header class="shop-header">
-    <div class="shop-title">
-      <h1>Panell de Comerç</h1>
-      <h2>{{ botiga?.nom_comercial || 'La meva botiga' }}</h2>
-    </div>
-    <div class="shop-status">
-      <span class="badge active">Botiga Activa</span>
-    </div>
-  </header>
+  <div class="dashboard-header">
+    <h1>El meu Comerç</h1>
+    <p>Benvingut al teu panell de control de NEXE.</p>
+  </div>
 
   <div class="grid-actions">
-    <div class="action-card outline-blue">
-      <div class="icon">📢</div>
-      <h3>Crear Oferta</h3>
-      <p>Publica un nou descompte per atreure clients del barri.</p>
-      <button class="btn-primary">Nova Oferta</button>
+    <div class="action-card">
+      <div class="icon-circle">🏷️</div>
+      <div class="card-text">
+        <h3>Nova Oferta</h3>
+        <p>Crea un descompte per atraure clients.</p>
+      </div>
+      <button class="btn-primary" routerLink="/la-meva-botiga/crear-oferta">Crear Oferta</button>
     </div>
-
-    <div class="action-card outline-green">
-      <div class="icon">📷</div>
-      <h3>Validar Descompte</h3>
-      <p>Escaneja el codi d'un client per aplicar l'oferta.</p>
-      <button class="btn-success">Obrir Escàner</button>
+    
+    <div class="action-card">
+      <div class="icon-circle">📷</div>
+      <div class="card-text">
+        <h3>Escanear QR</h3>
+        <p>Valida els descomptes.</p>
+      </div>
+      <button class="btn-secondary">Obrir Càmera</button>
     </div>
-
-    <div class="action-card outline-purple">
-      <div class="icon">📊</div>
-      <h3>Rendiment</h3>
-      <p>Mira quanta gent ha visitat o fet servir ofertes teves.</p>
-      <button class="btn-outline">Veure dades</button>
+    
+    <div class="action-card">
+      <div class="icon-circle">📊</div>
+      <div class="card-text">
+        <h3>Estadístiques</h3>
+        <p>Consulta l'impacte.</p>
+      </div>
+      <button class="btn-secondary">Veure Dades</button>
     </div>
   </div>
 
-</div>
+  <div class="offers-section">
+    <div class="section-header">
+      <h2>Les Meves Ofertes Actives</h2>
+      <span class="badge-count">{{ ofertes.length }} Ofertes</span>
+    </div>
 
-<ng-template #loader>
-  <div class="loading">Carregant el panell de control...</div>
-</ng-template>
+    @if (ofertes.length === 0) {
+      <div class="empty-state">
+        <div class="icon-large">👻</div>
+        <p>Encara no tens cap oferta publicada.</p>
+        <button class="btn-primary" routerLink="/la-meva-botiga/crear-oferta">Crear la primera oferta</button>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Títol de l'Oferta</th>
+              <th>Cost (Punts)</th>
+              <th>Caducitat</th>
+              <th>Estat</th>
+              <th class="text-right">Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (oferta of ofertes; track oferta.id_oferta) {
+              <tr>
+                <td class="fw-bold td-amb-imatge">
+                  @if (oferta.imatge) {
+                    <img [src]="'http://localhost:8000/storage/' + oferta.imatge" alt="Foto" class="img-thumbnail">
+                  } @else {
+                    <div class="img-placeholder">🛍️</div>
+                  }
+                  {{ oferta.titol }}
+                </td>
+                
+                <td><span class="points-badge">{{ oferta.cost_punts }} Pts</span></td>
+                <td class="text-muted">
+                  {{ oferta.data_fi ? (oferta.data_fi | date:'dd/MM/yyyy') : 'Sense caducitat' }}
+                </td>
+                <td>
+                  <span class="status-badge" [class.active]="oferta.estat === 1">
+                    {{ oferta.estat === 1 ? 'Activa' : 'Inactiva' }}
+                  </span>
+                </td>
+                <td class="table-actions text-right">
+                  <button class="btn-icon edit" title="Modificar" (click)="obrirModalEdicio(oferta)">✏️</button>
+                  <button class="btn-icon delete" title="Eliminar" (click)="eliminarOferta(oferta.id_oferta)">🗑️</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  @if (mostrantModal) {
+    <div class="modal-overlay" (click)="tancarModal()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Modificar Oferta</h3>
+          <button class="close-btn" (click)="tancarModal()">✕</button>
+        </div>
+        
+        <form [formGroup]="editForm" (ngSubmit)="guardarCanvis()">
+          <div class="form-group">
+            <label>Títol</label>
+            <input type="text" formControlName="titol" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label>Descripció</label>
+            <textarea formControlName="descripcio" rows="3" class="form-control"></textarea>
+          </div>
+          
+          <div class="form-group file-upload-group">
+            <label>Imatge de l'Oferta (Opcional)</label>
+            <input type="file" class="form-control file-input" accept="image/png, image/jpeg, image/jpg" (change)="onFileSelected($event)">
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Punts</label>
+              <input type="number" formControlName="cost_punts" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Data Caducitat</label>
+              <input type="date" formControlName="data_fi" class="form-control">
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button type="submit" class="btn-primary" [disabled]="editForm.invalid">Guardar Canvis</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

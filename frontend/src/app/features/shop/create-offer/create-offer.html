@@ -1,0 +1,69 @@
+<div class="offer-container">
+  <div class="header-actions">
+    <a routerLink="/botiga" class="btn-back">← Tornar al panell</a>
+  </div>
+
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Crear Nova Oferta</h2>
+      <p>Defineix un descompte atractiu perquè els clients del barri gastin els seus punts a la teva botiga.</p>
+    </div>
+
+    <form [formGroup]="ofertaForm" (ngSubmit)="crearOferta()">
+      
+      <div class="form-group">
+        <label>Títol de l'oferta</label>
+        <input type="text" formControlName="titol" placeholder="Ex: 20% de descompte en fruita de temporada">
+        @if (ofertaForm.get('titol')?.touched && ofertaForm.get('titol')?.invalid) {
+          <span class="error-text">El títol és obligatori (mínim 5 lletres).</span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label>Descripció i condicions</label>
+        <textarea formControlName="descripcio" rows="4" placeholder="Ex: Vàlid només els dimarts. No acumulable a altres ofertes."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Cost en Punts NEXE</label>
+        <div class="points-input">
+          <input type="number" formControlName="cost_punts" min="1">
+          <span class="currency-label">Punts</span>
+        </div>
+        <p class="help-text">Quants punts haurà de gastar el client per aconseguir això?</p>
+      </div>
+
+      <div class="form-group">
+        <label>Durada de l'oferta</label>
+        <select formControlName="tipus_durada" class="form-control">
+          <option value="sempre">Sense límit (esborrat manual)</option>
+          <option value="1d">1 Dia</option>
+          <option value="3d">3 Dies</option>
+          <option value="1s">1 Setmana</option>
+          <option value="1m">1 Mes</option>
+          <option value="custom">Data personalitzada...</option>
+        </select>
+        <p class="help-text">Quan passi aquest temps, l'oferta s'ocultarà automàticament.</p>
+      </div>
+
+      @if (ofertaForm.get('tipus_durada')?.value === 'custom') {
+        <div class="form-group">
+          <label>Tria l'últim dia de l'oferta:</label>
+          <input type="date" formControlName="data_personalitzada" class="form-control">
+        </div>
+      }
+
+      @if (missatge) {
+        <div class="alert" [class.success]="!error" [class.error]="error">
+          {{ missatge }}
+        </div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="ofertaForm.invalid || loading">
+          {{ loading ? 'Publicant...' : 'Publicar Oferta' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

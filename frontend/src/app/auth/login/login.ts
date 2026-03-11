@@ -34,8 +34,17 @@ export class Login {
 
     this.auth.login(this.loginForm.value).subscribe({
       next: (res) => {
-        this.auth.guardarToken(res.token, res.rol);
-        this.router.navigate(['/perfil']);
+        //Assegurem que agafem el rol bé
+        const rolUsuari = res.rol || res.usuari?.rol;
+
+        this.auth.guardarToken(res.token, rolUsuari);
+
+        //SEMAFOR
+        if (rolUsuari === 'COMERÇ' || rolUsuari === 'ADMIN') {
+          this.router.navigate(['/la-meva-botiga']);
+        } else {
+          this.router.navigate(['/perfil']); //CLIENTS NORMALS VAN A PERFIL, COMERÇS VAN A LA SEVA BOTIGA
+        }
       },
       error: () => {
         this.loading = false;

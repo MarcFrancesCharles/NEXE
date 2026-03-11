@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware([CheckRole::class.':COMERÇ'])->group(function () {
         Route::post('/ofertes', [OfertaController::class, 'crearOferta']);
         Route::get('/comerces/vendes', [TransaccioController::class, 'vendesComerc']);
+        Route::get('/les-meves-ofertes', [OfertaController::class, 'lesMevesOfertes']);
     });
 
     // Rutes Exclusives: ADMINISTRADOR
@@ -42,5 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/usuaris', [AdminController::class, 'llistarUsuaris']);
         Route::put('/admin/usuaris/{id}/estat', [AdminController::class, 'canviarEstat']);
     });
+
+    // Rutes Exclusives: COMERÇ i ADMIN (per eliminar ofertes)
+    Route::delete('/ofertes/{id}', [\App\Http\Controllers\Api\V1\OfertaController::class, 'eliminarOferta']);
+    // Rutes Exclusives: COMERÇ i ADMIN (per modificar ofertes)
+    Route::put('/ofertes/{id}', [\App\Http\Controllers\Api\V1\OfertaController::class, 'modificarOferta']);
+    
 
 });
