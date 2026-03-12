@@ -157,7 +157,209 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- EDIT BUTTON --- */
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.edit-btn {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: var(--text-main);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.edit-btn:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+/* --- EDIT OVERLAY & BANNER (Bottom Sheet) --- */
+.edit-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 99;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.edit-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top-left-radius: 32px;
+  border-top-right-radius: 32px;
+  padding: 2rem 2.5rem 3rem;
+  z-index: 100;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  animation: slideBottomUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* For larger screens, make it a centered modal */
+@media (min-width: 768px) {
+  .edit-banner {
+    position: fixed;
+    bottom: auto;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px;
+    padding: 2.5rem;
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0;
+    animation: popInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+.edit-banner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.edit-banner-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-main);
+}
+
+.close-btn {
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #e2e8f0;
+  color: var(--text-main);
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+
+.form-group input {
+  background: #f8fafc;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 0.9rem 1.2rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  color: var(--text-main);
+}
+
+.form-group input:focus {
+  background: #ffffff;
+  border-color: var(--p-500);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.edit-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.edit-actions button {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: #f1f5f9;
+  color: var(--text-main);
+  border: none;
+}
+
+.btn-cancel:hover {
+  background: #e2e8f0;
+}
+
+.btn-save {
+  background: var(--text-main);
+  color: white;
+  border: none;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideBottomUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes popInModal {
+  from { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
 @media (max-width: 768px) {
   .stat-card, .action-card, .transactions-section { padding: 1.5rem; }
   .stat-value { font-size: 3rem; }
+  .edit-banner { padding: 1.5rem 1.5rem 2.5rem; border-top-left-radius: 24px; border-top-right-radius: 24px; }
+  .edit-actions { flex-direction: column; }
 }

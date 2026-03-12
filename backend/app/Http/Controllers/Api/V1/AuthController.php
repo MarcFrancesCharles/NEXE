@@ -87,4 +87,30 @@ class AuthController extends Controller
         
         return response()->json(['missatge' => 'Sessió tancada correctament']);
     }
+
+    // 4. FUNCIÓ D'ACTUALITZAR PERFIL
+    public function actualitzarPerfil(Request $request)
+    {
+        $usuari = $request->user();
+
+        $request->validate([
+            'nom' => 'nullable|string|max:100',
+            'correu' => 'required|email|unique:usuaris,correu,' . $usuari->id_usuari . ',id_usuari',
+            'contrasenya' => 'nullable|min:8',
+        ]);
+
+        $usuari->nom = $request->nom;
+        $usuari->correu = $request->correu;
+
+        if ($request->filled('contrasenya')) {
+            $usuari->contrasenya = Hash::make($request->contrasenya);
+        }
+
+        $usuari->save();
+
+        return response()->json([
+            'missatge' => 'Perfil actualitzat correctament',
+            'usuari' => $usuari->load(['perfil', 'transaccions'])
+        ]);
+    }
 }

@@ -18,6 +18,7 @@ class Comerc extends Model
         'nom_comercial',
         'cif',
         'coord_gps',
+        'imatge_url',
     ];
 
     // Pertany a un USUARI 

@@ -15,6 +15,7 @@ class Usuari extends Authenticatable
     protected $primaryKey = 'id_usuari'; 
 
     protected $fillable = [
+        'nom',
         'correu',
         'contrasenya',
         'rol',
