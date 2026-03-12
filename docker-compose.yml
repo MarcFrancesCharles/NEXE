@@ -55,7 +55,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     # Usem 'npm run start' perquè agafi el --poll que hem posat al package.json
-    command: sh -c "npm install && npm run start"
+    command: sh -c "npm install --legacy-peer-deps && npx ng serve --host 0.0.0.0 --disable-host-check"
     networks:
       - nexe_network
 

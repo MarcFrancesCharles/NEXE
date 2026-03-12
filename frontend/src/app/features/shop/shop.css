@@ -284,3 +284,31 @@
 .modal-actions button { width: auto; padding: 0.8rem 1.5rem; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUpModal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+
+/* --- LECTOR QR CÀMERA --- */
+.camera-modal {
+  max-width: 400px; /* Ho fem més estret que el de les ofertes */
+}
+.camera-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  aspect-ratio: 1 / 1; /* Càmera quadrada */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Requadre verd per apuntar */
+.scan-overlay {
+  position: absolute;
+  top: 15%; left: 15%; right: 15%; bottom: 15%;
+  border: 2px solid rgba(16, 185, 129, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.4); /* Enfombreix l'exterior */
+  pointer-events: none;
+}
+.text-center { text-align: center; }
+.mt-3 { margin-top: 1rem; }

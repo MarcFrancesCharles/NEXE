@@ -4,17 +4,46 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { BarcodeFormat } from '@zxing/library';
 
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, ZXingScannerModule],
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
 export class Shop implements OnInit {
   ofertes: any[] = [];
   mostrantModal = false;
+  // Variables per la Càmera QR
+  mostrantCamera = false;
+  codiEscanejat: string | null = null;
+  formatsPermesos = [BarcodeFormat.QR_CODE];
+
+  // Funció per obrir la càmera
+  obrirCamera() {
+    alert('EL BOTÓ FUNCIONA!'); // Afegeix aquesta línia temporalment
+    this.mostrantCamera = true;
+    this.codiEscanejat = null; // Netegem l'escaneig anterior
+  }
+
+  // Funció per tancar la càmera
+  tancarCamera() {
+    this.mostrantCamera = false;
+  }
+
+  // Aquesta funció saltarà AUTOMÀTICAMENT quan la càmera llegeixi un QR
+  onQREscanejat(resultat: string) {
+    // Fem un "beep" mental
+    console.log('Codi detectat!', resultat);
+    this.codiEscanejat = resultat;
+    this.tancarCamera(); // Tanquem la càmera
+    
+    // Aquí obrirem el següent pas (Donar punts o Bescanviar oferta)
+    alert('QR Detectat! El codi del client és: ' + resultat);
+  }
   ofertaEditantId: number | null = null;
   editForm: FormGroup;
   imatgeSeleccionada: File | null = null; // Guardarà la foto
