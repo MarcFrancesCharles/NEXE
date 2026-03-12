@@ -62,4 +62,52 @@ export class Profile implements NgOnInit {
       }
     });
   }
+
+  // Estat per editar el perfil
+  editantPerfil: boolean = false;
+  editDades = {
+    nom: '',
+    correu: '',
+    contrasenya: ''
+  };
+  missatgeEdit: string = '';
+  tipusMissatgeEdit: 'success' | 'error' | '' = '';
+
+  obrirEdicio() {
+    this.editDades.nom = this.usuari?.nom || '';
+    this.editDades.correu = this.usuari?.correu || '';
+    this.editDades.contrasenya = '';
+    this.missatgeEdit = '';
+    this.editantPerfil = true;
+  }
+
+  tancarEdicio() {
+    this.editantPerfil = false;
+    this.missatgeEdit = '';
+  }
+
+  guardarPerfil() {
+    const payload: any = {
+      nom: this.editDades.nom,
+      correu: this.editDades.correu
+    };
+
+    if (this.editDades.contrasenya && this.editDades.contrasenya.trim().length > 0) {
+      payload.contrasenya = this.editDades.contrasenya;
+    }
+
+    this.http.put('http://localhost:8000/api/perfil-meu', payload, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => {
+          this.missatgeEdit = 'Perfil actualitzat correctament';
+          this.tipusMissatgeEdit = 'success';
+          this.obtenirDadesPerfil(); // Refresh user data
+          setTimeout(() => this.tancarEdicio(), 2000); // Close after 2 seconds automatically
+        },
+        error: (err) => {
+          this.missatgeEdit = err.error.message || 'Error actualitzant el perfil';
+          this.tipusMissatgeEdit = 'error';
+        }
+      });
+  }
 }

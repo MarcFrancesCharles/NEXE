@@ -17,11 +17,12 @@ body {
 
 /* Header & Navbar */
 .main-nav {
-  background: var(--white);
+  background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 1000;
+  opacity: 1 !important;
 }
 
 .nav-container {
@@ -78,7 +79,7 @@ body {
 
 /* Buttons */
 .btn-cta {
-  background: var(--primary);
+  background: var(--text-main);
   color: white !important;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
@@ -86,7 +87,7 @@ body {
 }
 
 .btn-cta:hover {
-  background: var(--primary-hover);
+  background: #000000;
 }
 
 .btn-logout {

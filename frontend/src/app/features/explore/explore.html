@@ -24,15 +24,27 @@
       <div class="shop-grid">
         @for (comerc of comerces; track comerc.id_comerc) {
           <div class="shop-card">
-            <div class="shop-image">
-              <div class="category-tag">{{ comerc.categoria?.nom_cat }}</div>
+            <div class="shop-image" [style.background-image]="'url(' + comerc.imatge + ')'">
+              <div class="category-tag">{{ comerc.categoria?.nom_cat || 'Comerç Local' }}</div>
             </div>
-            <div class="shop-info">
-              <h3>{{ comerc.nom_comercial }}</h3>
-              <p class="location">📍 {{ comerc.direccio || 'Lleida, Centre' }}</p>
+            
+            <div class="shop-content-wrapper">
+              <div class="shop-info">
+                <h3>{{ comerc.nom_comercial }}</h3>
+                <p class="location">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  {{ comerc.direccio || 'Lleida, Centre' }}
+                </p>
+              </div>
+              
               <div class="shop-footer">
-                <span class="points-badge">Lliurament de punts</span>
-                <button class="btn-outline-sm">Veure botiga</button>
+                <div class="points-badge">
+                  <span class="points-icon">⭐</span>
+                  <span>Acumula punts</span>
+                </div>
+                <button class="btn-shop-action" aria-label="Veure botiga">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
               </div>
             </div>
           </div>

@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/perfil-meu', function (Request $request) {
         return response()->json($request->user()->load(['perfil', 'transaccions']));
     });
+    Route::put('/perfil-meu', [AuthController::class, 'actualitzarPerfil']);
 
     // Rutes Exclusives: ESTÀNDARD
     Route::middleware([CheckRole::class.':ESTANDARD'])->group(function () {
