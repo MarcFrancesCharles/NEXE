@@ -1,8 +1,18 @@
 <div class="shop-dashboard">
   
-  <div class="dashboard-header">
-    <h1>El meu Comerç</h1>
-    <p>Benvingut al teu panell de control de NEXE.</p>
+  <div class="dashboard-header" [class.has-cover]="comerc?.imatge_url" [style.background-image]="comerc?.imatge_url ? 'url(http://localhost:8000/storage/' + comerc.imatge_url + ')' : ''">
+    @if (comerc?.imatge_url) {
+      <div class="header-overlay"></div>
+    }
+    <div class="header-content">
+      <div class="header-text">
+        <h1>{{ comerc?.nom_comercial || 'El meu Comerç' }}</h1>
+        <p [style.color]="comerc?.imatge_url ? '#e2e8f0' : '#64748b'">Benvingut al teu panell de control de NEXE.</p>
+      </div>
+      <button class="btn-edit-header" (click)="obrirModalComerc()">
+        <span>✏️</span> Editar Comerç
+      </button>
+    </div>
   </div>
 
   <div class="grid-actions">
@@ -205,6 +215,66 @@
           <button type="button" class="btn-secondary" (click)="tancarAccionsQR()">Cancel·lar</button>
         </div>
         
+      </div>
+    </div>
+  }
+
+  @if (mostrantModalComerc) {
+    <div class="edit-overlay" (click)="tancarModalComerc()"></div>
+    <div class="edit-banner" [class.visible]="mostrantModalComerc">
+      <div class="edit-banner-header">
+        <div>
+          <h3>Personalitza el teu Comerç</h3>
+          <p class="text-muted" style="margin-top: 0.5rem;">Modifica els camps que vulguis actualitzar.</p>
+        </div>
+        <button class="close-btn" (click)="tancarModalComerc()">&times;</button>
+      </div>
+      
+      <div class="edit-form">
+        <form [formGroup]="comercForm" (ngSubmit)="guardarCanvisComerc()">
+          <div class="form-group">
+            <label><span>🏢</span> Nom del Comerç</label>
+            <input type="text" formControlName="nom_comercial" placeholder="Escriu el nom actual">
+          </div>
+          
+          <div class="form-group">
+            <label><span>🆔</span> CIF / Identificació Fiscal</label>
+            <input type="text" formControlName="cif" placeholder="Ex: B12345678">
+          </div>
+
+          <div class="form-group">
+            <label><span>🏷️</span> Categoria de Negoci</label>
+            <select formControlName="id_categoria">
+              <option value="" disabled>Selecciona una categoria...</option>
+              @for (cat of categories; track cat.id_categoria) {
+                <option [value]="cat.id_categoria">{{ cat.nom_cat }}</option>
+              }
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label><span>📸</span> Imatge de Portada / Logotip</label>
+            <div class="image-upload-wrapper" [class.has-image]="comerc?.imatge_url || imatgeComercPreview">
+              @if (imatgeComercPreview) {
+                <div class="current-image-preview new-preview">
+                  <img [src]="imatgeComercPreview" alt="Nova portada">
+                  <div class="preview-badge">Nova Selecció</div>
+                </div>
+              } @else if (comerc?.imatge_url) {
+                <div class="current-image-preview">
+                  <img [src]="'http://localhost:8000/storage/' + comerc.imatge_url" alt="Portada actual">
+                </div>
+              }
+              <input type="file" class="form-control" (change)="onFileComercSelected($event)" accept="image/*">
+            </div>
+            <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">La imatge seleccionada serà el fons de la teva capçalera.</p>
+          </div>
+
+          <div class="edit-actions">
+            <button type="button" class="btn-cancel" (click)="tancarModalComerc()">Cancel·lar</button>
+            <button type="submit" class="btn-save" [disabled]="comercForm.invalid">Guardar Canvis</button>
+          </div>
+        </form>
       </div>
     </div>
   }

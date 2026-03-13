@@ -8,7 +8,7 @@ export const roleGuard: CanActivateFn = (route, state) => {
   const rol = auth.obtenirRol();
   
   // Ara sabem segur que és COMERÇ gràcies a la teva captura
-  if (rol === 'COMERÇ' || rol === 'ADMIN') {
+  if (rol === 'COMERC' || rol === 'ADMIN') {
     return true;
   } else {
     router.navigate(['/perfil']);

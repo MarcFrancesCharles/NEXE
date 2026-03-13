@@ -13,6 +13,7 @@ use App\Http\Middleware\CheckRole;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/comerces', [ComercController::class, 'index']); // Llistar comerços
+Route::get('/categories', [ComercController::class, 'categories']); // Llistar categories
 Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes actives
 
 
@@ -32,11 +33,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/ofertes/bescanviar', [TransaccioController::class, 'bescanviarOferta']);
     });
 
-    // Rutes Exclusives: COMERÇ
-    Route::middleware([CheckRole::class.':COMERÇ'])->group(function () {
+    // Rutes Exclusives: COMERC
+    Route::middleware([CheckRole::class.':COMERC'])->group(function () {
         Route::post('/ofertes', [OfertaController::class, 'crearOferta']);
         Route::get('/comerces/vendes', [TransaccioController::class, 'vendesComerc']);
         Route::get('/les-meves-ofertes', [OfertaController::class, 'lesMevesOfertes']);
+        
+        // GESTIÓ DEL PROPI COMERÇ
+        Route::get('/el-meu-comerc', [ComercController::class, 'elMeuComerc']);
+        Route::post('/el-meu-comerc', [ComercController::class, 'actualitzarComerc']); // Usem POST per suportar FormData (imatges)
     });
 
     // Rutes Exclusives: ADMINISTRADOR

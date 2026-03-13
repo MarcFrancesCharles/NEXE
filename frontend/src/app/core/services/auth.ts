@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -30,6 +30,20 @@ export class Auth {
 
   obtenirRol(): string | null {
     return localStorage.getItem('nexe_rol');
+  }
+
+  getCategories(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/categories`);
+  }
+
+  getElMeuComerc(): Observable<any> {
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.obtenirToken()}` });
+    return this.http.get<any>(`${this.apiUrl}/el-meu-comerc`, { headers });
+  }
+
+  actualitzarComerc(dades: FormData): Observable<any> {
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.obtenirToken()}` });
+    return this.http.post<any>(`${this.apiUrl}/el-meu-comerc`, dades, { headers });
   }
 
   logout() {

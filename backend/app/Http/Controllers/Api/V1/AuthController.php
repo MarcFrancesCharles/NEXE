@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Usuari;
 use App\Models\Perfil;
+use App\Models\Comerc;
+use App\Models\Categoria;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -14,27 +17,50 @@ class AuthController extends Controller
     // 1. FUNCIÓ DE REGISTRE
     public function register(Request $request)
     {
-        // Validem que les dades que ens envia l'Angular (o Postman) siguin correctes
-        $request->validate([
+        // 1. Definim les regles bàsiques
+        $regles = [
+            'nom' => 'required|string|max:100',
             'correu' => 'required|email|unique:usuaris,correu',
             'contrasenya' => 'required|min:8',
-        ]);
+            'rol' => ['required', Rule::in(['ESTANDARD', 'COMERC', 'ADMIN'])],
+        ];
 
-        // Creem l'usuari a la Base de Dades. Segons el teu disseny, per defecte és ESTANDARD i ACTIU.
+        // 2. Afegim regles extra NOMÉS si és un COMERC
+        if ($request->rol === 'COMERC') {
+            $regles['id_categoria'] = 'required|exists:categorias,id_categoria';
+            $regles['cif'] = 'required|string|max:20|unique:comercs,cif';
+        }
+
+        // 3. Executem la validació
+        $request->validate($regles);
+
+        // Creem l'usuari
         $usuari = Usuari::create([
+            'nom' => $request->nom,
             'correu' => $request->correu,
-            'contrasenya' => Hash::make($request->contrasenya), // L'encriptem obligatòriament
-            'rol' => 'ESTANDARD',
+            'contrasenya' => Hash::make($request->contrasenya), 
+            'rol' => $request->rol,
             'estat' => 'ACTIU',
         ]);
 
-        // Creem automàticament el seu perfil amb 0 punts (complint la relació 1:1)
+        // Creem el perfil (obligatori 1:1)
         Perfil::create([
             'id_usuari' => $usuari->id_usuari,
             'punts_totals' => 0,
         ]);
 
-        // Generem el Token de Sanctum (el vostre JWT)
+        // Si el rol és COMERC, creem també l'entrada a la taula 'comercs'
+        if ($usuari->rol === 'COMERC') {
+            Comerc::create([
+                'id_usuari' => $usuari->id_usuari,
+                'id_categoria' => $request->id_categoria,
+                'nom_comercial' => $usuari->nom, // Mateix nom que l'usuari
+                'cif' => $request->cif,
+                // coord_gps i imatge_url son nullables per defecte
+            ]);
+        }
+
+        // Generem el Token
         $token = $usuari->createToken('auth_token')->plainTextToken;
 
         return response()->json([

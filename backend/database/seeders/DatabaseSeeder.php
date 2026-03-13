@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $usuariComerc = Usuari::create([
             'correu' => 'botiga@nexe.cat',
             'contrasenya' => Hash::make('12345678'),
-            'rol' => 'COMERÇ',
+            'rol' => 'COMERC',
             'estat' => 'ACTIU',
         ]);
         

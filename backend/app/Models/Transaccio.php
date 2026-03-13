@@ -27,7 +27,7 @@ class Transaccio extends Model
         return $this->belongsTo(Usuari::class, 'id_usuari', 'id_usuari');
     }
 
-    // Pertany a un COMERÇ 
+    // Només els 'COMERC' poden veure les vendes del seu comerç via middleware
     public function comerc()
     {
         return $this->belongsTo(Comerc::class, 'id_comerc', 'id_comerc');

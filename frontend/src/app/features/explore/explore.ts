@@ -22,10 +22,15 @@ export class Explore implements OnInit {
     this.http.get<any[]>('http://localhost:8000/api/comerces').subscribe({
       next: (dades) => {
         this.comerces = dades.map((comerc, index) => {
+          let imatgeOriginal = comerc.imatge_url;
+          // Si ve de la BD (té path), hi posem el prefix de storage
+          if (imatgeOriginal && !imatgeOriginal.startsWith('http')) {
+            imatgeOriginal = `http://localhost:8000/storage/${imatgeOriginal}`;
+          }
+
           return {
             ...comerc,
-            // Use the real image if it exists in DB, otherwise use a placeholder
-            imatge: comerc.imatge_url ? comerc.imatge_url : this.getShopImage(index)
+            imatge: imatgeOriginal ? imatgeOriginal : this.getShopImage(index)
           };
         });
         this.loading = false;

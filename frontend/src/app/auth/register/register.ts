@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -11,10 +11,11 @@ import { Auth } from '../../core/services/auth';
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
-export class Register {
+export class Register implements OnInit {
   regForm: FormGroup;
   loading = false;
   errorMsg = '';
+  categories: any[] = [];
 
   private fb = inject(FormBuilder);
   private auth = inject(Auth);
@@ -25,7 +26,37 @@ export class Register {
       nom: ['', [Validators.required, Validators.minLength(2)]],
       correu: ['', [Validators.required, Validators.email]],
       contrasenya: ['', [Validators.required, Validators.minLength(8)]],
-      rol: ['ESTANDARD'] // Per defecte tothom és client
+      rol: ['ESTANDARD', [Validators.required]],
+      // Camps extra pel comerç
+      id_categoria: [''],
+      cif: ['']
+    });
+
+    // Validacions condicionals segons el rol
+    this.regForm.get('rol')?.valueChanges.subscribe(rol => {
+      const catCtrl = this.regForm.get('id_categoria');
+      const cifCtrl = this.regForm.get('cif');
+
+      if (rol === 'COMERC') {
+        catCtrl?.setValidators([Validators.required]);
+        cifCtrl?.setValidators([Validators.required]);
+      } else {
+        catCtrl?.clearValidators();
+        cifCtrl?.clearValidators();
+      }
+      catCtrl?.updateValueAndValidity();
+      cifCtrl?.updateValueAndValidity();
+    });
+  }
+
+  ngOnInit() {
+    this.carregarCategories();
+  }
+
+  carregarCategories() {
+    this.auth.getCategories().subscribe({
+      next: (res) => this.categories = res,
+      error: (err) => console.error('Error carregant categories', err)
     });
   }
 

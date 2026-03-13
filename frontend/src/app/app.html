@@ -12,6 +12,9 @@
         <a routerLink="/login" routerLinkActive="active" class="link-auth">Entrar</a>
         <a routerLink="/register" class="btn-cta">Registra't</a>
       } @else {
+        @if (esAdmin()) {
+          <a routerLink="/la-meva-botiga" routerLinkActive="active">La meva Botiga</a>
+        }
         <a routerLink="/perfil" routerLinkActive="active">El meu Perfil</a>
         <button (click)="sortir()" class="btn-logout">Sortir</button>
       }

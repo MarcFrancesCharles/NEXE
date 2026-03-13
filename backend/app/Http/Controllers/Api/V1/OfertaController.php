@@ -61,13 +61,14 @@ class OfertaController extends Controller
     // Funció per veure només les ofertes del comerç logat (Panell d'administració)
     public function lesMevesOfertes(Request $request)
     {
-        // 1. Busquem l'ID de l'usuari (amb el truc que sabem que funciona)
-        $userId = $request->user()->id_usuari ?? $request->user()->id;
-        
-        // 2. Trobem quin comerç és el seu
+        $userId = $request->user()->id_usuari;
         $comerc = Comerc::where('id_usuari', $userId)->first();
+        
+        // Bypass per l'ADMIN (veure les ofertes de la primera botiga si no en té cap)
+        if (!$comerc && $request->user()->rol === 'ADMIN') {
+            $comerc = Comerc::first();
+        }
 
-        // Si per algun motiu no té comerç, tallem aquí
         if (!$comerc) {
             return response()->json(['missatge' => 'No tens cap comerç associat.'], 404);
         }
@@ -84,17 +85,21 @@ class OfertaController extends Controller
     // Funció per eliminar una oferta pròpia
     public function eliminarOferta(Request $request, $id)
     {
-        $userId = $request->user()->id_usuari ?? $request->user()->id;
+        $userId = $request->user()->id_usuari;
         $comerc = Comerc::where('id_usuari', $userId)->first();
 
-        if (!$comerc) {
-            return response()->json(['missatge' => 'No tens cap comerç associat.'], 403);
+        // Si és ADMIN, busquem l'oferta directament sense filtrar per comerc propi
+        if ($request->user()->rol === 'ADMIN') {
+            $oferta = Oferta::find($id);
+        } else {
+            if (!$comerc) {
+                return response()->json(['missatge' => 'No tens cap comerç associat.'], 403);
+            }
+            // Busquem l'oferta assegurant-nos que pertany a aquest comerç
+            $oferta = Oferta::where('id_oferta', $id)
+                            ->where('id_comerc', $comerc->id_comerc)
+                            ->first();
         }
-
-        // Busquem l'oferta assegurant-nos que pertany a aquest comerç
-        $oferta = Oferta::where('id_oferta', $id)
-                        ->where('id_comerc', $comerc->id_comerc)
-                        ->first();
 
         if (!$oferta) {
             return response()->json(['missatge' => 'Oferta no trobada o no tens permís.'], 404);
@@ -108,8 +113,12 @@ class OfertaController extends Controller
     // Funció per modificar una oferta existent
     public function modificarOferta(Request $request, $id)
         {
-            $userId = $request->user()->id_usuari ?? $request->user()->id;
+            $userId = $request->user()->id_usuari;
             $comerc = Comerc::where('id_usuari', $userId)->first();
+
+            if (!$comerc && $request->user()->rol === 'ADMIN') {
+                $comerc = Comerc::first();
+            }
 
             if (!$comerc) return response()->json(['missatge' => 'No autoritzat'], 403);
 

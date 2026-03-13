@@ -18,6 +18,12 @@ export class App {
     return !!this.auth.obtenirToken();
   }
 
+  // Funció per saber si l'usuari és administrador o comerç
+  esAdmin(): boolean {
+    const rol = this.auth.obtenirRol();
+    return rol === 'ADMIN' || rol === 'COMERC';
+  }
+
   // Funció per tancar sessió
   sortir() {
     this.auth.logout();
