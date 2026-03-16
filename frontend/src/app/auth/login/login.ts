@@ -40,7 +40,7 @@ export class Login {
         this.auth.guardarToken(res.token, rolUsuari);
 
         //SEMAFOR
-        if (rolUsuari === 'COMERÇ' || rolUsuari === 'ADMIN') {
+        if (rolUsuari === 'COMERC' || rolUsuari === 'ADMIN') {
           this.router.navigate(['/la-meva-botiga']);
         } else {
           this.router.navigate(['/perfil']); //CLIENTS NORMALS VAN A PERFIL, COMERÇS VAN A LA SEVA BOTIGA
