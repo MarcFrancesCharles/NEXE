@@ -1,155 +1,204 @@
 /* --- CONTENIDOR I ANIMACIONS --- */
 .profile-container { 
   animation: slideUp 0.5s ease-out; 
-  max-width: 1000px;
+  width: 100%;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
-.profile-header { margin-bottom: 2.5rem; }
-.profile-header h1 { font-size: 2.2rem; color: var(--text-main); margin-bottom: 0.2rem; }
-.profile-header p { color: var(--text-muted); font-size: 1.1rem; }
-
-/* --- SISTEMA DE TARGETES (GRID) --- */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+.profile-settings-wrapper {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
 }
 
-/* Base per a totes les targetes blanques */
-.stat-card, .action-card, .transactions-section {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 2.5rem;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-  transition: box-shadow 0.3s ease;
+.settings-header { 
+  margin-bottom: 2.5rem; 
+  text-align: left;
 }
 
-.stat-card:hover, .action-card:hover, .transactions-section:hover {
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+.settings-header h1 { 
+  font-size: 2rem; 
+  color: #111827; 
+  margin: 0; 
+  font-weight: 700; 
+  letter-spacing: -0.5px;
 }
 
-/* --- TARGETA DE PUNTS (Estil Targeta Premium) --- */
-.points-card {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-  color: white;
+.settings-section {
+  margin-bottom: 2.5rem;
+}
+
+.settings-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 0.75rem;
+  margin-left: 0.5rem;
+  text-transform: capitalize;
+}
+
+.settings-card {
+  background: #F9FAFB;
+  border-radius: 20px;
+  padding: 0.5rem 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.settings-item {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  border: none;
+  align-items: center;
+  padding: 1rem 1.5rem;
 }
 
-/* Cercle decoratiu de fons */
-.points-card::after {
+.settings-item:not(:last-child) {
+  position: relative;
+}
+
+.settings-item:not(:last-child)::after {
   content: '';
   position: absolute;
-  top: -60px;
-  right: -50px;
-  width: 200px;
-  height: 200px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+  bottom: 0;
+  left: 3.5rem;
+  right: 1.5rem;
+  height: 1px;
+  background: #E5E7EB;
 }
 
-.points-card .icon { font-size: 2.5rem; margin-bottom: 1rem; position: relative; z-index: 2; }
-.stat-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; position: relative; z-index: 2;}
-.stat-value { font-size: 4rem; font-weight: 800; margin: 0; line-height: 1; position: relative; z-index: 2;}
-.stat-value span { font-size: 1.2rem; font-weight: 500; opacity: 0.8; }
+.settings-item.input-item {
+  align-items: flex-start;
+}
 
-/* --- TARGETA D'ESCANEIG --- */
-.action-card h3 { margin-top: 0; font-size: 1.5rem; color: var(--text-main); }
-.action-card p { color: var(--text-muted); margin-bottom: 1.5rem; }
+.settings-item.input-item .settings-icon {
+  margin-top: 0.2rem;
+}
 
-.input-box { display: flex; gap: 10px; }
-.input-box input {
+.settings-icon {
+  margin-right: 1.25rem;
+  color: #374151;
+  display: flex;
+  align-items: center;
+}
+
+.settings-content {
   flex: 1;
-  background: #f8fafc;
-  border: 2px solid transparent;
-  border-radius: 14px;
-  padding: 1rem 1.2rem;
-  font-size: 1rem;
-}
-.input-box input:focus { background: #ffffff; border-color: var(--p-500); }
-
-.input-box button {
-  background: var(--text-main); /* Botó negre elegant */
-  color: white;
-  border-radius: 14px;
-  padding: 0 1.5rem;
-}
-.input-box button:hover:not(:disabled) { background: #000000; }
-.input-box button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* Alertes */
-.alert { margin-top: 1.5rem; padding: 1rem 1.2rem; border-radius: 12px; font-weight: 500; }
-.alert.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
-.alert.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-
-/* --- HISTORIAL DE MOVIMENTS (Estil N26/Revolut) --- */
-.transactions-section { padding: 2rem 2.5rem; }
-.transactions-section h3 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
-  color: var(--text-main);
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 1rem;
-}
-
-.transaction-list { display: flex; flex-direction: column; }
-
-.tx-item {
   display: flex;
-  align-items: center;
-  padding: 1.2rem 0;
-  border-bottom: 1px solid #f1f5f9;
-  transition: all 0.2s ease;
-}
-.tx-item:last-child { border-bottom: none; }
-
-/* Efecte Hover d'indentació */
-.tx-item:hover {
-  background: #f8fafc;
-  border-radius: 16px;
-  padding: 1.2rem 1rem;
-  margin: 0 -1rem; /* Compensa el padding perquè no es mogui la llista */
+  flex-direction: column;
 }
 
-/* Icones de l'historial segons si suma o resta */
-.tx-icon {
-  font-size: 1.4rem;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-  margin-right: 1.2rem;
-  background: #f1f5f9;
-}
-.tx-item:has(.positive) .tx-icon { background: #ecfdf5; color: #10b981; }
-.tx-item:has(.negative) .tx-icon { background: #eff6ff; color: #3b82f6; }
-
-.tx-info { flex: 1; display: flex; flex-direction: column; }
-.tx-title { font-weight: 600; color: var(--text-main); font-size: 1.1rem; }
-.tx-date { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem; }
-
-.tx-points { font-weight: 800; font-size: 1.25rem; }
-.tx-points.positive { color: #10b981; }
-.tx-points.negative { color: #1e293b; } /* Negre suau en lloc de vermell agressiu per quan gastes */
-
-.empty-state-tx {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--text-muted);
-  background: #f8fafc;
-  border-radius: 16px;
-  border: 2px dashed #cbd5e1;
+.settings-label {
+  font-size: 1.05rem;
   font-weight: 500;
+  color: #111827;
+}
+
+.settings-sub {
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-top: 0.2rem;
+}
+
+.settings-value {
+  font-size: 1.05rem;
+  color: #6B7280;
+  padding-left: 1rem;
+}
+
+.settings-value.highlights {
+  color: #111827;
+  font-weight: 600;
+}
+
+.transaction-value {
+  font-weight: 600;
+}
+
+.transaction-value.positive {
+  color: #10B981;
+}
+
+.settings-input-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.settings-input-row input {
+  flex: 1;
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  color: #111827;
+}
+
+.settings-input-row input:focus {
+  border-color: #3B82F6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.settings-input-row button {
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-input-row button:hover:not(:disabled) {
+  background: #000000;
+}
+
+.settings-input-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.alert-inline {
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.alert-inline.success { background: #ECFDF5; color: #047857; }
+.alert-inline.error { background: #FEF2F2; color: #B91C1C; }
+
+.settings-empty {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  color: #6B7280;
+  font-size: 0.95rem;
+}
+
+.settings-actions-bottom {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-outline-pill {
+  padding: 0.6rem 1.25rem;
+  border-radius: 99px;
+  border: 1px solid #D1D5DB;
+  background: #FFFFFF;
+  color: #111827;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.btn-outline-pill:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
 }
 
 @keyframes slideUp {
@@ -358,8 +407,48 @@
 }
 
 @media (max-width: 768px) {
-  .stat-card, .action-card, .transactions-section { padding: 1.5rem; }
-  .stat-value { font-size: 3rem; }
-  .edit-banner { padding: 1.5rem 1.5rem 2.5rem; border-top-left-radius: 24px; border-top-right-radius: 24px; }
-  .edit-actions { flex-direction: column; }
+  .profile-settings-wrapper {
+    padding: 1.5rem 1rem 6.5rem; /* Massive bottom padding for global mobile nav bar */
+  }
+
+  .settings-section-title {
+    margin-left: 0.25rem;
+  }
+
+  .settings-item {
+    padding: 1rem;
+  }
+
+  /* Sync separator line coordinates */
+  .settings-item:not(:last-child)::after {
+    left: 3.25rem;
+    right: 1rem;
+  }
+
+  .settings-icon {
+    margin-right: 1rem;
+  }
+
+  .settings-actions-bottom {
+    justify-content: center;
+  }
+
+  .btn-outline-pill {
+    width: 100%;
+  }
+
+  .settings-input-row {
+    flex-direction: column;
+  }
+
+  .edit-banner { 
+    padding: 1.5rem 1.5rem 2.5rem; 
+    border-top-left-radius: 24px; 
+    border-top-right-radius: 24px; 
+  }
+  
+  .edit-actions { 
+    flex-direction: column; 
+    margin-top: 1.5rem;
+  }
 }

@@ -3,20 +3,27 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
 
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, ZXingScannerModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, ZXingScannerModule],
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
 export class Shop implements OnInit {
   ofertes: any[] = [];
+  termeCerca: string = '';
   mostrantModal = false;
+
+  get ofertesFiltrades() {
+    if (!this.termeCerca.trim()) return this.ofertes;
+    const term = this.termeCerca.toLowerCase().trim();
+    return this.ofertes.filter(o => o.titol?.toLowerCase().includes(term));
+  }
   
   // Variables per la Càmera QR
   mostrantCamera = false;

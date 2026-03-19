@@ -1,18 +1,31 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-explore',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './explore.html',
   styleUrl: './explore.css'
 })
 export class Explore implements OnInit {
   comerces: any[] = [];
   loading = true;
+  searchTerm: string = '';
   private http = inject(HttpClient);
+
+  get filteredComerces() {
+    if (!this.searchTerm.trim()) return this.comerces;
+    
+    const term = this.searchTerm.toLowerCase().trim();
+    return this.comerces.filter(c => 
+      c.nom_comercial?.toLowerCase().includes(term) ||
+      c.categoria?.nom_cat?.toLowerCase().includes(term) ||
+      c.direccio?.toLowerCase().includes(term)
+    );
+  }
 
   ngOnInit() {
     this.carregarComerces();

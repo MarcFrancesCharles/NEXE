@@ -13,6 +13,12 @@ export class App {
   private auth = inject(Auth);
   private router = inject(Router);
 
+  isSidebarCollapsed: boolean = false;
+
+  toggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
+
   // Funció per saber si l'usuari ha iniciat sessió
   estaLogat(): boolean {
     return !!this.auth.obtenirToken();

@@ -6,7 +6,15 @@
       <p>Descobreix els millors comerços de proximitat i bescanvia els teus punts per ofertes exclusives.</p>
       
       <div class="search-bar">
-        <input type="text" placeholder="Què busques avui? (Fruiteria, Forn, Moda...)">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Què busques avui? (Fruiteria, Forn, Moda...)" aria-label="Cercar comerç">
+        
+        @if (searchTerm) {
+          <button class="btn-clear" (click)="searchTerm = ''" aria-label="Netejar cerca">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        }
+        
         <button class="btn-search">Buscar</button>
       </div>
     </div>
@@ -22,7 +30,7 @@
       <div class="loader">Carregant comerços locals...</div>
     } @else {
       <div class="shop-grid">
-        @for (comerc of comerces; track comerc.id_comerc) {
+        @for (comerc of filteredComerces; track comerc.id_comerc) {
           <div class="shop-card">
             <div class="shop-image" [style.background-image]="'url(' + comerc.imatge + ')'">
               <div class="category-tag">{{ comerc.categoria?.nom_cat || 'Comerç Local' }}</div>
@@ -50,10 +58,17 @@
           </div>
         } @empty {
           <div class="empty-state">
-            <p>Encara no hi ha comerços registrats en aquesta zona.</p>
+            <div class="empty-icon">🔍</div>
+            @if (searchTerm) {
+              <h3>Cap resultat trobat</h3>
+              <p>No hem trobat cap comerç que coincideixi amb "{{ searchTerm }}".</p>
+              <button class="btn-clear-search" (click)="searchTerm = ''">Netejar cerca</button>
+            } @else {
+              <p>Encara no hi ha comerços registrats en aquesta zona.</p>
+            }
           </div>
         }
       </div>
     }
   </section>
-</div>
+</div>
