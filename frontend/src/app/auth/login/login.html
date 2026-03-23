@@ -1,32 +1,45 @@
 <div class="auth-wrapper">
-  <div class="auth-side-image login-bg">
-    <div class="badge">Hola de nou!</div>
-    <h1>Bentornat a la teva comunitat.</h1>
-    <p>Inicia sessió per gestionar els teus punts i veure les teves recompenses.</p>
-  </div>
+  <!-- Side Panel (Matches Sidebar) -->
+  <aside class="auth-side-panel">
+    <div class="brand-container">
+      <div class="logo-icon">N</div>
+      <span class="logo-text">NEXE</span>
+    </div>
+    <div class="side-content">
+      <h1>Bentornat a la teva comunitat.</h1>
+      <p>Inicia sessió per gestionar els teus punts i veure les teves recompenses de proximitat.</p>
+    </div>
+  </aside>
 
-  <div class="auth-content">
+  <!-- Login Form Panel -->
+  <main class="auth-form-panel">
     <div class="form-container">
       <h2>Inicia sessió</h2>
+      <p class="subtitle">Benvingut de nou, t'hem trobat a faltar.</p>
+
       <form [formGroup]="loginForm" (ngSubmit)="entrar()">
         <div class="form-group">
           <label>Correu electrònic</label>
-          <input type="email" formControlName="correu" placeholder="el-teu@correu.cat">
+          <input type="email" formControlName="correu" placeholder="el-teu@correu.cat" autocomplete="email">
         </div>
+        
         <div class="form-group">
           <label>Contrasenya</label>
-          <input type="password" formControlName="contrasenya" placeholder="********">
+          <input type="password" formControlName="contrasenya" placeholder="********" autocomplete="current-password">
         </div>
 
         @if (errorMsg) {
           <div class="alert-error">{{ errorMsg }}</div>
         }
 
-        <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || loading">
+        <button type="submit" class="btn-primary" [disabled]="loginForm.invalid || loading">
           {{ loading ? 'Entrant...' : 'Entrar' }}
         </button>
       </form>
-      <p class="footer-text">Encara no tens compte? <a routerLink="/register">Registra't</a></p>
+      
+      <p class="footer-text">
+        Encara no tens compte? <a routerLink="/register">Registra't ara</a>
+      </p>
     </div>
-  </div>
+  </main>
 </div>

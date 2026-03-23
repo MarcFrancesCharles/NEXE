@@ -1,24 +1,31 @@
 <div class="auth-wrapper">
-  <div class="auth-side-image">
-    <div class="badge">NEXE Community</div>
-    <h1>Uneix-te a la revolució del comerç local.</h1>
-    <p>Guanya punts, ajuda els teus veïns i descobreix ofertes úniques.</p>
-  </div>
+  <!-- Side Panel (Matches Sidebar) -->
+  <aside class="auth-side-panel">
+    <div class="brand-container">
+      <div class="logo-icon">N</div>
+      <span class="logo-text">NEXE</span>
+    </div>
+    <div class="side-content">
+      <h1>Uneix-te a la revolució del comerç local.</h1>
+      <p>Guanya punts, ajuda els teus veïns i descobreix ofertes úniques al cor de la teva ciutat.</p>
+    </div>
+  </aside>
 
-  <div class="auth-content">
+  <!-- Register Form Panel -->
+  <main class="auth-form-panel">
     <div class="form-container">
       <h2>Crea el teu compte</h2>
-      <p class="subtitle">Comença a estalviar avui mateix.</p>
+      <p class="subtitle">Comença a gaudir dels avantatges de NEXE avui mateix.</p>
 
       <form [formGroup]="regForm" (ngSubmit)="enviar()">
         <div class="form-group">
           <label>Nom complet</label>
-          <input type="text" formControlName="nom" placeholder="Ex: Joan Garcia">
+          <input type="text" formControlName="nom" placeholder="Ex: Joan Garcia" autocomplete="name">
         </div>
 
         <div class="form-group">
           <label>Correu electrònic</label>
-          <input type="email" formControlName="correu" placeholder="correu@exemple.cat">
+          <input type="email" formControlName="correu" placeholder="correu@exemple.cat" autocomplete="email">
           @if (regForm.get('correu')?.touched && regForm.get('correu')?.invalid) {
             <span class="err">Introdueix un correu vàlid</span>
           }
@@ -26,32 +33,33 @@
 
         <div class="form-group">
           <label>Contrasenya</label>
-          <input type="password" formControlName="contrasenya" placeholder="Mínim 8 caràcters">
+          <input type="password" formControlName="contrasenya" placeholder="Mínim 8 caràcters" autocomplete="new-password">
         </div>
 
         <div class="form-group">
           <label>Vull registrar-me com a:</label>
-          <select formControlName="rol" class="form-control">
+          <select formControlName="rol">
             <option value="ESTANDARD">Usuari / Client</option>
             <option value="COMERC">Comerç / Botiga</option>
             <option value="ADMIN">Administrador</option>
           </select>
         </div>
-
         @if (regForm.get('rol')?.value === 'COMERC') {
-          <div class="form-group animate-in">
-            <label>Categoria del comerç</label>
-            <select formControlName="id_categoria" class="form-control">
-              <option value="">Selecciona una categoria...</option>
-              @for (cat of categories; track cat.id_categoria) {
-                <option [value]="cat.id_categoria">{{ cat.nom_cat }}</option>
-              }
-            </select>
-          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Categoria</label>
+              <select formControlName="id_categoria">
+                <option value="">Selecciona...</option>
+                @for (cat of categories; track cat.id_categoria) {
+                  <option [value]="cat.id_categoria">{{ cat.nom_cat }}</option>
+                }
+              </select>
+            </div>
 
-          <div class="form-group animate-in">
-            <label>CIF del comerç</label>
-            <input type="text" formControlName="cif" placeholder="Ex: B12345678">
+            <div class="form-group">
+              <label>CIF</label>
+              <input type="text" formControlName="cif" placeholder="Ex: B12345678">
+            </div>
           </div>
         }
 
@@ -59,7 +67,7 @@
           <div class="alert-error">{{ errorMsg }}</div>
         }
 
-        <button type="submit" class="btn btn-primary" [disabled]="regForm.invalid || loading">
+        <button type="submit" class="btn-primary" [disabled]="regForm.invalid || loading">
           {{ loading ? 'Creant compte...' : 'Registrar-me ara' }}
         </button>
       </form>
@@ -68,5 +76,5 @@
         Ja tens compte? <a routerLink="/login">Inicia sessió</a>
       </p>
     </div>
-  </div>
+  </main>
 </div>

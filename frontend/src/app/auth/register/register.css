@@ -1,56 +1,190 @@
 .auth-wrapper {
   display: flex;
-  min-height: 85vh;
-  background: var(--surface);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
+  min-height: 100vh;
+  background: #FFFFFF;
 }
 
-.auth-side-image {
+/* Side Panel (Matches Sidebar Aesthetic) */
+.auth-side-panel {
   flex: 1;
-  background: linear-gradient(135deg, var(--p-600), #4f46e5);
-  padding: 3rem;
-  color: white;
+  background: #F9FAFB;
+  border-right: 1px solid #E5E7EB;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start;
+  padding: 4rem 15%;
+  text-align: left;
 }
 
-.auth-content {
-  flex: 1;
-  padding: 4rem 2rem;
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 3rem;
+  text-decoration: none;
+}
+
+.logo-icon {
+  background: #10B981;
+  color: white;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 1.5rem;
 }
 
-.form-container { width: 100%; max-width: 400px; }
+.logo-text {
+  font-weight: 800;
+  font-size: 1.75rem;
+  color: #111827;
+  letter-spacing: -1px;
+}
 
-.form-group { margin-bottom: 1.5rem; }
+.auth-side-panel h1 {
+  font-size: 2.5rem;
+  color: #0F172A;
+  margin-bottom: 1rem;
+  max-width: 450px;
+  line-height: 1.2;
+}
 
-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+.auth-side-panel p {
+  color: #64748B;
+  font-size: 1.1rem;
+  max-width: 380px;
+}
+
+/* Form Panel */
+.auth-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.form-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #1E293B;
+}
+
+.subtitle {
+  color: #64748B;
+  margin-bottom: 2.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #4B5563;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: #F8FAF9;
+  font-size: 0.95rem;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #2563EB;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
 
 .btn-primary {
   width: 100%;
-  background: var(--p-500);
+  background: #2563EB;
   color: white;
-  margin-top: 1rem;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1.5rem;
 }
 
-.err { color: var(--danger); font-size: 0.8rem; margin-top: 4px; display: block; }
+.btn-primary:hover:not(:disabled) {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.err {
+  color: #EF4444;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
 
 .alert-error {
-  background: #fef2f2;
-  color: var(--danger);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
+  background: #FEF2F2;
+  color: #EF4444;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
   font-size: 0.9rem;
+  border: 1px solid #FEE2E2;
 }
+
+.footer-text {
+  margin-top: 2rem;
+  text-align: center;
+  color: #64748B;
+  font-size: 0.95rem;
+}
+
+.footer-text a {
+  color: #2563EB;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-  .auth-side-image { display: none; }
-  .auth-wrapper { background: transparent; box-shadow: none; }
+  .auth-side-panel { display: none; }
+  .auth-wrapper { justify-content: center; }
+  .auth-form-panel { flex: 1; max-width: 550px; }
 }
