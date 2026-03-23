@@ -18,6 +18,38 @@
           </div>
           <div class="settings-value">{{ usuari?.nom || 'Usuari' }}</div>
         </div>
+
+        <div class="settings-item">
+          <div class="settings-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div class="settings-content">
+            <span class="settings-label">Correu electrònic</span>
+          </div>
+          <div class="settings-value">{{ usuari?.correu || 'No especificat' }}</div>
+        </div>
+
+        <div class="settings-item">
+          <div class="settings-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div class="settings-content">
+            <span class="settings-label">CIF</span>
+          </div>
+          <div class="settings-value">{{ usuari?.cif || usuari?.comerc?.cif || 'No especificat' }}</div>
+        </div>
+
+        <div class="settings-item" style="cursor: pointer;" (click)="obrirEdicio()">
+          <div class="settings-icon" style="color: #3b82f6;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div class="settings-content">
+            <span class="settings-label" style="color: #3b82f6; font-weight: 600;">Modificar contrasenya</span>
+          </div>
+          <div class="settings-value">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </div>
+        </div>
       </div>
     </div>
 
