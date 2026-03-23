@@ -1,6 +1,4 @@
-/* --- CONTENIDOR I ANIMACIONS --- */
 .profile-container { 
-  animation: slideUp 0.5s ease-out; 
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
@@ -201,10 +199,6 @@
   border-color: #9CA3AF;
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 
 /* --- EDIT BUTTON --- */
 .header-top {
@@ -231,7 +225,6 @@
 
 .edit-btn:hover {
   background: #f8fafc;
-  transform: translateY(-2px);
   box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.08);
   border-color: #cbd5e1;
 }
@@ -246,7 +239,6 @@
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(4px);
   z-index: 99;
-  animation: fadeIn 0.3s ease-out;
 }
 
 .edit-banner {
@@ -260,8 +252,6 @@
   padding: 2rem 2.5rem 3rem;
   z-index: 100;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
-  transform: translateY(100%);
-  animation: slideBottomUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -270,16 +260,13 @@
 @media (min-width: 768px) {
   .edit-banner {
     position: fixed;
-    bottom: auto;
     top: 50%;
     left: 50%;
     width: 100%;
     max-width: 500px;
     border-radius: 24px;
     padding: 2.5rem;
-    transform: translate(-50%, -50%) scale(0.95);
-    opacity: 0;
-    animation: popInModal 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -381,7 +368,6 @@
 
 .btn-save:hover:not(:disabled) {
   background: #000000;
-  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -390,21 +376,6 @@
   cursor: not-allowed;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideBottomUp {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
-}
-
-@keyframes popInModal {
-  from { transform: translate(-50%, -50%) scale(0.95); opacity: 0; }
-  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
 
 @media (max-width: 768px) {
   .profile-settings-wrapper {
