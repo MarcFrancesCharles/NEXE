@@ -115,14 +115,14 @@ input, select {
 
 input:focus, select:focus {
   outline: none;
-  border-color: #2563EB;
+  border-color: #10B981;
   background: #FFFFFF;
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
 .btn-primary {
   width: 100%;
-  background: #2563EB;
+  background: #10B981;
   color: white;
   padding: 0.9rem;
   border: none;
@@ -135,7 +135,7 @@ input:focus, select:focus {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #1D4ED8;
+  background: #059669;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -170,7 +170,7 @@ input:focus, select:focus {
 }
 
 .footer-text a {
-  color: #2563EB;
+  color: #10B981;
   text-decoration: none;
   font-weight: 600;
 }
