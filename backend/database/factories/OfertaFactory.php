@@ -17,7 +17,11 @@ class OfertaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'titol' => $this->faker->sentence(3),
+            'descripcio' => $this->faker->paragraph(),
+            'cost_punts' => $this->faker->numberBetween(10, 500),
+            'estat' => $this->faker->boolean(80), // 80% chances of being active
+            'data_fi' => $this->faker->optional(0.7)->dateTimeBetween('now', '+1 year'),
         ];
     }
 }

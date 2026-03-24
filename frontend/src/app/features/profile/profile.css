@@ -63,6 +63,26 @@
   background: #E5E7EB;
 }
 
+.settings-item.clickable {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.settings-item.clickable:hover {
+  background-color: #f3f4f6;
+}
+
+.settings-edit-icon {
+  margin-left: 1rem;
+  color: #9ca3af;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.settings-item.clickable:hover .settings-edit-icon {
+  opacity: 1;
+}
+
 .settings-item.input-item {
   align-items: flex-start;
 }
@@ -249,7 +269,7 @@
   background: #ffffff;
   border-top-left-radius: 32px;
   border-top-right-radius: 32px;
-  padding: 2rem 2.5rem 3rem;
+  padding: 2rem 2.5rem 2rem;
   z-index: 100;
   box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
   max-height: 90vh;
@@ -262,10 +282,11 @@
     position: fixed;
     top: 50%;
     left: 50%;
+    bottom: auto;
     width: 100%;
     max-width: 500px;
     border-radius: 24px;
-    padding: 2.5rem;
+    padding: 2rem;
     transform: translate(-50%, -50%);
   }
 }
@@ -337,7 +358,7 @@
 .edit-actions {
   display: flex;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .edit-actions button {
@@ -413,13 +434,13 @@
   }
 
   .edit-banner { 
-    padding: 1.5rem 1.5rem 2.5rem; 
+    padding: 1.5rem 1.5rem 2rem; 
     border-top-left-radius: 24px; 
     border-top-right-radius: 24px; 
   }
   
   .edit-actions { 
     flex-direction: column; 
-    margin-top: 1.5rem;
+    margin-top: 1.2rem;
   }
 }

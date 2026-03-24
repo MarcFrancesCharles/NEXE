@@ -17,7 +17,9 @@ class TiquetValidatFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'codi_qr' => $this->faker->unique()->sha256(),
+            'import_compra' => $this->faker->randomFloat(2, 5, 200),
+            'data_emissio' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];
     }
 }

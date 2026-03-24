@@ -9,7 +9,7 @@
     <div class="settings-section">
       <div class="settings-section-title">Compte</div>
       <div class="settings-card">
-        <div class="settings-item">
+        <div class="settings-item clickable" (click)="obrirEdicio()">
           <div class="settings-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           </div>
@@ -17,9 +17,12 @@
             <span class="settings-label">Nom</span>
           </div>
           <div class="settings-value">{{ usuari?.nom || 'Usuari' }}</div>
+          <div class="settings-edit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </div>
         </div>
 
-        <div class="settings-item">
+        <div class="settings-item clickable" (click)="obrirEdicio()">
           <div class="settings-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </div>
@@ -27,19 +30,14 @@
             <span class="settings-label">Correu electrònic</span>
           </div>
           <div class="settings-value">{{ usuari?.correu || 'No especificat' }}</div>
+          <div class="settings-edit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </div>
         </div>
 
-        <div class="settings-item">
-          <div class="settings-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </div>
-          <div class="settings-content">
-            <span class="settings-label">CIF</span>
-          </div>
-          <div class="settings-value">{{ usuari?.cif || usuari?.comerc?.cif || 'No especificat' }}</div>
-        </div>
 
-        <div class="settings-item" style="cursor: pointer;" (click)="obrirEdicio()">
+
+        <div class="settings-item clickable" (click)="obrirEdicio()">
           <div class="settings-icon" style="color: #3b82f6;">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
@@ -113,9 +111,7 @@
       </div>
     </div>
 
-    <div class="settings-actions-bottom">
-      <button class="btn-outline-pill" (click)="obrirEdicio()">Editar perfil</button>
-    </div>
+
   </div>
 
   <!-- Bànner Edició Perfil Overlay -->

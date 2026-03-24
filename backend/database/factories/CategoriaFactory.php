@@ -17,7 +17,9 @@ class CategoriaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nom_cat' => $this->faker->unique()->randomElement([
+                'Restauració', 'Moda', 'Alimentació', 'Electrònica', 'Llar', 'Esports', 'Salut', 'Oci', 'Serveis', 'Altres'
+            ]),
         ];
     }
 }
