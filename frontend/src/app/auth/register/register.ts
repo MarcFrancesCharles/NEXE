@@ -22,7 +22,6 @@ export class Register implements OnInit {
   categoriesPare: any[] = [];
   subcategoriesActives: any[] = [];
 
-  // Variables pel cercador d'adreces tipus Google Maps
   adrecaSubject = new Subject<string>();
   adrecesSugerides: any[] = [];
   buscantAdreca = false;
@@ -33,7 +32,6 @@ export class Register implements OnInit {
   private http = inject(HttpClient);
 
   constructor() {
-    // Regex professional per DNI / NIE / CIF
     const nifRegex = /^[0-9A-Z][0-9]{7}[0-9A-Z]$/i;
 
     this.regForm = this.fb.group({
@@ -42,14 +40,13 @@ export class Register implements OnInit {
       contrasenya: ['', [Validators.required, Validators.minLength(8)]],
       rol: ['ESTANDARD', [Validators.required]],
       
-      // Camps del comerç
       id_sector: [''], 
       id_categoria: [''],
       cif: ['', [Validators.pattern(nifRegex)]], 
-      direccio: [''] 
+      direccio: [''],
+      coord_gps: [''] // <-- AFEGIM CAMP PER LES COORDENADES
     });
 
-    // Validacions dinàmiques
     this.regForm.get('rol')?.valueChanges.subscribe(rol => {
       const secCtrl = this.regForm.get('id_sector');
       const catCtrl = this.regForm.get('id_categoria');
@@ -73,13 +70,10 @@ export class Register implements OnInit {
       dirCtrl?.updateValueAndValidity();
     });
 
-    // Detectar canvi de Sector per mostrar les Especialitats
     this.regForm.get('id_sector')?.valueChanges.subscribe(pareId => {
-      console.log('Sector seleccionat:', pareId);
-      // Usem == i no === per si el pareId ve com a string del HTML
       const pareSeleccionat = this.categoriesPare.find(c => c.id_categoria == pareId);
       this.subcategoriesActives = pareSeleccionat ? pareSeleccionat.subcategories : [];
-      this.regForm.get('id_categoria')?.setValue(''); // Resetejem especialitat
+      this.regForm.get('id_categoria')?.setValue('');
     });
   }
 
@@ -90,17 +84,11 @@ export class Register implements OnInit {
 
   carregarCategories() {
     this.http.get<any[]>('http://localhost:8000/api/categories').subscribe({
-      next: (data) => {
-        console.log('Categories carregades del backend:', data);
-        this.categoriesPare = data;
-      },
-      error: (err) => {
-        console.error('ERROR: No s\'han pogut carregar les categories.', err);
-      }
+      next: (data) => this.categoriesPare = data,
+      error: (err) => console.error(err)
     });
   }
 
-  // --- MÀGIA DE L'AUTOCOMPLETAR ADRECES ---
   configurarAutocompletarAdreca() {
     this.adrecaSubject.pipe(
       debounceTime(400),
@@ -125,15 +113,17 @@ export class Register implements OnInit {
   }
 
   seleccionarAdreca(adreca: any) {
-    // Ens quedem només amb el carrer sense tanta palla
     const nomNet = adreca.display_name.split(', Lleida')[0] + ', Lleida';
     this.regForm.get('direccio')?.setValue(nomNet);
+    
+    // GUARDA LES COORDENADES AL FORMULARI D'AMAGATOTIS!
+    this.regForm.get('coord_gps')?.setValue(`${adreca.lat},${adreca.lon}`);
+    
     this.adrecesSugerides = []; 
   }
 
   enviar() {
     if (this.regForm.invalid) {
-      // Marquem tots els camps com a tocats perquè surtin els errors en vermell
       this.regForm.markAllAsTouched();
       return;
     }
@@ -141,7 +131,6 @@ export class Register implements OnInit {
     this.loading = true;
     this.errorMsg = '';
 
-    // Eliminem id_sector perquè a la BD només guardem id_categoria (l'especialitat)
     const dadesEnviament = { ...this.regForm.value };
     delete dadesEnviament.id_sector;
 
@@ -152,7 +141,7 @@ export class Register implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.errorMsg = err.error?.message || 'Error en el registre. Revisa les dades.';
+        this.errorMsg = err.error?.message || 'Error en el registre.';
       }
     });
   }
