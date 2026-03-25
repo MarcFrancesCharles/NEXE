@@ -14,7 +14,6 @@ use App\Http\Controllers\Api\V1\CategoriaController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/comerces', [ComercController::class, 'index']); // Llistar comerços
-Route::get('/categories', [ComercController::class, 'categories']); // Llistar categories
 Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes actives
 Route::get('/categories', [CategoriaController::class, 'index']); //Llistar categories amb subcategories
 
