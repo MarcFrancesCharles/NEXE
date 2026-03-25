@@ -1,5 +1,4 @@
 <div class="auth-wrapper">
-  <!-- Side Panel (Matches Sidebar) -->
   <aside class="auth-side-panel">
     <div class="brand-container">
       <div class="logo-icon">N</div>
@@ -11,7 +10,6 @@
     </div>
   </aside>
 
-  <!-- Register Form Panel -->
   <main class="auth-form-panel">
     <div class="form-container">
       <h2>Crea el teu compte</h2>
@@ -38,27 +36,61 @@
 
         <div class="form-group">
           <label>Vull registrar-me com a:</label>
-          <select formControlName="rol">
+          <select formControlName="rol" class="form-control">
             <option value="ESTANDARD">Usuari / Client</option>
             <option value="COMERC">Comerç / Botiga</option>
             <option value="ADMIN">Administrador</option>
           </select>
         </div>
+
         @if (regForm.get('rol')?.value === 'COMERC') {
           <div class="form-row">
+            
             <div class="form-group">
-              <label>Categoria</label>
-              <select formControlName="id_categoria">
-                <option value="">Selecciona...</option>
-                @for (cat of categories; track cat.id_categoria) {
-                  <option [value]="cat.id_categoria">{{ cat.nom_cat }}</option>
+              <label>Sector d'activitat</label>
+              <select formControlName="id_sector" class="form-control">
+                <option value="">Selecciona el sector...</option>
+                @for (cat of categoriesPare; track cat.id_categoria) {
+                  <option [value]="cat.id_categoria">{{ cat.icona }} {{ cat.nom_cat }}</option>
                 }
               </select>
             </div>
 
             <div class="form-group">
-              <label>CIF</label>
-              <input type="text" formControlName="cif" placeholder="Ex: B12345678">
+              <label>Especialitat</label>
+              <select formControlName="id_categoria" class="form-control" [disabled]="subcategoriesActives.length === 0">
+                <option value="">Selecciona l'especialitat...</option>
+                @for (sub of subcategoriesActives; track sub.id_categoria) {
+                  <option [value]="sub.id_categoria">{{ sub.nom_cat }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>CIF / NIF</label>
+              <input type="text" formControlName="cif" placeholder="Ex: B12345678" [class.input-error]="regForm.get('cif')?.invalid && regForm.get('cif')?.touched">
+              @if (regForm.get('cif')?.hasError('pattern') && regForm.get('cif')?.touched) {
+                <span style="color: #EF4444; font-size: 0.8rem; margin-top: 4px; display: block;">Format de CIF/NIF invàlid (Ex: B12345678)</span>
+              }
+            </div>
+
+            <div class="form-group" style="position: relative;">
+              <label>Adreça del comerç</label>
+              <input type="text" formControlName="direccio" (input)="buscarAdreca($event)" placeholder="Escriu el carrer..." autocomplete="off">
+              
+              @if (buscantAdreca) {
+                <span style="position: absolute; right: 10px; top: 38px; font-size: 0.8rem; color: #64748B;">Buscant...</span>
+              }
+
+              @if (adrecesSugerides.length > 0) {
+                <ul class="address-suggestions">
+                  @for (addr of adrecesSugerides; track addr.place_id) {
+                    <li (click)="seleccionarAdreca(addr)">📍 {{ addr.display_name.split(', Lleida')[0] }}</li>
+                  }
+                </ul>
+              }
             </div>
           </div>
         }
@@ -67,7 +99,7 @@
           <div class="alert-error">{{ errorMsg }}</div>
         }
 
-        <button type="submit" class="btn-primary" [disabled]="regForm.invalid || loading">
+        <button type="submit" class="btn-primary" [disabled]="loading">
           {{ loading ? 'Creant compte...' : 'Registrar-me ara' }}
         </button>
       </form>
