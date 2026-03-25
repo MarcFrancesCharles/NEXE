@@ -10,62 +10,59 @@ use App\Models\Comerc;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\RegisterUserRequest;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterUserRequest $request)
     {
-        $regles = [
-            'nom' => 'required|string|max:100',
-            'correu' => 'required|email|unique:usuaris,correu',
-            'contrasenya' => 'required|min:8',
-            'rol' => ['required', Rule::in(['ESTANDARD', 'COMERC', 'ADMIN'])],
-        ];
+        // Ja no hi ha $request->validate() aquí! Tot està al RegisterUserRequest.
 
-        // Afegim la validació per adreça i coordenades
-        if ($request->rol === 'COMERC') {
-            $regles = array_merge($regles, [
-                'id_categoria' => 'required|exists:categorias,id_categoria',
-                'cif' => 'required|string|max:20',
-                'direccio' => 'required|string|max:255',
-                'coord_gps' => 'nullable|string|max:255', // <-- AFEGIT
+        try {
+            DB::beginTransaction();
+
+            $usuari = Usuari::create([
+                'nom' => $request->nom,
+                'correu' => $request->correu,
+                'contrasenya' => Hash::make($request->contrasenya), 
+                'rol' => $request->rol,
+                'estat' => 'ACTIU',
             ]);
-        }
 
-        $request->validate($regles);
-
-        $usuari = Usuari::create([
-            'nom' => $request->nom,
-            'correu' => $request->correu,
-            'contrasenya' => Hash::make($request->contrasenya), 
-            'rol' => $request->rol,
-            'estat' => 'ACTIU',
-        ]);
-
-        Perfil::create([
-            'id_usuari' => $usuari->id_usuari,
-            'punts_totals' => 0,
-        ]);
-
-        // Guardem també les coordenades a la base de dades
-        if ($usuari->rol === 'COMERC') {
-            Comerc::create([
+            Perfil::create([
                 'id_usuari' => $usuari->id_usuari,
-                'id_categoria' => $request->id_categoria,
-                'nom_comercial' => $usuari->nom,
-                'cif' => $request->cif,
-                'direccio' => $request->direccio,
-                'coord_gps' => $request->coord_gps, // <-- AFEGIT
+                'punts_totals' => 0,
             ]);
+
+            if ($usuari->rol === 'COMERC') {
+                Comerc::create([
+                    'id_usuari' => $usuari->id_usuari,
+                    'id_categoria' => $request->id_categoria,
+                    'nom_comercial' => $usuari->nom,
+                    'cif' => $request->cif,
+                    'direccio' => $request->direccio,
+                    'coord_gps' => $request->coord_gps,
+                ]);
+            }
+
+            DB::commit();
+
+            $token = $usuari->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'missatge' => 'Usuari registrat correctament',
+                'usuari' => $usuari,
+                'token' => $token
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'missatge' => 'S\'ha produït un error al registrar l\'usuari',
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        $token = $usuari->createToken('auth_token')->plainTextToken;
-
-        return response()->json([
-            'missatge' => 'Usuari registrat correctament',
-            'usuari' => $usuari,
-            'token' => $token
-        ], 201);
     }
 
     public function login(Request $request)

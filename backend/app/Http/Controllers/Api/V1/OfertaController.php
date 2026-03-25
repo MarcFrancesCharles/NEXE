@@ -6,19 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Oferta;
 use App\Models\Comerc;
+use App\Http\Requests\StoreOfertaRequest;
 
 class OfertaController extends Controller
 {
     // Funció per crear una nova recompensa (Només COMERÇOS)
-    public function crearOferta(Request $request)
+    public function crearOferta(StoreOfertaRequest $request)
     {
-        // 1. Hem afegit la descripció i la data_fi a la validació
-        $request->validate([
-            'titol' => 'required|string|max:100',
-            'cost_punts' => 'required|integer|min:1',
-            'descripcio' => 'nullable|string', 
-            'data_fi' => 'nullable|date',      
-        ]);
+        // Hem eliminat tot el bloc de $request->validate() !!!
 
         // Busquem la botiga física que gestiona aquest usuari logat
         $comerc = Comerc::where('id_usuari', $request->user()->id_usuari)->first();
@@ -31,9 +26,9 @@ class OfertaController extends Controller
         $oferta = Oferta::create([
             'id_comerc' => $comerc->id_comerc,
             'titol' => $request->titol,
-            'descripcio' => $request->descripcio, // NOU
+            'descripcio' => $request->descripcio,
             'cost_punts' => $request->cost_punts,
-            'data_fi' => $request->data_fi,       // NOU
+            'data_fi' => $request->data_fi,       
             'estat' => 1 // 1 = Activa per defecte
         ]);
 
@@ -63,22 +58,17 @@ class OfertaController extends Controller
     {
         $userId = $request->user()->id_usuari;
         $comerc = Comerc::where('id_usuari', $userId)->first();
-        
-        // Bypass per l'ADMIN (veure les ofertes de la primera botiga si no en té cap)
-        if (!$comerc && $request->user()->rol === 'ADMIN') {
-            $comerc = Comerc::first();
-        }
+
+        // Hem eliminat l'assignació de Comerc::first() a l'ADMIN!
 
         if (!$comerc) {
-            return response()->json(['missatge' => 'No tens cap comerç associat.'], 404);
+            return response()->json(['missatge' => 'No tens cap comerç associat.'], 403);
         }
 
-        // 3. Busquem TOTES les ofertes d'aquest comerç, ordenades per data de creació
         $ofertes = Oferta::where('id_comerc', $comerc->id_comerc)
                          ->orderBy('created_at', 'desc')
                          ->get();
 
-        // 4. Les retornem empaquetades per a l'Angular
         return response()->json($ofertes, 200);
     }
 
@@ -112,42 +102,43 @@ class OfertaController extends Controller
 
     // Funció per modificar una oferta existent
     public function modificarOferta(Request $request, $id)
-        {
-            $userId = $request->user()->id_usuari;
-            $comerc = Comerc::where('id_usuari', $userId)->first();
-
-            if (!$comerc && $request->user()->rol === 'ADMIN') {
-                $comerc = Comerc::first();
-            }
-
+    {
+        $user = $request->user();
+        
+        // Si és Admin, pot editar l'oferta que vulgui
+        if ($user->rol === 'ADMIN') {
+            $oferta = Oferta::findOrFail($id);
+        } else {
+            // Si és Comerç, només pot editar les SEVES ofertes
+            $comerc = Comerc::where('id_usuari', $user->id_usuari)->first();
             if (!$comerc) return response()->json(['missatge' => 'No autoritzat'], 403);
-
+            
             $oferta = Oferta::where('id_oferta', $id)->where('id_comerc', $comerc->id_comerc)->first();
-            if (!$oferta) return response()->json(['missatge' => 'Oferta no trobada'], 404);
-
-            $request->validate([
-                'titol' => 'required|string|max:100',
-                'cost_punts' => 'required|integer|min:1',
-                'descripcio' => 'nullable|string',
-                'data_fi' => 'nullable|date',
-                'imatge' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048' 
-            ]);
-
-            $dadesActualitzar = [
-                'titol' => $request->titol,
-                'descripcio' => $request->descripcio,
-                'cost_punts' => $request->cost_punts,
-                'data_fi' => $request->data_fi,
-            ];
-
-            // SI VE UNA IMATGE: Es crea la carpeta 'ofertas' i es guarda la foto
-            if ($request->hasFile('imatge')) {
-                $ruta = $request->file('imatge')->store('ofertas', 'public');
-                $dadesActualitzar['imatge'] = $ruta;
-            }
-
-            $oferta->update($dadesActualitzar);
-
-            return response()->json(['missatge' => 'Oferta actualitzada!', 'oferta' => $oferta], 200);
+            if (!$oferta) return response()->json(['missatge' => 'Oferta no trobada o no et pertany'], 404);
         }
+
+        $request->validate([
+            'titol' => 'required|string|max:100',
+            'cost_punts' => 'required|integer|min:1',
+            'descripcio' => 'nullable|string',
+            'data_fi' => 'nullable|date',
+            'imatge' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048' 
+        ]);
+
+        $dadesActualitzar = [
+            'titol' => $request->titol,
+            'descripcio' => $request->descripcio,
+            'cost_punts' => $request->cost_punts,
+            'data_fi' => $request->data_fi,
+        ];
+
+        if ($request->hasFile('imatge')) {
+            $ruta = $request->file('imatge')->store('ofertas', 'public');
+            $dadesActualitzar['imatge'] = $ruta;
+        }
+
+        $oferta->update($dadesActualitzar);
+
+        return response()->json(['missatge' => 'Oferta actualitzada!', 'oferta' => $oferta], 200);
+    }
 }
