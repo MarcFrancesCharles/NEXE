@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('comercs', function (Blueprint $table) {
-            $table->string('imatge_url', 500)->nullable()->after('coord_gps');
+            $table->string('imatge_url', 500)->nullable()->after('longitud');
         });
     }
 

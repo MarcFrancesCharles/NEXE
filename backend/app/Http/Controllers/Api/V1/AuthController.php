@@ -42,7 +42,8 @@ class AuthController extends Controller
                     'nom_comercial' => $usuari->nom,
                     'cif' => $request->cif,
                     'direccio' => $request->direccio,
-                    'coord_gps' => $request->coord_gps,
+                    'latitud' => $request->latitud,    
+                    'longitud' => $request->longitud,  
                 ]);
             }
 

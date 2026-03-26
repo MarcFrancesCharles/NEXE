@@ -18,7 +18,8 @@ class Comerc extends Model
         'nom_comercial',
         'cif',
         'direccio',
-        'coord_gps',
+        'latitud',    
+        'longitud',
         'imatge_url',
     ];
 

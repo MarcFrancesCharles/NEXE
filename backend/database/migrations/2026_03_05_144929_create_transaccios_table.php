@@ -21,10 +21,10 @@ return new class extends Migration
                 $table->timestamps();
 
                 // Definicions de les Claus Foranes
-                $table->foreign('id_usuari')->references('id_usuari')->on('usuaris');
-                $table->foreign('id_comerc')->references('id_comerc')->on('comercs');
-                $table->foreign('id_oferta')->references('id_oferta')->on('ofertas');
-                $table->foreign('id_tiquet')->references('id_tiquet')->on('tiquet_validats');
+                $table->foreign('id_usuari')->references('id_usuari')->on('usuaris')->onDelete('cascade');
+                $table->foreign('id_comerc')->references('id_comerc')->on('comercs')->onDelete('cascade');
+                $table->foreign('id_oferta')->references('id_oferta')->on('ofertas')->onDelete('cascade');
+                $table->foreign('id_tiquet')->references('id_tiquet')->on('tiquet_validats')->onDelete('cascade');
             });
     }
 

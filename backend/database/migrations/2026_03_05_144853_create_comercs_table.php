@@ -15,12 +15,13 @@ return new class extends Migration
             $table->unsignedBigInteger('id_categoria'); // FK, NN
             $table->string('nom_comercial', 100); // NN
             $table->string('cif', 20)->unique(); // NN, Unique
-            $table->string('coord_gps', 50)->nullable(); // format: "latitud,longitud"
+            $table->decimal('latitud', 10, 8)->nullable();
+            $table->decimal('longitud', 11, 8)->nullable();// format: "latitud,longitud"
             $table->timestamps();
 
             //Definicións de les claus foranies 
-            $table->foreign('id_usuari')->references('id_usuari')->on('usuaris');
-            $table->foreign('id_categoria')->references('id_categoria')->on('categorias');
+            $table->foreign('id_usuari')->references('id_usuari')->on('usuaris')->onDelete('cascade');
+            $table->foreign('id_categoria')->references('id_categoria')->on('categorias')->onDelete('cascade');
         });
     }
 

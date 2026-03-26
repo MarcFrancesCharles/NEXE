@@ -44,7 +44,8 @@ export class Register implements OnInit {
       id_categoria: [''],
       cif: ['', [Validators.pattern(nifRegex)]], 
       direccio: [''],
-      coord_gps: [''] // <-- AFEGIM CAMP PER LES COORDENADES
+      latitud: [null],  
+      longitud: [null]
     });
 
     this.regForm.get('rol')?.valueChanges.subscribe(rol => {
@@ -116,8 +117,9 @@ export class Register implements OnInit {
     const nomNet = adreca.display_name.split(', Lleida')[0] + ', Lleida';
     this.regForm.get('direccio')?.setValue(nomNet);
     
-    // GUARDA LES COORDENADES AL FORMULARI D'AMAGATOTIS!
-    this.regForm.get('coord_gps')?.setValue(`${adreca.lat},${adreca.lon}`);
+    // GUARDA LES CORDENADES AL FORMULARI D'AMAGATOTIS (Separades per a la BD!)
+    this.regForm.get('latitud')?.setValue(parseFloat(adreca.lat));
+    this.regForm.get('longitud')?.setValue(parseFloat(adreca.lon));
     
     this.adrecesSugerides = []; 
   }

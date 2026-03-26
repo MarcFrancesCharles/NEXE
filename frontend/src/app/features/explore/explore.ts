@@ -1,9 +1,8 @@
-import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
-import * as L from 'leaflet';
 
 @Component({
   selector: 'app-explore',
@@ -14,6 +13,8 @@ import * as L from 'leaflet';
 })
 export class Explore implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
+  // Injectem el PLATFORM_ID per saber si som al navegador o al servidor
+  private platformId = inject(PLATFORM_ID); 
 
   comerces: any[] = [];
   filteredComerces: any[] = [];
@@ -27,15 +28,11 @@ export class Explore implements OnInit, AfterViewInit {
   subcategoriaSeleccionada = '';
 
   map: any;
-  markers: L.Marker[] = [];
+  markers: any[] = [];
+  customIcon: any;
   
-  customIcon = L.icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34]
-  });
+  // Guardarem la llibreria de leaflet aquí un cop carregada
+  private L: any; 
 
   ngOnInit() {
     this.carregarCategories();
@@ -43,13 +40,28 @@ export class Explore implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.initMap();
+    // Només executem el mapa si estem 100% segurs que som al navegador
+    if (isPlatformBrowser(this.platformId)) {
+      this.initMap();
+    }
   }
 
-  initMap() {
-    this.map = L.map('map').setView([41.6167, 0.6222], 14);
+  // Fem la funció asíncrona per poder fer un import() modern
+  async initMap() {
+    // Importació dinàmica nativa (Això no peta amb Vite/esbuild!)
+    this.L = await import('leaflet');
+
+    this.customIcon = this.L.icon({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34]
+    });
+
+    this.map = this.L.map('map').setView([41.6167, 0.6222], 14);
     
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(this.map);
 
@@ -63,8 +75,9 @@ export class Explore implements OnInit, AfterViewInit {
   }
 
   carregarCategories() {
-    this.http.get<any[]>('http://localhost:8000/api/categories').subscribe(data => {
-      this.categoriesPare = data;
+    this.http.get<any[]>('http://localhost:8000/api/categories').subscribe({
+      next: (data) => this.categoriesPare = data,
+      error: (err) => console.error('Error carregant categories', err)
     });
   }
 
@@ -138,32 +151,30 @@ export class Explore implements OnInit, AfterViewInit {
     this.updateMapMarkers(result);
   }
 
-  // NOVA FUNCIÓ INSTANTÀNIA I A PROVA D'ERRORS
   updateMapMarkers(comerces: any[]) {
-    if (!this.map) return;
-    
+    // Ens assegurem que el mapa i Leaflet estiguin carregats abans de posar xinxetes
+    if (!this.map || !this.L) return;
+
     this.markers.forEach(m => this.map.removeLayer(m));
     this.markers = [];
 
     comerces.forEach(c => {
-      let lat = null;
-      let lng = null;
+      let finalLat = null;
+      let finalLng = null;
 
       // 1. Si té coordenades reals (guardades al nou registre)
-      if (c.coord_gps) {
-        const parts = c.coord_gps.split(',');
-        lat = parseFloat(parts[0]);
-        lng = parseFloat(parts[1]);
+      if (c.latitud !== null && c.longitud !== null && c.latitud !== undefined) {
+        finalLat = c.latitud;
+        finalLng = c.longitud;
       } 
-      // 2. Fallback per a botigues antigues sense coordenades!
+      // 2. Fallback per a botigues antigues o de prova sense coordenades
       else {
-        // Assignem una ubicació aleatòria a Lleida perquè es vegin
-        lat = 41.6167 + (Math.random() - 0.5) * 0.03;
-        lng = 0.6222 + (Math.random() - 0.5) * 0.03;
+        finalLat = 41.6167 + (Math.random() - 0.5) * 0.03;
+        finalLng = 0.6222 + (Math.random() - 0.5) * 0.03;
       }
 
-      if (lat && lng) {
-        const marker = L.marker([lat, lng], { icon: this.customIcon })
+      if (finalLat && finalLng) {
+        const marker = this.L.marker([finalLat, finalLng], { icon: this.customIcon })
           .bindPopup(`
             <div style="text-align: center;">
               <b>${c.nom_comercial}</b><br>

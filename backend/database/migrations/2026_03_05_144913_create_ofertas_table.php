@@ -18,7 +18,7 @@ return new class extends Migration
                 $table->timestamps();
 
                 // Definició de la Clau Forana
-                $table->foreign('id_comerc')->references('id_comerc')->on('comercs'); 
+                $table->foreign('id_comerc')->references('id_comerc')->on('comercs')->onDelete('cascade');
             });
     }
 
