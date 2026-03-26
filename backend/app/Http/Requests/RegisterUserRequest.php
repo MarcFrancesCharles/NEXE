@@ -27,7 +27,8 @@ class RegisterUserRequest extends FormRequest
                 'id_categoria' => 'required|exists:categorias,id_categoria',
                 'cif' => 'required|string|max:20',
                 'direccio' => 'required|string|max:255',
-                'coord_gps' => 'nullable|string|max:255',
+                'latitud' => 'nullable|numeric|between:-90,90',
+                'longitud' => 'nullable|numeric|between:-180,180',
             ]);
         }
 

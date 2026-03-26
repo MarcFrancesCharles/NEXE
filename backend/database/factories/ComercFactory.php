@@ -12,7 +12,8 @@ class ComercFactory extends Factory
             // Generem dades falses realistes per als nostres comerços de prova
             'nom_comercial' => fake()->company(),
             'cif' => fake()->unique()->bothify('B########'), // Format de CIF espanyol bàsic
-            'coord_gps' => fake()->latitude() . ', ' . fake()->longitude(),
+            'latitud' => $this->faker->latitude(),
+            'longitud' => $this->faker->longitude(),
         ];
     }
 }

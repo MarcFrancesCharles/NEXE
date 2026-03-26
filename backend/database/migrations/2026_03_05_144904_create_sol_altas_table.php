@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
 
             //Definición de la clau Foranea
-            $table->foreign('id_usuari')->references('id_usuari')->on('usuaris');
+            $table->foreign('id_usuari')->references('id_usuari')->on('usuaris')->onDelete('cascade');
         });
     }
 
