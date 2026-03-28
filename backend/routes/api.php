@@ -16,6 +16,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/comerces', [ComercController::class, 'index']); // Llistar comerços
 Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes actives
 Route::get('/categories', [CategoriaController::class, 'index']); //Llistar categories amb subcategories
+Route::get('/comerces/{id}', [ComercController::class, 'show']);
 
 
 // --- RUTES PROTEGIDES (Amb Token de Sanctum) ---
@@ -28,21 +29,26 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::put('/perfil-meu', [AuthController::class, 'actualitzarPerfil']);
 
-    // Rutes Exclusives: ESTÀNDARD
+    // Rutes Exclusives: ESTÀNDARD (El Client)
     Route::middleware([CheckRole::class.':ESTANDARD'])->group(function () {
-        Route::post('/tiquets/escanejar', [TransaccioController::class, 'escanejarTiquet']);
-        Route::post('/ofertes/bescanviar', [TransaccioController::class, 'bescanviarOferta']);
+        // Generació de QRs xifrats per mostrar a la botiga
+        Route::get('/client/carnet-qr', [TransaccioController::class, 'generarQrCarnet']);
+        Route::post('/client/oferta-qr', [TransaccioController::class, 'generarQrOferta']);
     });
 
-    // Rutes Exclusives: COMERC
+    // Rutes Exclusives: COMERC (El Botiguer)
     Route::middleware([CheckRole::class.':COMERC'])->group(function () {
+        // Escaneig i validació
+        Route::post('/comerc/atorgar-punts', [TransaccioController::class, 'atorgarPunts']);
+        Route::post('/comerc/validar-oferta', [TransaccioController::class, 'validarBescanvi']);
+        
         Route::post('/ofertes', [OfertaController::class, 'crearOferta']);
         Route::get('/comerces/vendes', [TransaccioController::class, 'vendesComerc']);
         Route::get('/les-meves-ofertes', [OfertaController::class, 'lesMevesOfertes']);
         
         // GESTIÓ DEL PROPI COMERÇ
         Route::get('/el-meu-comerc', [ComercController::class, 'elMeuComerc']);
-        Route::post('/el-meu-comerc', [ComercController::class, 'actualitzarComerc']); // Usem POST per suportar FormData (imatges)
+        Route::post('/el-meu-comerc', [ComercController::class, 'actualitzarComerc']); 
     });
 
     // Rutes Exclusives: ADMINISTRADOR

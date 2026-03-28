@@ -46,6 +46,11 @@ export class Auth {
     return this.http.post<any>(`${this.apiUrl}/el-meu-comerc`, dades, { headers });
   }
 
+  obtenirCarnetQr(): Observable<any> {
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.obtenirToken()}` });
+    return this.http.get<any>(`${this.apiUrl}/client/carnet-qr`, { headers });
+  }
+
   logout() {
     localStorage.removeItem('nexe_token');
     localStorage.removeItem('nexe_rol');

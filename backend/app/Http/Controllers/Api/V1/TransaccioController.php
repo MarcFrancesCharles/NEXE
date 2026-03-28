@@ -4,105 +4,169 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\TiquetValidat;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+use Carbon\Carbon;
 use App\Models\Transaccio;
 use App\Models\Perfil;
-use Illuminate\Support\Facades\DB;
+use App\Models\Comerc;
+use App\Models\Oferta;
 
 class TransaccioController extends Controller
 {
-    // Funció per a l'Usuari Estàndard: Escanejar un tiquet i guanyar punts
-    public function escanejarTiquet(Request $request)
+    // ====================================================================
+    // 🟢 FUNCIONS PEL CLIENT (ESTÀNDARD) - GENERACIÓ DE QRS
+    // ====================================================================
+
+    /**
+     * Retorna un Token Xifrat permanent amb l'ID de l'usuari (El seu "Carnet Digital")
+     */
+    public function generarQrCarnet(Request $request)
     {
-        // 1. Validem les dades que rebem de l'Angular (simulant el contingut del QR)
-        $request->validate([
-            'codi_qr' => 'required|string',
-            'id_comerc' => 'required|exists:comercs,id_comerc',
-            'import_compra' => 'required|numeric|min:0.1',
-            'data_emissio' => 'required|date',
+        $usuari = $request->user();
+        
+        // Xifrem un JSON amb l'ID de l'usuari i la paraula clau 'CARNET' per evitar que s'usi per ofertes
+        $dades = json_encode([
+            'tipus' => 'CARNET',
+            'id_usuari' => $usuari->id_usuari
         ]);
 
-        $usuari = $request->user(); // L'usuari que fa la petició (gràcies al Token)
+        $tokenQr = Crypt::encryptString($dades);
 
-        // 2. Control antifrau: Comprovem que aquest QR no existeixi ja a la base de dades [cite: 201, 204]
-        $tiquetExistent = TiquetValidat::where('codi_qr', $request->codi_qr)->first();
-        if ($tiquetExistent) {
-            return response()->json(['missatge' => 'Aquest tiquet ja ha estat validat anteriorment. Mals intent!'], 400);
-        }
+        return response()->json(['qr_token' => $tokenQr], 200);
+    }
 
-        // 3. Obrim una Transacció de BD: O es guarda tot, o no es guarda res
+    /**
+     * Retorna un Token Xifrat TEMPORAL per demanar una oferta al botiguer
+     */
+    public function generarQrOferta(Request $request)
+    {
+        $request->validate(['id_oferta' => 'required|exists:ofertas,id_oferta']);
+        
+        $usuari = $request->user();
+        
+        // Xifrem l'ID de l'usuari, l'oferta, i posem una data de caducitat (15 minuts)
+        $dades = json_encode([
+            'tipus' => 'OFERTA',
+            'id_usuari' => $usuari->id_usuari,
+            'id_oferta' => $request->id_oferta,
+            'caduca_el' => now()->addMinutes(15)->timestamp
+        ]);
+
+        $tokenQr = Crypt::encryptString($dades);
+
+        return response()->json([
+            'missatge' => 'QR d\'oferta generat. Mostra\'l al botiguer abans de 15 minuts.',
+            'qr_token' => $tokenQr,
+            'caduca_el' => now()->addMinutes(15)->toDateTimeString()
+        ], 200);
+    }
+
+    // ====================================================================
+    // 🔵 FUNCIONS PEL BOTIGUER (COMERC) - ESCANEIG I VALIDACIÓ
+    // ====================================================================
+
+    /**
+     * El botiguer escaneja el carnet del client i li suma els punts per la compra
+     */
+    public function atorgarPunts(Request $request)
+    {
+        $request->validate([
+            'qr_token' => 'required|string',
+            'import_compra' => 'required|numeric|min:0.1'
+        ]);
+
+        $comerc = Comerc::where('id_usuari', $request->user()->id_usuari)->first();
+        if (!$comerc) return response()->json(['missatge' => 'Error: No ets un comerç actiu.'], 403);
+
         try {
-            DB::beginTransaction();
+            // 1. Desxifrem el QR
+            $dadesQr = json_decode(Crypt::decryptString($request->qr_token));
 
-            // 4. Registrem el tiquet a TIQUET_VALIDAT 
-            $tiquet = TiquetValidat::create([
-                'codi_qr' => $request->codi_qr,
-                'import_compra' => $request->import_compra,
-                'data_emissio' => $request->data_emissio,
-            ]);
+            // 2. Comprovem que sigui un QR de tipus CARNET
+            if ($dadesQr->tipus !== 'CARNET') {
+                return response()->json(['missatge' => 'Error: Aquest QR no és un carnet vàlid.'], 400);
+            }
 
-            // 5. Calculem els punts. (Exemple senzill: 1 punt per cada euro gastat. Ho arrodonim a la baixa)
+            $id_client = $dadesQr->id_usuari;
             $puntsGuanyats = floor($request->import_compra);
 
-            // 6. Registrem el moviment immutable a TRANSACCIO [cite: 223, 232]
-            $transaccio = Transaccio::create([
-                'id_usuari' => $usuari->id_usuari, // Client [cite: 219]
-                'id_comerc' => $request->id_comerc, // Botiga [cite: 220]
-                'id_tiquet' => $tiquet->id_tiquet, // Enllaç amb el tiquet [cite: 222]
-                'tipus' => 'ACUMULACIO', // Tipus de moviment [cite: 223]
-                'punts_mov' => $puntsGuanyats, // Quantitat [cite: 224]
-                'data_hora' => now(), // Timestamp del moment exacte [cite: 225]
+            // 3. Executem la transacció de BD
+            DB::beginTransaction();
+
+            Transaccio::create([
+                'id_usuari' => $id_client,
+                'id_comerc' => $comerc->id_comerc,
+                'tipus' => 'ACUMULACIO',
+                'punts_mov' => $puntsGuanyats,
+                'data_hora' => now(),
             ]);
 
-            // 7. Actualitzem el saldo del PERFIL de l'usuari 
-            $perfil = Perfil::where('id_usuari', $usuari->id_usuari)->first();
+            $perfil = Perfil::where('id_usuari', $id_client)->first();
             $perfil->punts_totals += $puntsGuanyats;
             $perfil->save();
 
-            // 8. Confirmem que tot ha anat bé i tanquem la transacció
             DB::commit();
 
             return response()->json([
-                'missatge' => 'Tiquet validat amb èxit!',
-                'punts_guanyats' => $puntsGuanyats,
-                'saldo_actual' => $perfil->punts_totals
+                'missatge' => "Punts atorgats! S'han sumat $puntsGuanyats punts al client.",
+                'punts_donats' => $puntsGuanyats
             ], 200);
 
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return response()->json(['missatge' => 'Error: Codi QR invàlid o manipulat.'], 400);
         } catch (\Exception $e) {
-            // Si hi ha hagut algun error (ex: base de dades caiguda), desfem tots els canvis d'aquesta funció
-            DB::rollBack(); 
-            return response()->json(['missatge' => 'Error al processar el tiquet', 'error' => $e->getMessage()], 500);
+            DB::rollBack();
+            return response()->json(['missatge' => 'Error intern del servidor.'], 500);
         }
     }
-    // Funció per a l'Usuari Estàndard: Bescanviar punts per una oferta
-    public function bescanviarOferta(Request $request)
+
+    /**
+     * El botiguer escaneja el QR de l'oferta del client per restar-li els punts i donar-li el producte
+     */
+    public function validarBescanvi(Request $request)
     {
-        // 1. Validem que ens enviïn l'ID de l'oferta
-        $request->validate([
-            'id_oferta' => 'required|exists:ofertas,id_oferta'
-        ]);
+        $request->validate(['qr_token' => 'required|string']);
 
-        $usuari = $request->user();
-        $oferta = \App\Models\Oferta::findOrFail($request->id_oferta);
-        $perfil = \App\Models\Perfil::where('id_usuari', $usuari->id_usuari)->first();
+        $comerc = Comerc::where('id_usuari', $request->user()->id_usuari)->first();
+        if (!$comerc) return response()->json(['missatge' => 'Accés denegat.'], 403);
 
-        // 2. Comprovem si l'usuari té prou punts [cite: 357]
-        if ($perfil->punts_totals < $oferta->cost_punts) {
-            return response()->json(['missatge' => 'No tens suficients punts per aquesta oferta.'], 400);
-        }
-
-        // 3. Obrim una Transacció de BD per seguretat
         try {
+            // 1. Desxifrem el QR
+            $dadesQr = json_decode(Crypt::decryptString($request->qr_token));
+
+            // 2. Validacions de seguretat (Tipus i Caducitat)
+            if ($dadesQr->tipus !== 'OFERTA') {
+                return response()->json(['missatge' => 'Error: Has escanejat un Carnet, no una Oferta.'], 400);
+            }
+            if (now()->timestamp > $dadesQr->caduca_el) {
+                return response()->json(['missatge' => 'Error: Aquest codi QR ha caducat (Han passat més de 15 minuts).'], 400);
+            }
+
+            $id_client = $dadesQr->id_usuari;
+            $oferta = Oferta::findOrFail($dadesQr->id_oferta);
+
+            // 3. Comprovem que l'oferta pertanyi a la botiga que l'està escanejant
+            if ($oferta->id_comerc !== $comerc->id_comerc) {
+                return response()->json(['missatge' => 'Error: Aquesta oferta és d\'una altra botiga!'], 400);
+            }
+
+            $perfil = Perfil::where('id_usuari', $id_client)->first();
+
+            // 4. Comprovem si el client té prou punts al moment exacte de l'escaneig
+            if ($perfil->punts_totals < $oferta->cost_punts) {
+                return response()->json(['missatge' => 'El client no té prou punts per aquesta oferta.'], 400);
+            }
+
+            // 5. Procés segur de Base de dades
             DB::beginTransaction();
 
-            // 4. Restem els punts al perfil de l'usuari
             $perfil->punts_totals -= $oferta->cost_punts;
             $perfil->save();
 
-            // 5. Creem la transacció de tipus BESCANVI
-            $transaccio = Transaccio::create([
-                'id_usuari' => $usuari->id_usuari,
-                'id_comerc' => $oferta->id_comerc,
+            Transaccio::create([
+                'id_usuari' => $id_client,
+                'id_comerc' => $comerc->id_comerc,
                 'id_oferta' => $oferta->id_oferta,
                 'tipus' => 'BESCANVI',
                 'punts_mov' => $oferta->cost_punts,
@@ -111,31 +175,27 @@ class TransaccioController extends Controller
 
             DB::commit();
 
-            // 6. Generem un codi aleatori perquè el botiguer el validi després 
-            $codiValidacio = 'NEXE-' . strtoupper(Str::random(6));
-
             return response()->json([
-                'missatge' => 'Bescanvi realitzat amb èxit!',
-                'codi_validacio' => $codiValidacio,
-                'punts_restants' => $perfil->punts_totals
+                'missatge' => "Oferta Validada Correctament! Pots lliurar el producte/descompte.",
+                'oferta' => $oferta->titol
             ], 200);
 
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            return response()->json(['missatge' => 'Error: Codi QR invàlid o manipulat.'], 400);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['missatge' => 'Error al bescanviar', 'error' => $e->getMessage()], 500);
+            return response()->json(['missatge' => 'Error intern del servidor.'], 500);
         }
     }
 
-    // Llistar les vendes d'un comerç perquè el botiguer pugui comprovar qui ha comprat l'oferta
+    // ====================================================================
+    // 🟣 LLISTAT DE VENDES
+    // ====================================================================
     public function vendesComerc(Request $request)
     {
-        $comerc = \App\Models\Comerc::where('id_usuari', $request->user()->id_usuari)->first();
-        
-        if (!$comerc) {
-            return response()->json(['missatge' => 'No tens cap comerç actiu.'], 404);
-        }
+        $comerc = Comerc::where('id_usuari', $request->user()->id_usuari)->first();
+        if (!$comerc) return response()->json(['missatge' => 'No tens cap comerç actiu.'], 404);
 
-        // Retornem els bescanvis d'aquest comerç, incloent l'usuari que ho ha comprat i l'oferta
         $vendes = Transaccio::with(['usuari', 'oferta'])
                     ->where('id_comerc', $comerc->id_comerc)
                     ->where('tipus', 'BESCANVI')
@@ -144,5 +204,4 @@ class TransaccioController extends Controller
 
         return response()->json($vendes);
     }
-    
 }
