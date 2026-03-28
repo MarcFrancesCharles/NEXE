@@ -84,4 +84,18 @@ class ComercController extends Controller
             'comerc' => $comerc->load('categoria')
         ]);
      }
+
+     // Retorna la informació pública d'un comerç i les seves ofertes ACTIVES
+    public function show($id)
+    {
+        $comerc = Comerc::with(['ofertes' => function ($query) {
+            $query->where('estat', 1) // Només ofertes actives
+                  ->where(function ($q) {
+                      $q->whereNull('data_fi')->orWhere('data_fi', '>=', now());
+                  })
+                  ->orderBy('cost_punts', 'asc');
+        }])->findOrFail($id);
+
+        return response()->json($comerc);
+    }
 }

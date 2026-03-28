@@ -66,8 +66,9 @@
           <div class="loader">Carregant comerços locals...</div>
         } @else {
           <div class="shop-grid">
+            
             @for (comerc of filteredComerces; track comerc.id_comerc) {
-              <div class="shop-card">
+              <div class="shop-card" [routerLink]="['/shop', comerc.id_comerc]" style="cursor: pointer;" title="Visitar la botiga">
                 <div class="shop-image" [style.background-image]="'url(' + comerc.imatge + ')'">
                   <div class="category-tag">{{ comerc.categoria?.nom_cat || 'Comerç Local' }}</div>
                 </div>
@@ -86,7 +87,7 @@
                       <span class="points-icon">⭐</span>
                       <span>Acumula punts</span>
                     </div>
-                    <button class="btn-shop-action" [routerLink]="['/shop', comerc.id_comerc]" aria-label="Veure botiga">
+                    <button class="btn-shop-action" aria-label="Veure botiga">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
                   </div>

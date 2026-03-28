@@ -1,0 +1,103 @@
+@if (!carregant && comerc) {
+<div class="shop-detail-container">
+  
+  <div class="shop-hero">
+    <div class="hero-banner" [style.background-image]="comerc.imatge_url ? 'url(http://localhost:8000/storage/' + comerc.imatge_url + ')' : 'none'">
+      <div class="hero-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="shop-avatar">
+        {{ comerc.nom_comercial.charAt(0).toUpperCase() }}
+      </div>
+      <div class="shop-info">
+        <h1>{{ comerc.nom_comercial }}</h1>
+        <p class="address">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          {{ comerc.direccio || 'Adreça no disponible' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  @if (socClient) {
+  <div class="points-wallet">
+    <div class="wallet-icon">💳</div>
+    <div class="wallet-info">
+      <span class="wallet-label">El teu Saldo Actual</span>
+      <span class="wallet-balance">{{ elsMeusPunts }} Punts Nexe</span>
+    </div>
+  </div>
+  }
+
+  <div class="offers-section">
+    <h2 class="section-title">Ofertes Disponibles</h2>
+    
+    @if (ofertes.length === 0) {
+      <div class="empty-offers">
+        <p>Aquesta botiga encara no té cap oferta activa.</p>
+      </div>
+    } @else {
+      <div class="offers-grid">
+        @for (oferta of ofertes; track oferta.id_oferta) {
+          <div class="offer-card">
+            
+            <div class="offer-image" [style.background-image]="oferta.imatge ? 'url(http://localhost:8000/storage/' + oferta.imatge + ')' : 'url(https://via.placeholder.com/300x150?text=Oferta)'">
+              <div class="points-tag">{{ oferta.cost_punts }} Pts</div>
+            </div>
+            
+            <div class="offer-body">
+              <h3>{{ oferta.titol }}</h3>
+              <p class="offer-desc">{{ oferta.descripcio || 'Gaudeix d\'aquest descompte exclusiu bescanviant els teus punts Nexe.' }}</p>
+              
+              @if (oferta.data_fi) {
+                <p class="offer-expiry">⏳ Caduca el: {{ oferta.data_fi | date:'dd/MM/yyyy' }}</p>
+              }
+
+              @if (socClient) {
+                @if (elsMeusPunts >= oferta.cost_punts) {
+                  <button class="btn-redeem" (click)="generarQrBescanvi(oferta)">Bescanviar Oferta</button>
+                } @else {
+                  <button class="btn-disabled" disabled>Et falten {{ oferta.cost_punts - elsMeusPunts }} punts</button>
+                }
+              } @else {
+                <button class="btn-disabled" disabled>Inicia sessió com a client per bescanviar</button>
+              }
+            </div>
+            
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (mostrantQR) {
+    <div class="modal-overlay" (click)="tancarQR()">
+      <div class="modal-content text-center" (click)="$event.stopPropagation()">
+        
+        <div class="modal-header" style="justify-content: center; position: relative;">
+          <h3>Codi de Bescanvi</h3>
+          <button class="close-btn" (click)="tancarQR()" style="position: absolute; right: 15px;">✕</button>
+        </div>
+        
+        <div class="qr-container" style="margin: 20px 0; padding: 20px; background: white; border-radius: 15px; border: 2px solid #e5e7eb; display: inline-block;">
+          <qrcode [qrdata]="qrTokenOferta" [width]="250" [errorCorrectionLevel]="'M'"></qrcode>
+        </div>
+
+        <h4>{{ ofertaSeleccionada?.titol }}</h4>
+        <p class="text-muted" style="margin-top: 10px;">Mostra aquest QR al botiguer perquè te l'escanegi amb la seva App Nexe.</p>
+        
+        <div class="alert-inline warning" style="margin-top: 15px; font-size: 0.85em; background: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 10px; border-radius: 8px;">
+          ⚠️ <strong>Atenció:</strong> Aquest codi caduca i s'autodestrueix en 15 minuts.
+        </div>
+
+      </div>
+    </div>
+  }
+
+</div>
+} @else if (errorMissatge) {
+  <div class="alert-toast error">{{ errorMissatge }}</div>
+} @else {
+  <div class="loading-state">Carregant la botiga...</div>
+}

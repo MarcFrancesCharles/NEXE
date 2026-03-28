@@ -1,28 +1,32 @@
-import { Component as NgComponent, inject as NgInject, OnInit as NgOnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../core/services/auth';
+import { QRCodeComponent } from 'angularx-qrcode'; 
 
-@NgComponent({
+@Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, QRCodeComponent], 
   templateUrl: './profile.html',
   styleUrl: './profile.css'
 })
-export class Profile implements NgOnInit {
+export class Profile implements OnInit {
   usuari: any = null;
-  codiQR: string = '';
-  missatge: string = '';
-  tipusMissatge: 'success' | 'error' | '' = '';
+  qrTokenCarnet: string = ''; // VARIABLE PEL NOU CARNET DIGITAL
   carregant: boolean = true;
 
-  private http = NgInject(HttpClient);
-  private auth = NgInject(Auth);
+  private http = inject(HttpClient);
+  private auth = inject(Auth);
 
   ngOnInit() {
     this.obtenirDadesPerfil();
+    
+    // Si l'usuari és un client normal (ESTANDARD), demanem el seu Carnet Digital
+    if (this.auth.obtenirRol() === 'ESTANDARD') {
+      this.carregarQr();
+    }
   }
 
   // Creem els headers amb el Token per parlar amb Laravel
@@ -43,27 +47,19 @@ export class Profile implements NgOnInit {
       });
   }
 
-  validarTiquet() {
-    if (!this.codiQR) return;
-
-    this.http.post('http://localhost:8000/api/tiquets/escanejar', 
-      { codi_qr: this.codiQR }, 
-      { headers: this.getHeaders() }
-    ).subscribe({
-      next: (res: any) => {
-        this.missatge = 'Tiquet validat! Has sumat punts.';
-        this.tipusMissatge = 'success';
-        this.codiQR = '';
-        this.obtenirDadesPerfil(); // Refresquem els punts automàticament
+  // NOVA FUNCIÓ: Cridem l'API per obtenir el token xifrat
+  carregarQr() {
+    this.auth.obtenirCarnetQr().subscribe({
+      next: (res) => {
+        this.qrTokenCarnet = res.qr_token;
       },
-      error: (err) => {
-        this.missatge = err.error.missatge || 'Codi no vàlid o ja utilitzat.';
-        this.tipusMissatge = 'error';
-      }
+      error: (err) => console.error('Error carregant el carnet QR', err)
     });
   }
 
-  // Estat per editar el perfil
+  // =======================================================
+  // EDICIÓ DEL PERFIL
+  // =======================================================
   editantPerfil: boolean = false;
   editDades = {
     nom: '',
@@ -101,8 +97,8 @@ export class Profile implements NgOnInit {
         next: (res: any) => {
           this.missatgeEdit = 'Perfil actualitzat correctament';
           this.tipusMissatgeEdit = 'success';
-          this.obtenirDadesPerfil(); // Refresh user data
-          setTimeout(() => this.tancarEdicio(), 2000); // Close after 2 seconds automatically
+          this.obtenirDadesPerfil(); // Refresca les dades de l'usuari
+          setTimeout(() => this.tancarEdicio(), 2000); // Tanca després de 2 segons automàticament
         },
         error: (err) => {
           this.missatgeEdit = err.error.message || 'Error actualitzant el perfil';

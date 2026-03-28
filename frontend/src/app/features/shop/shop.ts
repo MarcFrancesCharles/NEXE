@@ -30,13 +30,18 @@ export class Shop implements OnInit {
   codiEscanejat: string | null = null;
   formatsPermesos = [BarcodeFormat.QR_CODE];
 
-  // Variables pel Modal d'Accions QR
+  // Variables pel Modal d'Accions QR (Seguretat Zero-Trust)
   mostrantAccionsQR = false;
-  usuariEscanejat: string | null = null;
+  qrTokenXifrat: string = ''; 
+  importCompra: number | null = null; // Guardarà l'import introduït pel botiguer
+  
+  // Missatges d'èxit o error a la càmera
+  missatgeCamera: string = '';
+  tipusMissatgeCamera: 'success' | 'error' | '' = '';
 
   ofertaEditantId: number | null = null;
   editForm: FormGroup;
-  imatgeSeleccionada: File | null = null; // Guardarà la foto
+  imatgeSeleccionada: File | null = null;
   
   // Variables pel Comerç
   comerc: any = null;
@@ -71,54 +76,97 @@ export class Shop implements OnInit {
     this.carregarCategories();
   }
 
-  // --- FUNCIONS DE LA CÀMERA QR ---
-
-  // Funció per obrir la càmera
-  obrirCamera() {
-    this.mostrantCamera = true;
-    this.codiEscanejat = null; // Netegem l'escaneig anterior
+  private getHeaders() {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.auth.obtenirToken()}`
+    });
   }
 
-  // Funció per tancar la càmera
+  // --- FUNCIONS DE LA CÀMERA QR ---
+
+  obrirCamera() {
+    this.mostrantCamera = true;
+    this.codiEscanejat = null;
+    this.qrTokenXifrat = '';
+    this.importCompra = null;
+    this.missatgeCamera = '';
+  }
+
   tancarCamera() {
     this.mostrantCamera = false;
   }
 
-  // Aquesta funció saltarà AUTOMÀTICAMENT quan la càmera llegeixi un QR
+  // Aquesta funció salta automàticament quan la càmera llegeix un QR
   onQREscanejat(resultat: string) {
-    console.log('Codi detectat!', resultat);
-    this.codiEscanejat = resultat;
-    this.tancarCamera(); // Tanquem la càmera
+    if (this.mostrantAccionsQR || this.qrTokenXifrat) return; // Evitem lectures repetides
+
+    this.qrTokenXifrat = resultat; // És el text encriptat que ens envia el client
+    this.tancarCamera(); 
     
-    // Obrim el modal d'accions amb l'usuari escanejat
-    this.usuariEscanejat = resultat;
+    // Obrim el modal on el botiguer tria què vol fer
     this.mostrantAccionsQR = true;
   }
 
-  // --- FUNCIONS DEL MODAL D'ACCIONS QR ---
-
   tancarAccionsQR() {
     this.mostrantAccionsQR = false;
-    this.usuariEscanejat = null;
+    this.qrTokenXifrat = '';
+    this.importCompra = null;
   }
 
+  mostrarAlertaCamera(text: string, tipus: 'success' | 'error') {
+    this.missatgeCamera = text;
+    this.tipusMissatgeCamera = tipus;
+    setTimeout(() => this.missatgeCamera = '', 4500); // Amaga l'avís passats 4 segons
+  }
+
+  // --- FUNCIONS DE SEGURETAT ZERO-TRUST (Connexió Backend) ---
+
   anarADonarPunts() {
-    alert('Has triat donar punts al client: ' + this.usuariEscanejat);
-    // Aquí hi anirà la lògica per donar punts (ex: obrir un altre modal o navegar)
-    this.tancarAccionsQR();
+    if (!this.importCompra || this.importCompra <= 0) {
+      this.mostrarAlertaCamera("Si us plau, introdueix un import vàlid per a la compra.", 'error');
+      return;
+    }
+
+    const payload = {
+      qr_token: this.qrTokenXifrat,
+      import_compra: this.importCompra
+    };
+
+    this.http.post('http://localhost:8000/api/comerc/atorgar-punts', payload, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => {
+          this.mostrarAlertaCamera(`✅ ${res.missatge}`, 'success');
+          this.tancarAccionsQR();
+        },
+        error: (err) => {
+          this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi invàlid.'}`, 'error');
+          this.tancarAccionsQR();
+        }
+      });
   }
 
   anarABescanviarOferta() {
-    alert('Has triat bescanviar oferta pel client: ' + this.usuariEscanejat);
-    // Aquí hi anirà la lògica per bescanviar l'oferta
-    this.tancarAccionsQR();
+    const payload = {
+      qr_token: this.qrTokenXifrat
+    };
+
+    this.http.post('http://localhost:8000/api/comerc/validar-oferta', payload, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => {
+          this.mostrarAlertaCamera(`✅ Oferta Validada! Lliura el producte: ${res.oferta}`, 'success');
+          this.tancarAccionsQR();
+        },
+        error: (err) => {
+          this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi d\'oferta invàlid o caducat.'}`, 'error');
+          this.tancarAccionsQR();
+        }
+      });
   }
 
   // --- FUNCIONS DE GESTIÓ D'OFERTES ---
 
   carregarLesMevesOfertes() {
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
-    this.http.get<any[]>('http://localhost:8000/api/les-meves-ofertes', { headers })
+    this.http.get<any[]>('http://localhost:8000/api/les-meves-ofertes', { headers: this.getHeaders() })
       .subscribe({
         next: (res) => { this.ofertes = res; },
         error: (err) => console.error('Error carregant les ofertes:', err)
@@ -127,8 +175,7 @@ export class Shop implements OnInit {
 
   eliminarOferta(id: number) {
     if (confirm('Estàs segur que vols eliminar aquesta oferta?')) {
-      const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
-      this.http.delete(`http://localhost:8000/api/ofertes/${id}`, { headers })
+      this.http.delete(`http://localhost:8000/api/ofertes/${id}`, { headers: this.getHeaders() })
         .subscribe({
           next: () => { this.ofertes = this.ofertes.filter(o => o.id_oferta !== id); },
           error: (err) => alert('Error eliminant l\'oferta.')
@@ -140,7 +187,7 @@ export class Shop implements OnInit {
 
   obrirModalEdicio(oferta: any) {
     this.ofertaEditantId = oferta.id_oferta;
-    this.imatgeSeleccionada = null; // Netegem si hi ha foto vella
+    this.imatgeSeleccionada = null; 
     
     this.editForm.patchValue({
       titol: oferta.titol,
@@ -152,7 +199,6 @@ export class Shop implements OnInit {
     this.mostrantModal = true;
   }
 
-  // Detecta l'arxiu quan el selecciones
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -169,10 +215,7 @@ export class Shop implements OnInit {
 
   guardarCanvis() {
     if (this.editForm.invalid || !this.ofertaEditantId) return;
-
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
     
-    // CREEM EL FORMDATA PER ENVIAR LA IMATGE
     const formData = new FormData();
     formData.append('titol', this.editForm.get('titol')?.value);
     formData.append('cost_punts', this.editForm.get('cost_punts')?.value.toString());
@@ -187,13 +230,13 @@ export class Shop implements OnInit {
       formData.append('imatge', this.imatgeSeleccionada);
     }
 
-    formData.append('_method', 'PUT'); // Truc de Laravel
+    formData.append('_method', 'PUT'); 
 
-    this.http.post(`http://localhost:8000/api/ofertes/${this.ofertaEditantId}`, formData, { headers })
+    this.http.post(`http://localhost:8000/api/ofertes/${this.ofertaEditantId}`, formData, { headers: this.getHeaders() })
       .subscribe({
         next: () => {
           this.tancarModal();
-          this.carregarLesMevesOfertes(); // Recarrega i mostra la foto
+          this.carregarLesMevesOfertes(); 
         },
         error: (err) => alert('Error en guardar els canvis')
       });
@@ -205,8 +248,7 @@ export class Shop implements OnInit {
     this.auth.getElMeuComerc().subscribe({
       next: (res) => {
         this.comerc = res;
-        // Si el modal ja estava obert o s'està obrint, punxem les dades
-        if (this.comerc) {
+        if (this.comerc && this.mostrantModalComerc) {
           this.comercForm.patchValue({
             nom_comercial: this.comerc.nom_comercial,
             id_categoria: this.comerc.id_categoria,
@@ -226,9 +268,6 @@ export class Shop implements OnInit {
   }
 
   obrirModalComerc() {
-    console.log('Obrint modal. Dades actuals:', this.comerc);
-    
-    // Si tenim dades, les posem ja
     if (this.comerc) {
       this.comercForm.patchValue({
         nom_comercial: this.comerc.nom_comercial,
@@ -236,10 +275,8 @@ export class Shop implements OnInit {
         cif: this.comerc.cif
       });
     } else {
-      // Si no en tenim, les demanem (el subscribe de dalt ja les posarà)
       this.carregarElMeuComerc();
     }
-    
     this.mostrantModalComerc = true;
   }
 
@@ -253,8 +290,6 @@ export class Shop implements OnInit {
     const file: File = event.target.files[0];
     if (file) {
       this.imatgeComercSeleccionada = file;
-      
-      // Crear preview
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imatgeComercPreview = e.target.result;
@@ -267,8 +302,6 @@ export class Shop implements OnInit {
     if (this.comercForm.invalid) return;
 
     const formData = new FormData();
-    
-    // Només afegim si han canviat o per seguretat els actuals
     formData.append('nom_comercial', this.comercForm.get('nom_comercial')?.value);
     formData.append('id_categoria', this.comercForm.get('id_categoria')?.value);
     formData.append('cif', this.comercForm.get('cif')?.value);
@@ -285,12 +318,7 @@ export class Shop implements OnInit {
       },
       error: (err) => {
         console.error('Error actualitzant el comerç:', err);
-        if (err.error && err.error.errors) {
-          const errors = Object.values(err.error.errors).flat().join('\n');
-          alert('Error de validació:\n' + errors);
-        } else {
-          alert('Error actualitzant el comerç. Revisa la consola.');
-        }
+        alert('Error actualitzant el comerç. Revisa la consola.');
       }
     });
   }
