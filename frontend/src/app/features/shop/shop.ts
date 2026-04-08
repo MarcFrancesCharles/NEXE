@@ -58,6 +58,14 @@ export class Shop implements OnInit, OnDestroy {
   private auth = inject(Auth);
   private fb = inject(FormBuilder);
 
+  // Variables de les Estadístiques
+  estadistiques: any = {
+    punts_donats: 0,
+    ofertes_venudes: 0,
+    punts_bescanviats: 0,
+    historial_vendes: []
+  };  
+
   constructor() {
     this.editForm = this.fb.group({
       titol: ['', [Validators.required]],
@@ -77,6 +85,7 @@ export class Shop implements OnInit, OnDestroy {
     this.carregarLesMevesOfertes();
     this.carregarElMeuComerc();
     this.carregarCategories();
+    this.carregarEstadistiques();
   }
 
   ngOnDestroy() {
@@ -333,4 +342,16 @@ export class Shop implements OnInit, OnDestroy {
       }
     });
   }
+    // --- FUNCIONS D'ESTADÍSTIQUES ---
+  carregarEstadistiques() {
+    this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res) => {
+          this.estadistiques = res;
+        },
+        error: (err) => console.error('Error carregant les estadístiques', err)
+      });
+  }
+  
+
 }

@@ -55,19 +55,28 @@
       <button class="btn-secondary" style="background-color: #3B82F6; color: white;" (click)="obrirCamera()">Obrir Càmera</button>
     </div>
     
-    <div class="action-card">
-      <div class="card-header-row">
-        <div class="icon-circle" style="color: #8B5CF6; background: #EDE9FE;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-        </div>
-      </div>
-      <div class="card-text">
-        <h3>Estadístiques</h3>
-        <p>Consulta l'impacte.</p>
-      </div>
-      <button class="btn-secondary">Veure Dades</button>
     </div>
+
+  <div class="stats-dashboard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; animation: fadeIn 0.5s ease-out;">
+    
+    <div class="stat-card" style="background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #4f46e5; transition: transform 0.2s;">
+      <h3 style="margin: 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Ofertes Venudes</h3>
+      <p style="margin: 10px 0 0 0; font-size: 2.5rem; font-weight: 800; color: #0f172a;">{{ estadistiques.ofertes_venudes }}</p>
+    </div>
+
+    <div class="stat-card" style="background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #10b981; transition: transform 0.2s;">
+      <h3 style="margin: 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Punts Repartits</h3>
+      <p style="margin: 10px 0 0 0; font-size: 2.5rem; font-weight: 800; color: #0f172a;">{{ estadistiques.punts_donats }}<span style="font-size: 1.2rem; color: #94a3b8; margin-left: 5px;">pts</span></p>
+    </div>
+
+    <div class="stat-card" style="background: white; padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #f59e0b; transition: transform 0.2s;">
+      <h3 style="margin: 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Punts Recuperats</h3>
+      <p style="margin: 10px 0 0 0; font-size: 2.5rem; font-weight: 800; color: #0f172a;">{{ estadistiques.punts_bescanviats }}<span style="font-size: 1.2rem; color: #94a3b8; margin-left: 5px;">pts</span></p>
+    </div>
+
   </div>
+
+  <div class="offers-section">
 
   <div class="offers-section">
     <div class="table-toolbar">

@@ -59,7 +59,7 @@ export class ShopDetail implements OnInit {
     this.http.get(`${environment.apiUrl}/comerces/${id}`).subscribe({
       next: (res: any) => {
         this.comerc = res;
-        this.ofertes = res.ofertas || [];
+        this.ofertes = res.ofertes || [];
         this.carregant = false;
       },
       error: () => {
