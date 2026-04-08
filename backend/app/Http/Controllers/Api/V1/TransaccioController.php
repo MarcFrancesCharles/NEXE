@@ -185,7 +185,7 @@ class TransaccioController extends Controller
         // Agafem TOTES les transaccions de la botiga
         $transaccions = Transaccio::with(['usuari', 'oferta'])
                     ->where('id_comerc', $comerc->id_comerc)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('data_hora', 'desc')
                     ->get();
 
         // Calculem les mètriques reals

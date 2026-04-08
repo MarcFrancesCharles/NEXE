@@ -346,7 +346,7 @@ export class Shop implements OnInit, OnDestroy {
   }
     // --- FUNCIONS D'ESTADÍSTIQUES ---
   carregarEstadistiques() {
-    this.http.get<any>(`${environment.apiUrl}/comerces/vendes`, { headers: this.getHeaders() })
+    this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
       .subscribe({
         next: (res) => {
           this.estadistiques = res;
