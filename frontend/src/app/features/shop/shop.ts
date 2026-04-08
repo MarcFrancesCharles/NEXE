@@ -58,6 +58,14 @@ export class Shop implements OnInit, OnDestroy {
   private auth = inject(Auth);
   private fb = inject(FormBuilder);
 
+  // Variables de les Estadístiques
+  estadistiques: any = {
+    punts_donats: 0,
+    ofertes_venudes: 0,
+    punts_bescanviats: 0,
+    historial_vendes: []
+  };  
+
   constructor() {
     this.editForm = this.fb.group({
       titol: ['', [Validators.required]],
@@ -77,6 +85,7 @@ export class Shop implements OnInit, OnDestroy {
     this.carregarLesMevesOfertes();
     this.carregarElMeuComerc();
     this.carregarCategories();
+    this.carregarEstadistiques();
   }
 
   ngOnDestroy() {
@@ -146,6 +155,7 @@ export class Shop implements OnInit, OnDestroy {
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ ${res.missatge}`, 'success');
           this.tancarAccionsQR();
+          this.carregarEstadistiques();
         },
         error: (err) => {
           this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi invàlid.'}`, 'error');
@@ -164,6 +174,7 @@ export class Shop implements OnInit, OnDestroy {
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ Oferta Validada! Lliura el producte: ${res.oferta}`, 'success');
           this.tancarAccionsQR();
+          this.carregarEstadistiques();
         },
         error: (err) => {
           this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi d\'oferta invàlid o caducat.'}`, 'error');
@@ -333,4 +344,16 @@ export class Shop implements OnInit, OnDestroy {
       }
     });
   }
+    // --- FUNCIONS D'ESTADÍSTIQUES ---
+  carregarEstadistiques() {
+    this.http.get<any>(`${environment.apiUrl}/comerces/vendes`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res) => {
+          this.estadistiques = res;
+        },
+        error: (err) => console.error('Error carregant les estadístiques', err)
+      });
+  }
+  
+
 }

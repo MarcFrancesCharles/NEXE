@@ -175,19 +175,29 @@ class TransaccioController extends Controller
     }
 
     // ====================================================================
-    // 🟣 LLISTAT DE VENDES
+    // 🟣 LLISTAT DE VENDES I ESTADÍSTIQUES
     // ====================================================================
     public function vendesComerc(Request $request)
     {
         $comerc = Comerc::where('id_usuari', $request->user()->id_usuari)->first();
         if (!$comerc) return response()->json(['missatge' => 'No tens cap comerç actiu.'], 404);
 
-        $vendes = Transaccio::with(['usuari', 'oferta'])
+        // Agafem TOTES les transaccions de la botiga
+        $transaccions = Transaccio::with(['usuari', 'oferta'])
                     ->where('id_comerc', $comerc->id_comerc)
-                    ->where('tipus', 'BESCANVI')
                     ->orderBy('created_at', 'desc')
                     ->get();
 
-        return response()->json($vendes);
+        // Calculem les mètriques reals
+        $puntsDonats = $transaccions->where('tipus', 'ACUMULACIO')->sum('punts_mov');
+        $ofertesVenudes = $transaccions->where('tipus', 'BESCANVI')->count();
+        $puntsBescanviats = $transaccions->where('tipus', 'BESCANVI')->sum('punts_mov');
+
+        return response()->json([
+            'punts_donats' => $puntsDonats,
+            'ofertes_venudes' => $ofertesVenudes,
+            'punts_bescanviats' => $puntsBescanviats,
+            'historial_vendes' => $transaccions->where('tipus', 'BESCANVI')->values()
+        ]);
     }
 }
