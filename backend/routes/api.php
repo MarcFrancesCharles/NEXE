@@ -7,15 +7,15 @@ use App\Http\Controllers\Api\V1\ComercController;
 use App\Http\Controllers\Api\V1\OfertaController;
 use App\Http\Controllers\Api\V1\TransaccioController;
 use App\Http\Controllers\Api\V1\AdminController;
-use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\Api\V1\CategoriaController;
+use App\Http\Middleware\CheckRole;
 
 // --- RUTES PÚBLIQUES (Sense Token) ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/comerces', [ComercController::class, 'index']); // Llistar comerços
 Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes actives
-Route::get('/categories', [CategoriaController::class, 'index']); //Llistar categories amb subcategories
+Route::get('/categories', [CategoriaController::class, 'index']); // Llistar categories amb subcategories
 Route::get('/comerces/{id}', [ComercController::class, 'show']);
 
 
@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/comerc/validar-oferta', [TransaccioController::class, 'validarBescanvi']);
         
         Route::post('/ofertes', [OfertaController::class, 'crearOferta']);
-        Route::get('/comerces/vendes', [TransaccioController::class, 'vendesComerc']);
+        Route::get('/comerc/vendes', [TransaccioController::class, 'vendesComerc']);
         Route::get('/les-meves-ofertes', [OfertaController::class, 'lesMevesOfertes']);
         
         // GESTIÓ DEL PROPI COMERÇ
@@ -57,10 +57,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/usuaris/{id}/estat', [AdminController::class, 'canviarEstat']);
     });
 
-    // Rutes Exclusives: COMERÇ i ADMIN (per eliminar ofertes)
-    Route::delete('/ofertes/{id}', [\App\Http\Controllers\Api\V1\OfertaController::class, 'eliminarOferta']);
-    // Rutes Exclusives: COMERÇ i ADMIN (per modificar ofertes)
-    Route::put('/ofertes/{id}', [\App\Http\Controllers\Api\V1\OfertaController::class, 'modificarOferta']);
-    
+    // Rutes Exclusives: COMERÇ i ADMIN
+    Route::middleware([CheckRole::class.':COMERC,ADMIN'])->group(function () {
+        // Per modificar i eliminar ofertes
+        Route::put('/ofertes/{id}', [OfertaController::class, 'modificarOferta']);
+        Route::delete('/ofertes/{id}', [OfertaController::class, 'eliminarOferta']);
+    });
 
 });
