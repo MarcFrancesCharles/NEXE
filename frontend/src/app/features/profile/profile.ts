@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../core/services/auth';
 import { QRCodeComponent } from 'angularx-qrcode'; 
+import { environment } from '../../../../environments/environment';
+
 
 @Component({
   selector: 'app-profile',
@@ -37,7 +39,7 @@ export class Profile implements OnInit {
   }
 
   obtenirDadesPerfil() {
-    this.http.get('http://localhost:8000/api/perfil-meu', { headers: this.getHeaders() })
+    this.http.get(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.usuari = res;
@@ -92,7 +94,7 @@ export class Profile implements OnInit {
       payload.contrasenya = this.editDades.contrasenya;
     }
 
-    this.http.put('http://localhost:8000/api/perfil-meu', payload, { headers: this.getHeaders() })
+    this.http.put(`${environment.apiUrl}/perfil-meu`, payload, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.missatgeEdit = 'Perfil actualitzat correctament';

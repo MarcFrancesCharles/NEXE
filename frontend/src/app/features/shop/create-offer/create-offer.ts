@@ -4,6 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../core/services/auth';
+import { environment } from '../../../../../environments/environment';
+
 
 @Component({
   selector: 'app-create-offer',
@@ -65,7 +67,7 @@ export class CreateOffer {
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
     console.log(paquetFinal);
 
-    this.http.post('http://localhost:8000/api/ofertes', paquetFinal, { headers }).subscribe({
+    this.http.post(`${environment.apiUrl}/ofertes`, paquetFinal, { headers }).subscribe({
       next: () => {
         this.loading = false;
         this.error = false;

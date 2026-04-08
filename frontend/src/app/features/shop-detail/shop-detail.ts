@@ -4,6 +4,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { QRCodeComponent } from 'angularx-qrcode'; // Per dibuixar el QR de l'oferta
+import { environment } from '../../../../environments/environment';
+
 
 @Component({
   selector: 'app-shop-detail',
@@ -13,6 +15,8 @@ import { QRCodeComponent } from 'angularx-qrcode'; // Per dibuixar el QR de l'of
   styleUrl: './shop-detail.css'
 })
 export class ShopDetail implements OnInit {
+  storageUrl = environment.storageUrl;
+
   comerc: any = null;
   ofertes: any[] = [];
   
@@ -52,7 +56,7 @@ export class ShopDetail implements OnInit {
   }
 
   carregarBotiga(id: string) {
-    this.http.get(`http://localhost:8000/api/comerces/${id}`).subscribe({
+    this.http.get(`${environment.apiUrl}/comerces/${id}`).subscribe({
       next: (res: any) => {
         this.comerc = res;
         this.ofertes = res.ofertas || [];
@@ -66,7 +70,7 @@ export class ShopDetail implements OnInit {
   }
 
   carregarElsMeusPunts() {
-    this.http.get('http://localhost:8000/api/perfil-meu', { headers: this.getHeaders() })
+    this.http.get(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.elsMeusPunts = res.perfil?.punts_totals || 0;
@@ -80,7 +84,7 @@ export class ShopDetail implements OnInit {
 
     const payload = { id_oferta: oferta.id_oferta };
 
-    this.http.post('http://localhost:8000/api/client/oferta-qr', payload, { headers: this.getHeaders() })
+    this.http.post(`${environment.apiUrl}/client/oferta-qr`, payload, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.ofertaSeleccionada = oferta;
