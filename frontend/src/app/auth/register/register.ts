@@ -6,6 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { Auth } from '../../core/services/auth';
 import { Subject, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
+
 
 @Component({
   selector: 'app-register',
@@ -84,7 +86,7 @@ export class Register implements OnInit {
   }
 
   carregarCategories() {
-    this.http.get<any[]>('http://localhost:8000/api/categories').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/categories`).subscribe({
       next: (data) => this.categoriesPare = data,
       error: (err) => console.error(err)
     });

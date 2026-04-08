@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-explore',
@@ -75,7 +76,7 @@ export class Explore implements OnInit, AfterViewInit {
   }
 
   carregarCategories() {
-    this.http.get<any[]>('http://localhost:8000/api/categories').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/categories`).subscribe({
       next: (data) => this.categoriesPare = data,
       error: (err) => console.error('Error carregant categories', err)
     });
@@ -83,12 +84,12 @@ export class Explore implements OnInit, AfterViewInit {
 
   carregarComerces() {
     this.loading = true;
-    this.http.get<any[]>('http://localhost:8000/api/comerces').subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/comerces`).subscribe({
       next: (dades) => {
         this.comerces = dades.map((comerc, index) => {
           let imatgeOriginal = comerc.imatge_url;
           if (imatgeOriginal && !imatgeOriginal.startsWith('http')) {
-            imatgeOriginal = `http://localhost:8000/storage/${imatgeOriginal}`;
+            imatgeOriginal = `${environment.storageUrl}${imatgeOriginal}`;
           }
           return {
             ...comerc,

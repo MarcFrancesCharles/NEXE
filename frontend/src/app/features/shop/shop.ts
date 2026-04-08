@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { Auth } from '../../core/services/auth';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { BarcodeFormat } from '@zxing/library';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-shop',
@@ -14,7 +15,9 @@ import { BarcodeFormat } from '@zxing/library';
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
-export class Shop implements OnInit {
+export class Shop implements OnInit, OnDestroy {
+
+  storageUrl = environment.storageUrl;
   ofertes: any[] = [];
   termeCerca: string = '';
   mostrantModal = false;
@@ -76,6 +79,12 @@ export class Shop implements OnInit {
     this.carregarCategories();
   }
 
+  ngOnDestroy() {
+    if (this.mostrantCamera) {
+      this.tancarCamera();
+    }
+  }
+
   private getHeaders() {
     return new HttpHeaders({
       'Authorization': `Bearer ${this.auth.obtenirToken()}`
@@ -132,7 +141,7 @@ export class Shop implements OnInit {
       import_compra: this.importCompra
     };
 
-    this.http.post('http://localhost:8000/api/comerc/atorgar-punts', payload, { headers: this.getHeaders() })
+    this.http.post(`${environment.apiUrl}/comerc/atorgar-punts`, payload, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ ${res.missatge}`, 'success');
@@ -150,7 +159,7 @@ export class Shop implements OnInit {
       qr_token: this.qrTokenXifrat
     };
 
-    this.http.post('http://localhost:8000/api/comerc/validar-oferta', payload, { headers: this.getHeaders() })
+    this.http.post(`${environment.apiUrl}/comerc/validar-oferta`, payload, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ Oferta Validada! Lliura el producte: ${res.oferta}`, 'success');
@@ -166,7 +175,7 @@ export class Shop implements OnInit {
   // --- FUNCIONS DE GESTIÓ D'OFERTES ---
 
   carregarLesMevesOfertes() {
-    this.http.get<any[]>('http://localhost:8000/api/les-meves-ofertes', { headers: this.getHeaders() })
+    this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() })
       .subscribe({
         next: (res) => { this.ofertes = res; },
         error: (err) => console.error('Error carregant les ofertes:', err)
@@ -175,7 +184,7 @@ export class Shop implements OnInit {
 
   eliminarOferta(id: number) {
     if (confirm('Estàs segur que vols eliminar aquesta oferta?')) {
-      this.http.delete(`http://localhost:8000/api/ofertes/${id}`, { headers: this.getHeaders() })
+      this.http.delete(`${environment.apiUrl}/ofertes/${id}`, { headers: this.getHeaders() })
         .subscribe({
           next: () => { this.ofertes = this.ofertes.filter(o => o.id_oferta !== id); },
           error: (err) => alert('Error eliminant l\'oferta.')
@@ -232,7 +241,7 @@ export class Shop implements OnInit {
 
     formData.append('_method', 'PUT'); 
 
-    this.http.post(`http://localhost:8000/api/ofertes/${this.ofertaEditantId}`, formData, { headers: this.getHeaders() })
+    this.http.post(`${environment.apiUrl}/ofertes/${this.ofertaEditantId}`, formData, { headers: this.getHeaders() })
       .subscribe({
         next: () => {
           this.tancarModal();
@@ -309,6 +318,8 @@ export class Shop implements OnInit {
     if (this.imatgeComercSeleccionada) {
       formData.append('imatge', this.imatgeComercSeleccionada);
     }
+    //Fem guardar el comerç com si fos una actualització, encara que sigui la primera vegada que el crea. El backend s'encarrega de diferenciar-ho.
+    formData.append('_method', 'PUT');
 
     this.auth.actualitzarComerc(formData).subscribe({
       next: (res) => {

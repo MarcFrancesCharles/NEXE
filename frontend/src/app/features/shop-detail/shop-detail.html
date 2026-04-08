@@ -2,7 +2,7 @@
 <div class="shop-detail-container">
   
   <div class="shop-hero">
-    <div class="hero-banner" [style.background-image]="comerc.imatge_url ? 'url(http://localhost:8000/storage/' + comerc.imatge_url + ')' : 'none'">
+    <div class="hero-banner" [style.background-image]="comerc.imatge_url ? 'url(' + storageUrl + comerc.imatge_url + ')' : 'none'">
       <div class="hero-overlay"></div>
     </div>
     
@@ -42,7 +42,7 @@
         @for (oferta of ofertes; track oferta.id_oferta) {
           <div class="offer-card">
             
-            <div class="offer-image" [style.background-image]="oferta.imatge ? 'url(http://localhost:8000/storage/' + oferta.imatge + ')' : 'url(https://via.placeholder.com/300x150?text=Oferta)'">
+            <div class="offer-image" [style.background-image]="oferta.imatge ? 'url(' + storageUrl + oferta.imatge + ')' : 'url(https://via.placeholder.com/300x150?text=Oferta)'">
               <div class="points-tag">{{ oferta.cost_punts }} Pts</div>
             </div>
             

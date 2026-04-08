@@ -1,7 +1,7 @@
 <div class="shop-dashboard">
   
   <div class="shop-profile-header">
-    <div class="profile-banner" [style.background-image]="comerc?.imatge_url ? 'url(http://localhost:8000/storage/' + comerc.imatge_url + ')' : 'none'">
+    <div class="profile-banner" [style.background-image]="comerc?.imatge_url ? 'url(' + storageUrl + comerc.imatge_url + ')' : 'none'">
     </div>
     <div class="profile-info-bar">
       <div class="profile-avatar">
@@ -120,7 +120,7 @@
               <tr>
                 <td class="fw-bold td-amb-imatge">
                   @if (oferta.imatge) {
-                    <img [src]="'http://localhost:8000/storage/' + oferta.imatge" alt="Foto" class="img-thumbnail">
+                    <img [src]="storageUrl + oferta.imatge" alt="Foto" class="img-thumbnail">
                   } @else {
                     <div class="img-placeholder">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
@@ -326,7 +326,7 @@
                 </div>
               } @else if (comerc?.imatge_url) {
                 <div class="current-image-preview">
-                  <img [src]="'http://localhost:8000/storage/' + comerc.imatge_url" alt="Portada actual">
+                  <img [src]="storageUrl + comerc.imatge_url" alt="Portada actual">
                 </div>
               }
               <input type="file" class="form-control" (change)="onFileComercSelected($event)" accept="image/*">

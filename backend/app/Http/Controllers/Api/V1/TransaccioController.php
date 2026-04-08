@@ -18,14 +18,10 @@ class TransaccioController extends Controller
     // 🟢 FUNCIONS PEL CLIENT (ESTÀNDARD) - GENERACIÓ DE QRS
     // ====================================================================
 
-    /**
-     * Retorna un Token Xifrat permanent amb l'ID de l'usuari (El seu "Carnet Digital")
-     */
     public function generarQrCarnet(Request $request)
     {
         $usuari = $request->user();
         
-        // Xifrem un JSON amb l'ID de l'usuari i la paraula clau 'CARNET' per evitar que s'usi per ofertes
         $dades = json_encode([
             'tipus' => 'CARNET',
             'id_usuari' => $usuari->id_usuari
@@ -36,16 +32,12 @@ class TransaccioController extends Controller
         return response()->json(['qr_token' => $tokenQr], 200);
     }
 
-    /**
-     * Retorna un Token Xifrat TEMPORAL per demanar una oferta al botiguer
-     */
     public function generarQrOferta(Request $request)
     {
         $request->validate(['id_oferta' => 'required|exists:ofertas,id_oferta']);
         
         $usuari = $request->user();
         
-        // Xifrem l'ID de l'usuari, l'oferta, i posem una data de caducitat (15 minuts)
         $dades = json_encode([
             'tipus' => 'OFERTA',
             'id_usuari' => $usuari->id_usuari,
@@ -66,9 +58,6 @@ class TransaccioController extends Controller
     // 🔵 FUNCIONS PEL BOTIGUER (COMERC) - ESCANEIG I VALIDACIÓ
     // ====================================================================
 
-    /**
-     * El botiguer escaneja el carnet del client i li suma els punts per la compra
-     */
     public function atorgarPunts(Request $request)
     {
         $request->validate([
@@ -80,10 +69,8 @@ class TransaccioController extends Controller
         if (!$comerc) return response()->json(['missatge' => 'Error: No ets un comerç actiu.'], 403);
 
         try {
-            // 1. Desxifrem el QR
             $dadesQr = json_decode(Crypt::decryptString($request->qr_token));
 
-            // 2. Comprovem que sigui un QR de tipus CARNET
             if ($dadesQr->tipus !== 'CARNET') {
                 return response()->json(['missatge' => 'Error: Aquest QR no és un carnet vàlid.'], 400);
             }
@@ -91,8 +78,16 @@ class TransaccioController extends Controller
             $id_client = $dadesQr->id_usuari;
             $puntsGuanyats = floor($request->import_compra);
 
-            // 3. Executem la transacció de BD
             DB::beginTransaction();
+
+            // ⚠️ SOLUCIÓ PRO: Increment Atòmic. MySQL s'encarrega de sumar de forma segura.
+            $filesAfectades = Perfil::where('id_usuari', $id_client)->increment('punts_totals', $puntsGuanyats);
+
+            // Evitem l'error 500 (Problema 5). Si retorna 0, és que aquest perfil no existeix.
+            if ($filesAfectades === 0) {
+                DB::rollBack();
+                return response()->json(['missatge' => 'Error: Aquest client no té un perfil vàlid al sistema.'], 404);
+            }
 
             Transaccio::create([
                 'id_usuari' => $id_client,
@@ -101,10 +96,6 @@ class TransaccioController extends Controller
                 'punts_mov' => $puntsGuanyats,
                 'data_hora' => now(),
             ]);
-
-            $perfil = Perfil::where('id_usuari', $id_client)->first();
-            $perfil->punts_totals += $puntsGuanyats;
-            $perfil->save();
 
             DB::commit();
 
@@ -121,9 +112,6 @@ class TransaccioController extends Controller
         }
     }
 
-    /**
-     * El botiguer escaneja el QR de l'oferta del client per restar-li els punts i donar-li el producte
-     */
     public function validarBescanvi(Request $request)
     {
         $request->validate(['qr_token' => 'required|string']);
@@ -132,10 +120,8 @@ class TransaccioController extends Controller
         if (!$comerc) return response()->json(['missatge' => 'Accés denegat.'], 403);
 
         try {
-            // 1. Desxifrem el QR
             $dadesQr = json_decode(Crypt::decryptString($request->qr_token));
 
-            // 2. Validacions de seguretat (Tipus i Caducitat)
             if ($dadesQr->tipus !== 'OFERTA') {
                 return response()->json(['missatge' => 'Error: Has escanejat un Carnet, no una Oferta.'], 400);
             }
@@ -146,23 +132,23 @@ class TransaccioController extends Controller
             $id_client = $dadesQr->id_usuari;
             $oferta = Oferta::findOrFail($dadesQr->id_oferta);
 
-            // 3. Comprovem que l'oferta pertanyi a la botiga que l'està escanejant
             if ($oferta->id_comerc !== $comerc->id_comerc) {
                 return response()->json(['missatge' => 'Error: Aquesta oferta és d\'una altra botiga!'], 400);
             }
 
-            $perfil = Perfil::where('id_usuari', $id_client)->first();
-
-            // 4. Comprovem si el client té prou punts al moment exacte de l'escaneig
-            if ($perfil->punts_totals < $oferta->cost_punts) {
-                return response()->json(['missatge' => 'El client no té prou punts per aquesta oferta.'], 400);
-            }
-
-            // 5. Procés segur de Base de dades
             DB::beginTransaction();
 
-            $perfil->punts_totals -= $oferta->cost_punts;
-            $perfil->save();
+            // ⚠️ SOLUCIÓ PRO: Decrement Atòmic Condicionat.
+            // Li diem a MySQL: "Resta X punts NOMÉS si els punts_totals són més grans o iguals a X".
+            $filesAfectades = Perfil::where('id_usuari', $id_client)
+                                    ->where('punts_totals', '>=', $oferta->cost_punts)
+                                    ->decrement('punts_totals', $oferta->cost_punts);
+
+            // Si retorna 0, o el client no existeix, O intentava fer frau perquè ja no li queden prous punts!
+            if ($filesAfectades === 0) {
+                DB::rollBack();
+                return response()->json(['missatge' => 'El client no té prou punts o l\'operació no és vàlida.'], 400);
+            }
 
             Transaccio::create([
                 'id_usuari' => $id_client,
