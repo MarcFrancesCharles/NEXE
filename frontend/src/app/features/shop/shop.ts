@@ -155,6 +155,7 @@ export class Shop implements OnInit, OnDestroy {
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ ${res.missatge}`, 'success');
           this.tancarAccionsQR();
+          this.carregarEstadistiques();
         },
         error: (err) => {
           this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi invàlid.'}`, 'error');
@@ -173,6 +174,7 @@ export class Shop implements OnInit, OnDestroy {
         next: (res: any) => {
           this.mostrarAlertaCamera(`✅ Oferta Validada! Lliura el producte: ${res.oferta}`, 'success');
           this.tancarAccionsQR();
+          this.carregarEstadistiques();
         },
         error: (err) => {
           this.mostrarAlertaCamera(`❌ ${err.error.missatge || 'Codi d\'oferta invàlid o caducat.'}`, 'error');
@@ -344,7 +346,7 @@ export class Shop implements OnInit, OnDestroy {
   }
     // --- FUNCIONS D'ESTADÍSTIQUES ---
   carregarEstadistiques() {
-    this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
+    this.http.get<any>(`${environment.apiUrl}/comerces/vendes`, { headers: this.getHeaders() })
       .subscribe({
         next: (res) => {
           this.estadistiques = res;
