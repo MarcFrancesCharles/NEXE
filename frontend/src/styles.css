@@ -3,58 +3,474 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  --p-500: #2563eb; /* Blau NEXE */
-  --p-600: #1d4ed8;
-  --s-500: #10b981; /* Verd èxit */
-  --danger: #ef4444;
-  --bg-app: #f1f5f9;
-  --surface: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --radius: 12px;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+--p-500: #2563eb; /* Blau NEXE */
+--p-600: #1d4ed8;
+--s-500: #10b981; /* Verd èxit */
+--danger: #ef4444;
+--bg-app: #f1f5f9;
+--surface: #ffffff;
+--text-main: #1e293b;
+--text-muted: #64748b;
+--radius: 12px;
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 }
 
 * {
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
+box-sizing: border-box;
+-webkit-font-smoothing: antialiased;
 }
 
 body {
-  margin: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: var(--bg-app);
-  color: var(--text-main);
-  line-height: 1.5;
+margin: 0;
+font-family: 'Plus Jakarta Sans', sans-serif;
+background-color: var(--bg-app);
+color: var(--text-main);
+line-height: 1.5;
 }
 
 h1, h2, h3 { font-weight: 700; letter-spacing: -0.025em; }
 
 /* Utilitats per a formularis */
 input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: var(--radius);
-  font-family: inherit;
-  transition: all 0.2s ease;
+width: 100%;
+padding: 0.75rem 1rem;
+border: 1px solid #e2e8f0;
+border-radius: var(--radius);
+font-family: inherit;
+transition: all 0.2s ease;
 }
 
 input:focus {
-  outline: none;
-  border-color: var(--p-500);
-  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+outline: none;
+border-color: var(--p-500);
+box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 0.75rem 1.5rem;
+font-weight: 600;
+border-radius: var(--radius);
+cursor: pointer;
+transition: all 0.2s;
+border: none;
+}
+
+.btn-primary,
+.btn-redeem,
+.btn-submit {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+padding: 0.8rem 1.5rem;
+background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+color: #FFFFFF;
+border: none;
+border-radius: 12px;
+font-weight: 700;
+font-size: 0.9rem;
+letter-spacing: -0.01em;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+box-shadow: 
+0 2px 8px rgba(16, 185, 129, 0.3),
+inset 0 1px 0 rgba(255, 255, 255, 0.15);
+position: relative;
+overflow: hidden;
+}
+
+/* Shimmer effect al hover */
+.btn-primary::before,
+.btn-redeem::before,
+.btn-submit::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 60%;
+height: 100%;
+background: linear-gradient(
+90deg,
+transparent 0%,
+rgba(255, 255, 255, 0.15) 50%,
+transparent 100%
+);
+transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before,
+.btn-redeem:hover::before,
+.btn-submit:hover::before {
+left: 150%;
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-redeem:hover,
+.btn-submit:hover:not(:disabled) {
+box-shadow: 
+0 4px 20px rgba(16, 185, 129, 0.5),
+inset 0 1px 0 rgba(255, 255, 255, 0.2);
+transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled),
+.btn-submit:active:not(:disabled) {
+transform: translateY(1px);
+box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:disabled,
+.btn-submit:disabled,
+.btn-disabled {
+background: linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%);
+color: #9CA3AF;
+box-shadow: none;
+cursor: not-allowed;
+transform: none !important;
+}
+
+/* Botó secundari */
+.btn-secondary {
+background: #F8FAFC;
+color: #374151;
+border: 1px solid #E5E7EB;
+box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+background: #F1F5F9;
+border-color: #D1D5DB;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+SISTEMA D'ELEVACIÓ — Afegir a styles.css
+============================================ */
+
+:root {
+/* Tipografia fluida */
+--text-xs:   clamp(0.7rem,  1.5vw, 0.75rem);
+--text-sm:   clamp(0.8rem,  2vw,   0.875rem);
+--text-base: clamp(0.9rem,  2.5vw, 1rem);
+--text-lg:   clamp(1rem,    3vw,   1.125rem);
+--text-xl:   clamp(1.1rem,  3.5vw, 1.25rem);
+--text-2xl:  clamp(1.3rem,  4vw,   1.5rem);
+--text-3xl:  clamp(1.6rem,  5vw,   2rem);
+--text-4xl:  clamp(2rem,    6vw,   2.5rem);
+--text-hero: clamp(2.2rem,  7vw,   4.5rem);
+
+/* Spacing consistent */
+--space-1:  0.25rem;  /* 4px */
+--space-2:  0.5rem;   /* 8px */
+--space-3:  0.75rem;  /* 12px */
+--space-4:  1rem;     /* 16px */
+--space-5:  1.25rem;  /* 20px */
+--space-6:  1.5rem;   /* 24px */
+--space-8:  2rem;     /* 32px */
+--space-10: 2.5rem;   /* 40px */
+--space-12: 3rem;     /* 48px */
+
+/* Border Radius consistent */
+--radius-sm:  8px;
+--radius-md:  12px;
+--radius-lg:  16px;
+--radius-xl:  20px;
+--radius-2xl: 28px;
+--radius-full: 99px;
+
+/* Colors ajustats */
+--green-50:  #ECFDF5;
+--green-100: #D1FAE5;
+--green-500: #10B981;
+--green-600: #059669;
+--green-700: #047857;
+--green-900: #064E3B;
+
+/* Timing functions */
+--ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+--ease-out: cubic-bezier(0, 0, 0.2, 1);
+/* Nivell 0 — Superfície base */
+--shadow-0: none;
+
+/* Nivell 1 — Cards subtils */
+--shadow-1: 
+0 1px 2px rgba(0, 0, 0, 0.04),
+0 4px 8px rgba(0, 0, 0, 0.04),
+0 0 0 1px rgba(0, 0, 0, 0.04);
+
+/* Nivell 2 — Cards hover / actives */
+--shadow-2: 
+0 2px 4px rgba(0, 0, 0, 0.04),
+0 8px 24px rgba(0, 0, 0, 0.06),
+0 0 0 1px rgba(0, 0, 0, 0.03);
+
+/* Nivell 3 — Modals, Dropdowns */
+--shadow-3: 
+0 4px 8px rgba(0, 0, 0, 0.06),
+0 16px 48px rgba(0, 0, 0, 0.12),
+0 0 0 1px rgba(0, 0, 0, 0.03);
+
+/* Ombra de color (per CTA buttons) */
+--shadow-green: 
+0 4px 14px rgba(16, 185, 129, 0.35),
+0 1px 3px rgba(16, 185, 129, 0.2);
+
+--shadow-blue:
+0 4px 14px rgba(59, 130, 246, 0.35),
+0 1px 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Aplicar el sistema */
+.shop-card,
+.filter-card,
+.action-card,
+.form-card,
+.settings-card {
+box-shadow: var(--shadow-1);
+transition: 
+box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+border-color 0.25s ease;
+}
+
+.shop-card:hover,
+.action-card:hover {
+box-shadow: var(--shadow-2);
+transform: translateY(-3px);
+border-color: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Nou sistema de badges — styles.css global */
+
+/* Badge de punts */
+.points-badge {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+color: #065F46;
+padding: 0.4rem 0.85rem;
+border-radius: 99px;
+font-weight: 700;
+font-size: 0.8rem;
+border: 1px solid rgba(16, 185, 129, 0.2);
+letter-spacing: 0.01em;
+}
+
+/* Status badge actiu */
+.status-badge.active {
+background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+color: #065F46;
+border: 1px solid rgba(16, 185, 129, 0.2);
+font-weight: 700;
+}
+
+.status-badge:not(.active) {
+background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%);
+color: #991B1B;
+border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+/* Points tag a les cards d'oferta */
+.points-tag {
+background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+box-shadow: 0 2px 12px rgba(16, 185, 129, 0.45);
+border: 1px solid rgba(255, 255, 255, 0.15);
+backdrop-filter: blur(4px);
+font-weight: 800;
+font-size: 0.85rem;
+letter-spacing: -0.01em;
+}
+
+/* Keyframes base */
+@keyframes fadeInUp {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+@keyframes fadeInScale {
+from {
+opacity: 0;
+transform: scale(0.97);
+}
+to {
+opacity: 1;
+transform: scale(1);
+}
+}
+
+@keyframes slideInLeft {
+from {
+opacity: 0;
+transform: translateX(-16px);
+}
+to {
+opacity: 1;
+transform: translateX(0);
+}
+}
+
+/* Animació d'entrada del contingut principal */
+.app-content > * {
+animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Cards amb stagger (afegir via :nth-child) */
+.shop-grid .shop-card:nth-child(1) { animation: fadeInUp 0.4s 0.05s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.shop-grid .shop-card:nth-child(2) { animation: fadeInUp 0.4s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.shop-grid .shop-card:nth-child(3) { animation: fadeInUp 0.4s 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.shop-grid .shop-card:nth-child(4) { animation: fadeInUp 0.4s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.shop-grid .shop-card:nth-child(n+5) { animation: fadeInUp 0.4s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Sidebar animació d'entrada */
+.app-sidebar {
+animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Modal entrada */
+.modal-content {
+animation: fadeInScale 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(15, 23, 42, 0.6);
+backdrop-filter: blur(12px) saturate(180%);
+-webkit-backdrop-filter: blur(12px) saturate(180%);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+padding: 1.5rem;
+animation: overlayFadeIn 0.25s ease both;
+}
+
+/* Reducció de moviment per accessibilitat */
+@media (prefers-reduced-motion: reduce) {
+*, ::before, ::after {
+animation-duration: 0.01ms !important;
+transition-duration: 0.01ms !important;
+}
+}
+
+/* styles.css — Substituir el sistema d'inputs */
+
+input,
+select,
+textarea {
+width: 100%;
+padding: 0.85rem 1.1rem;
+background: #F8FAFC;
+border: 1.5px solid #E5E7EB;
+border-radius: 12px;
+font-family: 'Plus Jakarta Sans', sans-serif;
+font-size: 0.95rem;
+font-weight: 500;
+color: #0F172A;
+transition: 
+border-color 0.2s ease,
+background-color 0.2s ease,
+box-shadow 0.2s ease;
+appearance: none;
+-webkit-appearance: none;
+}
+
+input:hover:not(:focus),
+select:hover:not(:focus) {
+border-color: #D1D5DB;
+background: #F3F4F6;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+outline: none;
+background: #FFFFFF;
+border-color: #10B981;
+box-shadow: 
+0 0 0 3px rgba(16, 185, 129, 0.12),
+0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+border-color: #EF4444;
+background: #FFF;
+box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+input::placeholder {
+color: #9CA3AF;
+font-weight: 400;
+}
+
+/* Select amb fletxa custom */
+select {
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 1rem center;
+padding-right: 2.75rem;
+cursor: pointer;
+}
+
+/* Auth inputs (login/register) — afegir al CSS d'auth */
+.auth-form-panel input:focus {
+border-color: #10B981;
+box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+@keyframes modalSpringIn {
+0% {
+opacity: 0;
+transform: scale(0.94) translateY(16px);
+}
+100% {
+opacity: 1;
+transform: scale(1) translateY(0);
+}
+}
+
+.modal-header h3 {
+font-size: 1.4rem;
+font-weight: 800;
+letter-spacing: -0.03em;
+color: #0F172A;
+}
+
+/* Close button premium */
+.close-btn {
+background: #F1F5F9;
+border: none;
+width: 34px;
+height: 34px;
+border-radius: 50%;
+font-size: 1.1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+color: #64748B;
+transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+line-height: 1;
+border: 1px solid transparent;
+}
+
+.close-btn:hover {
+background: #E2E8F0;
+color: #0F172A;
+border-color: #D1D5DB;
+transform: rotate(90deg);  /* Rotació satisfactòria! */
 }

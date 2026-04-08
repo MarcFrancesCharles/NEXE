@@ -5,9 +5,9 @@
 }
 
 .profile-settings-wrapper {
-  max-width: 650px;
+  max-width: 620px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 4rem;
+  padding: 2.5rem 1.5rem 5rem;
 }
 
 .settings-header { 
@@ -24,16 +24,19 @@
 }
 
 .settings-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;  /* Era 2.5rem, ara 3rem */
 }
 
+
 .settings-section-title {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #6B7280;
-  margin-bottom: 0.75rem;
-  margin-left: 0.5rem;
-  text-transform: capitalize;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-bottom: 0.875rem;
+  margin-left: 0.75rem;
+  padding-bottom: 0.25rem;
 }
 
 .settings-card {
@@ -46,21 +49,19 @@
 .settings-item {
   display: flex;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 1.125rem 1.5rem;  /* Lleugera augment del padding */
+  gap: 0.25rem;
 }
 
 .settings-item:not(:last-child) {
   position: relative;
 }
 
+/* Separador intern refinat */
 .settings-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 3.5rem;
+  left: 4rem;  /* Alineació amb l'icon + marge */
   right: 1.5rem;
-  height: 1px;
-  background: #E5E7EB;
+  background: rgba(0, 0, 0, 0.05);  /* Separador molt subtil */
 }
 
 .settings-item.clickable {
