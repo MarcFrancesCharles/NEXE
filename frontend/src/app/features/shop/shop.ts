@@ -58,6 +58,12 @@ export class Shop implements OnInit, OnDestroy {
   private auth = inject(Auth);
   private fb = inject(FormBuilder);
 
+  mostrantModalCrear = false;
+  crearForm: FormGroup;
+  loadingCrear = false;
+  missatgeCrear = '';
+  errorCrear = false;
+
   // Variables de les Estadístiques
   estadistiques: any = {
     punts_donats: 0,
@@ -72,6 +78,14 @@ export class Shop implements OnInit, OnDestroy {
       descripcio: [''],
       cost_punts: [1, [Validators.required, Validators.min(1)]],
       data_fi: ['']
+    });
+
+    this.crearForm = this.fb.group({
+      titol: ['', [Validators.required, Validators.minLength(5)]],
+      descripcio: ['', [Validators.required]],
+      cost_punts: [50, [Validators.required, Validators.min(1)]],
+      tipus_durada: ['sempre'],
+      data_personalitzada: ['']
     });
 
     this.comercForm = this.fb.group({
@@ -260,6 +274,66 @@ export class Shop implements OnInit, OnDestroy {
         },
         error: (err) => alert('Error en guardar els canvis')
       });
+  }
+
+  // --- FUNCIONS DEL POP-UP DE CREACIÓ ---
+
+  obrirModalCrear() {
+    this.crearForm.reset({
+      titol: '',
+      descripcio: '',
+      cost_punts: 50,
+      tipus_durada: 'sempre',
+      data_personalitzada: ''
+    });
+    this.missatgeCrear = '';
+    this.mostrantModalCrear = true;
+  }
+
+  tancarModalCrear() {
+    this.mostrantModalCrear = false;
+  }
+
+  publicarOferta() {
+    if (this.crearForm.invalid) return;
+    this.loadingCrear = true;
+    
+    let dataFi = null;
+    const valors = this.crearForm.value;
+    
+    if (valors.tipus_durada !== 'sempre') {
+      const avui = new Date();
+      if (valors.tipus_durada === '1d') avui.setDate(avui.getDate() + 1);
+      if (valors.tipus_durada === '3d') avui.setDate(avui.getDate() + 3);
+      if (valors.tipus_durada === '1s') avui.setDate(avui.getDate() + 7);
+      if (valors.tipus_durada === '1m') avui.setMonth(avui.getMonth() + 1);
+      
+      dataFi = valors.tipus_durada === 'custom' 
+               ? valors.data_personalitzada 
+               : avui.toISOString().split('T')[0]; 
+    }
+
+    const payload = {
+      titol: valors.titol,
+      descripcio: valors.descripcio,
+      cost_punts: valors.cost_punts,
+      data_fi: dataFi
+    };
+
+    this.http.post(`${environment.apiUrl}/ofertes`, payload, { headers: this.getHeaders() }).subscribe({
+      next: () => {
+        this.loadingCrear = false;
+        this.errorCrear = false;
+        this.missatgeCrear = '🎉 Oferta publicada amb èxit!';
+        this.carregarLesMevesOfertes();
+        setTimeout(() => this.tancarModalCrear(), 2000);
+      },
+      error: (err) => {
+        this.loadingCrear = false;
+        this.errorCrear = true;
+        this.missatgeCrear = err.error?.message || 'Error en publicar. Revisa les dades.';
+      }
+    });
   }
 
   // --- FUNCIONS DE GESTIÓ DEL COMERÇ ---

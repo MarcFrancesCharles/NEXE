@@ -39,7 +39,7 @@
         <h3>Nova Oferta</h3>
         <p>Crea un descompte per atraure clients.</p>
       </div>
-      <button class="btn-primary" routerLink="/la-meva-botiga/crear-oferta">Crear Oferta</button>
+      <button class="btn-primary" (click)="obrirModalCrear()">Crear Oferta</button>
     </div>
     
     <div class="action-card" style="border: 2px solid #3B82F6; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);">
@@ -109,7 +109,7 @@
         } @else {
           <h3>No hi ha dades a mostrar</h3>
           <p>Encara no tens cap oferta publicada. Comença a atraure clients!</p>
-          <button class="btn-primary" routerLink="/la-meva-botiga/crear-oferta">Crear la primera oferta</button>
+          <button class="btn-primary" (click)="obrirModalCrear()">Crear la primera oferta</button>
         }
       </div>
     } @else {
@@ -346,6 +346,72 @@
           <div class="edit-actions">
             <button type="button" class="btn-cancel" (click)="tancarModalComerc()">Cancel·lar</button>
             <button type="submit" class="btn-save" [disabled]="comercForm.invalid">Guardar Canvis</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (mostrantModalCrear) {
+    <div class="modal-overlay" (click)="tancarModalCrear()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Crear Nova Oferta</h3>
+          <button class="close-btn" (click)="tancarModalCrear()">✕</button>
+        </div>
+        
+        <p class="text-muted" style="margin-bottom: 1.5rem;">Defineix els detalls de la teva nova oferta.</p>
+        
+        <form [formGroup]="crearForm" (ngSubmit)="publicarOferta()">
+          <div class="form-group">
+            <label>Títol de l'oferta</label>
+            <input type="text" formControlName="titol" placeholder="Ex: 20% de descompte en..." class="form-control">
+            @if (crearForm.get('titol')?.touched && crearForm.get('titol')?.invalid) {
+              <small class="error-text" style="color: #ef4444; font-size: 0.8rem;">El títol és obligatori (mínim 5 lletres).</small>
+            }
+          </div>
+          
+          <div class="form-group">
+            <label>Descripció i condicions</label>
+            <textarea formControlName="descripcio" rows="3" placeholder="Ex: Vàlid només els dimarts..." class="form-control"></textarea>
+          </div>
+          
+          <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label>Cost en Punts</label>
+              <input type="number" formControlName="cost_punts" min="1" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Durada</label>
+              <select formControlName="tipus_durada" class="form-control">
+                <option value="sempre">Sense límit</option>
+                <option value="1d">1 Dia</option>
+                <option value="3d">3 Dies</option>
+                <option value="1s">1 Setmana</option>
+                <option value="1m">1 Mes</option>
+                <option value="custom">Personalitzada...</option>
+              </select>
+            </div>
+          </div>
+
+          @if (crearForm.get('tipus_durada')?.value === 'custom') {
+            <div class="form-group">
+              <label>Data de caducitat</label>
+              <input type="date" formControlName="data_personalitzada" class="form-control">
+            </div>
+          }
+
+          @if (missatgeCrear) {
+            <div class="alert-inline" [class.success]="!errorCrear" [class.error]="errorCrear" style="margin-top: 1rem; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600;">
+              {{ missatgeCrear }}
+            </div>
+          }
+
+          <div class="modal-actions" style="margin-top: 2rem;">
+            <button type="button" class="btn-secondary" (click)="tancarModalCrear()">Cancel·lar</button>
+            <button type="submit" class="btn-primary" [disabled]="crearForm.invalid || loadingCrear">
+              {{ loadingCrear ? 'Publicant...' : 'Publicar Oferta' }}
+            </button>
           </div>
         </form>
       </div>
