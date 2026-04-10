@@ -3,10 +3,6 @@
 @import "leaflet/dist/leaflet.css";
 
 :root {
---radius-standard: 12px; /* Unificado para tarjetas y botones */
---transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
---shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
---shadow-active: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 --p-500: #2563eb; /* Blau NEXE */
 --p-600: #1d4ed8;
 --s-500: #10b981; /* Verd èxit */
@@ -18,17 +14,6 @@
 --radius: 12px;
 --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-/* Mejora de accesibilidad invisible: Focus Ring */
-*:focus-visible {
-/* Esto elimina el feo borde azul por defecto de los navegadores */
-outline: 2px solid var(--primary-color, #333); 
-
-/* Esto separa la línea un poco del elemento, haciéndolo ver como un diseño intencionado */
-outline-offset: 3px; 
-
-/* Evita que los clics con el ratón activen este borde, solo funciona con teclado */
-transition: outline-offset var(--transition-fast);
 }
 
 * {
