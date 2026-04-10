@@ -26,16 +26,32 @@ class UpdateComercRequest extends FormRequest
         $comercId = $comerc ? $comerc->id_comerc : null;
 
         return [
+            // --- Camps bàsics ---
             'nom_comercial' => 'sometimes|required|string|max:100',
-            'id_categoria' => 'sometimes|required|exists:categorias,id_categoria',
+            'id_categoria'  => 'sometimes|required|exists:categorias,id_categoria',
             'cif' => [
-                'sometimes', 
-                'required', 
-                'string', 
-                'max:20', 
+                'sometimes',
+                'required',
+                'string',
+                'max:20',
                 Rule::unique('comercs', 'cif')->ignore($comercId, 'id_comerc')
             ],
             'imatge' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+
+            // --- Nous camps de contacte i descripció ---
+            'descripcio'      => 'nullable|string|max:2000',
+            'telefon'         => 'nullable|string|max:20',
+            'email_contacte'  => 'nullable|email|max:100',
+            'enllac_web'      => 'nullable|url|max:255',
+            'instagram'       => 'nullable|string|max:100',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'email_contacte.email' => 'El correu de contacte no té un format vàlid.',
+            'enllac_web.url'       => 'L\'enllaç web ha de ser una URL vàlida (ex: https://...).',
         ];
     }
 }

@@ -302,14 +302,18 @@
         </div>
         <button class="close-btn" (click)="tancarModalComerc()">&times;</button>
       </div>
-      
+
       <div class="edit-form">
         <form [formGroup]="comercForm" (ngSubmit)="guardarCanvisComerc()">
+
+          <!-- ========== BLOC: DADES BÀSIQUES ========== -->
+          <p class="edit-section-label">Dades bàsiques</p>
+
           <div class="form-group">
             <label><span>🏢</span> Nom del Comerç</label>
             <input type="text" formControlName="nom_comercial" placeholder="Escriu el nom actual">
           </div>
-          
+
           <div class="form-group">
             <label><span>🆔</span> CIF / Identificació Fiscal</label>
             <input type="text" formControlName="cif" placeholder="Ex: B12345678">
@@ -324,9 +328,58 @@
               }
             </select>
           </div>
-          
+
+          <!-- ========== BLOC: DESCRIPCIÓ ========== -->
+          <p class="edit-section-label" style="margin-top: 1.5rem;">Descripció</p>
+
           <div class="form-group">
-            <label><span>📸</span> Imatge de Portada / Logotip</label>
+            <label><span>✍️</span> Explica la teva botiga</label>
+            <textarea
+              formControlName="descripcio"
+              rows="4"
+              placeholder="Ex: Forn de pa artesà des de 1950. Treballem amb blat de proximitat i llevat natural...">
+            </textarea>
+            <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.4rem;">
+              Apareixerà a la pàgina pública de la teva botiga. Màxim 2000 caràcters.
+            </p>
+          </div>
+
+          <!-- ========== BLOC: CONTACTE ========== -->
+          <p class="edit-section-label" style="margin-top: 1.5rem;">Contacte</p>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label><span>📞</span> Telèfon</label>
+              <input type="tel" formControlName="telefon" placeholder="Ex: 973 12 34 56">
+            </div>
+            <div class="form-group">
+              <label><span>📧</span> Correu de contacte</label>
+              <input type="email" formControlName="email_contacte" placeholder="botiga@exemple.cat">
+              @if (comercForm.get('email_contacte')?.touched && comercForm.get('email_contacte')?.invalid) {
+                <span class="field-error">Format de correu no vàlid</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label><span>🌐</span> Pàgina web</label>
+              <input type="url" formControlName="enllac_web" placeholder="https://labotiga.cat">
+            </div>
+            <div class="form-group">
+              <label><span>📸</span> Instagram</label>
+              <div class="input-with-prefix">
+                <span class="input-prefix">&#64;</span>
+                <input type="text" formControlName="instagram" placeholder="labotiga">
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== BLOC: IMATGE ========== -->
+          <p class="edit-section-label" style="margin-top: 1.5rem;">Imatge de portada</p>
+
+          <div class="form-group">
+            <label><span>📸</span> Logotip o foto de la botiga</label>
             <div class="image-upload-wrapper" [class.has-image]="comerc?.imatge_url || imatgeComercPreview">
               @if (imatgeComercPreview) {
                 <div class="current-image-preview new-preview">
@@ -340,13 +393,16 @@
               }
               <input type="file" class="form-control" (change)="onFileComercSelected($event)" accept="image/*">
             </div>
-            <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">La imatge seleccionada serà el fons de la teva capçalera.</p>
+            <p class="text-muted" style="font-size: 0.8rem; margin-top: 0.5rem;">
+              La imatge serà el fons de la capçalera de la teva botiga.
+            </p>
           </div>
 
           <div class="edit-actions">
             <button type="button" class="btn-cancel" (click)="tancarModalComerc()">Cancel·lar</button>
             <button type="submit" class="btn-save" [disabled]="comercForm.invalid">Guardar Canvis</button>
           </div>
+
         </form>
       </div>
     </div>

@@ -27,25 +27,24 @@ export class Shop implements OnInit, OnDestroy {
     const term = this.termeCerca.toLowerCase().trim();
     return this.ofertes.filter(o => o.titol?.toLowerCase().includes(term));
   }
-  
+
   // Variables per la Càmera QR
   mostrantCamera = false;
   codiEscanejat: string | null = null;
   formatsPermesos = [BarcodeFormat.QR_CODE];
 
-  // Variables pel Modal d'Accions QR (Seguretat Zero-Trust)
+  // Variables pel Modal d'Accions QR
   mostrantAccionsQR = false;
-  qrTokenXifrat: string = ''; 
-  importCompra: number | null = null; // Guardarà l'import introduït pel botiguer
-  
-  // Missatges d'èxit o error a la càmera
+  qrTokenXifrat: string = '';
+  importCompra: number | null = null;
+
   missatgeCamera: string = '';
   tipusMissatgeCamera: 'success' | 'error' | '' = '';
 
   ofertaEditantId: number | null = null;
   editForm: FormGroup;
   imatgeSeleccionada: File | null = null;
-  
+
   // Variables pel Comerç
   comerc: any = null;
   categories: any[] = [];
@@ -53,7 +52,7 @@ export class Shop implements OnInit, OnDestroy {
   comercForm: FormGroup;
   imatgeComercSeleccionada: File | null = null;
   imatgeComercPreview: string | null = null;
-  
+
   private http = inject(HttpClient);
   private auth = inject(Auth);
   private fb = inject(FormBuilder);
@@ -64,34 +63,41 @@ export class Shop implements OnInit, OnDestroy {
   missatgeCrear = '';
   errorCrear = false;
 
-  // Variables de les Estadístiques
+  // Estadístiques
   estadistiques: any = {
     punts_donats: 0,
     ofertes_venudes: 0,
     punts_bescanviats: 0,
     historial_vendes: []
-  };  
+  };
 
   constructor() {
     this.editForm = this.fb.group({
-      titol: ['', [Validators.required]],
+      titol:      ['', [Validators.required]],
       descripcio: [''],
       cost_punts: [1, [Validators.required, Validators.min(1)]],
-      data_fi: ['']
+      data_fi:    ['']
     });
 
     this.crearForm = this.fb.group({
-      titol: ['', [Validators.required, Validators.minLength(5)]],
-      descripcio: ['', [Validators.required]],
-      cost_punts: [50, [Validators.required, Validators.min(1)]],
-      tipus_durada: ['sempre'],
-      data_personalitzada: ['']
+      titol:              ['', [Validators.required, Validators.minLength(5)]],
+      descripcio:         ['', [Validators.required]],
+      cost_punts:         [50, [Validators.required, Validators.min(1)]],
+      tipus_durada:       ['sempre'],
+      data_personalitzada:['']
     });
 
+    // Formulari del comerç amb els nous camps de contacte
     this.comercForm = this.fb.group({
-      nom_comercial: ['', [Validators.required]],
-      id_categoria: ['', [Validators.required]],
-      cif: ['', [Validators.required]]
+      nom_comercial:  ['', [Validators.required]],
+      id_categoria:   ['', [Validators.required]],
+      cif:            ['', [Validators.required]],
+      // Camps de contacte i descripció (tots opcionals)
+      descripcio:     [''],
+      telefon:        [''],
+      email_contacte: ['', [Validators.email]],
+      enllac_web:     [''],
+      instagram:      [''],
     });
   }
 
@@ -114,7 +120,7 @@ export class Shop implements OnInit, OnDestroy {
     });
   }
 
-  // --- FUNCIONS DE LA CÀMERA QR ---
+  // --- CÀMERA QR ---
 
   obrirCamera() {
     this.mostrantCamera = true;
@@ -128,14 +134,10 @@ export class Shop implements OnInit, OnDestroy {
     this.mostrantCamera = false;
   }
 
-  // Aquesta funció salta automàticament quan la càmera llegeix un QR
   onQREscanejat(resultat: string) {
-    if (this.mostrantAccionsQR || this.qrTokenXifrat) return; // Evitem lectures repetides
-
-    this.qrTokenXifrat = resultat; // És el text encriptat que ens envia el client
-    this.tancarCamera(); 
-    
-    // Obrim el modal on el botiguer tria què vol fer
+    if (this.mostrantAccionsQR || this.qrTokenXifrat) return;
+    this.qrTokenXifrat = resultat;
+    this.tancarCamera();
     this.mostrantAccionsQR = true;
   }
 
@@ -148,10 +150,8 @@ export class Shop implements OnInit, OnDestroy {
   mostrarAlertaCamera(text: string, tipus: 'success' | 'error') {
     this.missatgeCamera = text;
     this.tipusMissatgeCamera = tipus;
-    setTimeout(() => this.missatgeCamera = '', 4500); // Amaga l'avís passats 4 segons
+    setTimeout(() => this.missatgeCamera = '', 4500);
   }
-
-  // --- FUNCIONS DE SEGURETAT ZERO-TRUST (Connexió Backend) ---
 
   anarADonarPunts() {
     if (!this.importCompra || this.importCompra <= 0) {
@@ -160,7 +160,7 @@ export class Shop implements OnInit, OnDestroy {
     }
 
     const payload = {
-      qr_token: this.qrTokenXifrat,
+      qr_token:      this.qrTokenXifrat,
       import_compra: this.importCompra
     };
 
@@ -179,9 +179,7 @@ export class Shop implements OnInit, OnDestroy {
   }
 
   anarABescanviarOferta() {
-    const payload = {
-      qr_token: this.qrTokenXifrat
-    };
+    const payload = { qr_token: this.qrTokenXifrat };
 
     this.http.post(`${environment.apiUrl}/comerc/validar-oferta`, payload, { headers: this.getHeaders() })
       .subscribe({
@@ -197,7 +195,7 @@ export class Shop implements OnInit, OnDestroy {
       });
   }
 
-  // --- FUNCIONS DE GESTIÓ D'OFERTES ---
+  // --- OFERTES ---
 
   carregarLesMevesOfertes() {
     this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() })
@@ -212,32 +210,26 @@ export class Shop implements OnInit, OnDestroy {
       this.http.delete(`${environment.apiUrl}/ofertes/${id}`, { headers: this.getHeaders() })
         .subscribe({
           next: () => { this.ofertes = this.ofertes.filter(o => o.id_oferta !== id); },
-          error: (err) => alert('Error eliminant l\'oferta.')
+          error: () => alert('Error eliminant l\'oferta.')
         });
     }
   }
 
-  // --- FUNCIONS DEL POP-UP D'EDICIÓ ---
-
   obrirModalEdicio(oferta: any) {
     this.ofertaEditantId = oferta.id_oferta;
-    this.imatgeSeleccionada = null; 
-    
+    this.imatgeSeleccionada = null;
     this.editForm.patchValue({
-      titol: oferta.titol,
+      titol:      oferta.titol,
       descripcio: oferta.descripcio || '',
       cost_punts: oferta.cost_punts,
-      data_fi: oferta.data_fi ? oferta.data_fi.split('T')[0] : ''
+      data_fi:    oferta.data_fi ? oferta.data_fi.split('T')[0] : ''
     });
-    
     this.mostrantModal = true;
   }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
-    if (file) {
-      this.imatgeSeleccionada = file;
-    }
+    if (file) this.imatgeSeleccionada = file;
   }
 
   tancarModal() {
@@ -249,11 +241,10 @@ export class Shop implements OnInit, OnDestroy {
 
   guardarCanvis() {
     if (this.editForm.invalid || !this.ofertaEditantId) return;
-    
+
     const formData = new FormData();
-    formData.append('titol', this.editForm.get('titol')?.value);
+    formData.append('titol',      this.editForm.get('titol')?.value);
     formData.append('cost_punts', this.editForm.get('cost_punts')?.value.toString());
-    
     if (this.editForm.get('descripcio')?.value) {
       formData.append('descripcio', this.editForm.get('descripcio')?.value);
     }
@@ -263,28 +254,24 @@ export class Shop implements OnInit, OnDestroy {
     if (this.imatgeSeleccionada) {
       formData.append('imatge', this.imatgeSeleccionada);
     }
-
-    formData.append('_method', 'PUT'); 
+    formData.append('_method', 'PUT');
 
     this.http.post(`${environment.apiUrl}/ofertes/${this.ofertaEditantId}`, formData, { headers: this.getHeaders() })
       .subscribe({
         next: () => {
           this.tancarModal();
-          this.carregarLesMevesOfertes(); 
+          this.carregarLesMevesOfertes();
         },
-        error: (err) => alert('Error en guardar els canvis')
+        error: () => alert('Error en guardar els canvis')
       });
   }
 
-  // --- FUNCIONS DEL POP-UP DE CREACIÓ ---
+  // --- CREAR OFERTA ---
 
   obrirModalCrear() {
     this.crearForm.reset({
-      titol: '',
-      descripcio: '',
-      cost_punts: 50,
-      tipus_durada: 'sempre',
-      data_personalitzada: ''
+      titol: '', descripcio: '', cost_punts: 50,
+      tipus_durada: 'sempre', data_personalitzada: ''
     });
     this.missatgeCrear = '';
     this.mostrantModalCrear = true;
@@ -297,27 +284,25 @@ export class Shop implements OnInit, OnDestroy {
   publicarOferta() {
     if (this.crearForm.invalid) return;
     this.loadingCrear = true;
-    
+
     let dataFi = null;
     const valors = this.crearForm.value;
-    
     if (valors.tipus_durada !== 'sempre') {
       const avui = new Date();
       if (valors.tipus_durada === '1d') avui.setDate(avui.getDate() + 1);
       if (valors.tipus_durada === '3d') avui.setDate(avui.getDate() + 3);
       if (valors.tipus_durada === '1s') avui.setDate(avui.getDate() + 7);
       if (valors.tipus_durada === '1m') avui.setMonth(avui.getMonth() + 1);
-      
-      dataFi = valors.tipus_durada === 'custom' 
-               ? valors.data_personalitzada 
-               : avui.toISOString().split('T')[0]; 
+      dataFi = valors.tipus_durada === 'custom'
+               ? valors.data_personalitzada
+               : avui.toISOString().split('T')[0];
     }
 
     const payload = {
-      titol: valors.titol,
+      titol:      valors.titol,
       descripcio: valors.descripcio,
       cost_punts: valors.cost_punts,
-      data_fi: dataFi
+      data_fi:    dataFi
     };
 
     this.http.post(`${environment.apiUrl}/ofertes`, payload, { headers: this.getHeaders() }).subscribe({
@@ -336,19 +321,12 @@ export class Shop implements OnInit, OnDestroy {
     });
   }
 
-  // --- FUNCIONS DE GESTIÓ DEL COMERÇ ---
+  // --- COMERÇ ---
 
   carregarElMeuComerc() {
     this.auth.getElMeuComerc().subscribe({
       next: (res) => {
         this.comerc = res;
-        if (this.comerc && this.mostrantModalComerc) {
-          this.comercForm.patchValue({
-            nom_comercial: this.comerc.nom_comercial,
-            id_categoria: this.comerc.id_categoria,
-            cif: this.comerc.cif
-          });
-        }
       },
       error: (err) => console.error('Error carregant el comerç:', err)
     });
@@ -363,14 +341,22 @@ export class Shop implements OnInit, OnDestroy {
 
   obrirModalComerc() {
     if (this.comerc) {
+      // Omplim tots els camps, incloent els nous de contacte
       this.comercForm.patchValue({
-        nom_comercial: this.comerc.nom_comercial,
-        id_categoria: this.comerc.id_categoria,
-        cif: this.comerc.cif
+        nom_comercial:  this.comerc.nom_comercial  || '',
+        id_categoria:   this.comerc.id_categoria   || '',
+        cif:            this.comerc.cif            || '',
+        descripcio:     this.comerc.descripcio     || '',
+        telefon:        this.comerc.telefon        || '',
+        email_contacte: this.comerc.email_contacte || '',
+        enllac_web:     this.comerc.enllac_web     || '',
+        instagram:      this.comerc.instagram      || '',
       });
     } else {
       this.carregarElMeuComerc();
     }
+    this.imatgeComercSeleccionada = null;
+    this.imatgeComercPreview = null;
     this.mostrantModalComerc = true;
   }
 
@@ -396,14 +382,24 @@ export class Shop implements OnInit, OnDestroy {
     if (this.comercForm.invalid) return;
 
     const formData = new FormData();
-    formData.append('nom_comercial', this.comercForm.get('nom_comercial')?.value);
-    formData.append('id_categoria', this.comercForm.get('id_categoria')?.value);
-    formData.append('cif', this.comercForm.get('cif')?.value);
+    const vals = this.comercForm.value;
+
+    // Camps bàsics
+    formData.append('nom_comercial', vals.nom_comercial);
+    formData.append('id_categoria',  vals.id_categoria);
+    formData.append('cif',           vals.cif);
+
+    // Camps de contacte (els enviem sempre, fins i tot si estan buits,
+    // perquè l'usuari pot voler esborrar un valor existent)
+    formData.append('descripcio',     vals.descripcio     || '');
+    formData.append('telefon',        vals.telefon        || '');
+    formData.append('email_contacte', vals.email_contacte || '');
+    formData.append('enllac_web',     vals.enllac_web     || '');
+    formData.append('instagram',      vals.instagram      || '');
 
     if (this.imatgeComercSeleccionada) {
       formData.append('imatge', this.imatgeComercSeleccionada);
     }
-    //Fem guardar el comerç com si fos una actualització, encara que sigui la primera vegada que el crea. El backend s'encarrega de diferenciar-ho.
     formData.append('_method', 'PUT');
 
     this.auth.actualitzarComerc(formData).subscribe({
@@ -418,16 +414,14 @@ export class Shop implements OnInit, OnDestroy {
       }
     });
   }
-    // --- FUNCIONS D'ESTADÍSTIQUES ---
+
+  // --- ESTADÍSTIQUES ---
+
   carregarEstadistiques() {
     this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
       .subscribe({
-        next: (res) => {
-          this.estadistiques = res;
-        },
+        next: (res) => { this.estadistiques = res; },
         error: (err) => console.error('Error carregant les estadístiques', err)
       });
   }
-  
-
 }
