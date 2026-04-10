@@ -856,3 +856,217 @@ margin-left: 4px;
 font-weight: 500;
 letter-spacing: 0;
 }
+/* =====================================================
+   ESTILS ADDICIONALS — Afegir a shop.css
+   ===================================================== */
+
+/* Separadors de seccions dins el modal del comerç */
+.edit-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin: 0 0 0.75rem 0.25rem;
+}
+
+/* Grid de 2 columnes per als camps de contacte */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Input amb prefix "@" per a Instagram */
+.input-with-prefix {
+  display: flex;
+  align-items: center;
+  background: #F8FAFC;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-with-prefix:focus-within {
+  border-color: #10B981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.input-prefix {
+  padding: 0 0.75rem;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 1rem;
+  background: #F3F4F6;
+  border-right: 1.5px solid #E5E7EB;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.input-with-prefix input {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  flex: 1;
+}
+
+/* Missatge d'error inline sota un camp */
+.field-error {
+  display: block;
+  font-size: 0.8rem;
+  color: #EF4444;
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+/* Textarea del modal (reutilitzable) */
+.edit-form textarea {
+  background: #F8FAFC;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 0.85rem 1.1rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.95rem;
+  color: #0F172A;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.edit-form textarea:focus {
+  outline: none;
+  border-color: #10B981;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+
+/* =====================================================
+   ESTILS ADDICIONALS — Afegir a shop-detail.css
+   ===================================================== */
+
+/* Càpsula de la categoria de la botiga */
+.shop-category-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  margin-bottom: 0.5rem;
+}
+
+/* Targeta de "Qui som" */
+.shop-about-card {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.shop-about-card .section-title {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.shop-description {
+  color: #4B5563;
+  line-height: 1.75;
+  font-size: 1rem;
+  margin: 0;
+  white-space: pre-line; /* Respecta salts de línia */
+}
+
+/* Grid de botons de contacte */
+.contact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Chip de contacte — base */
+.contact-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 99px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.contact-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Variants de color */
+.contact-chip--green {
+  background: #ECFDF5;
+  color: #065F46;
+  border-color: #A7F3D0;
+}
+.contact-chip--green:hover {
+  background: #D1FAE5;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.2);
+}
+
+.contact-chip--blue {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border-color: #BFDBFE;
+}
+.contact-chip--blue:hover {
+  background: #DBEAFE;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.2);
+}
+
+.contact-chip--pink {
+  background: #FDF2F8;
+  color: #9D174D;
+  border-color: #FBCFE8;
+}
+.contact-chip--pink:hover {
+  background: #FCE7F3;
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.2);
+}
+
+.contact-chip--gray {
+  background: #F8FAFC;
+  color: #374151;
+  border-color: #E5E7EB;
+}
+.contact-chip--gray:hover {
+  background: #F1F5F9;
+}
+
+.contact-chip--indigo {
+  background: #EEF2FF;
+  color: #3730A3;
+  border-color: #C7D2FE;
+}
+.contact-chip--indigo:hover {
+  background: #E0E7FF;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.2);
+}

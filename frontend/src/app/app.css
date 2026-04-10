@@ -354,28 +354,3 @@ background: #FFFFFF;
 position: relative;
 padding: 2.5rem 3rem;
 }
-
-.botton-nav{
-backdrop-filter: blur(10px);
--webkit-backdrop-filter: blur(10px);
-background: rgba(255, 255, 255, 0.8);
-border-top: 0.5px solid rgba(0, 0, 0, 0.5);
-padding-bottom: env(safe-area-inset-bottom);
-}
-
-.nav-item{
-position: relative;
-overflow: hidden;
-}
-
-.nav-item.active::after {
-content: '';
-position: absolute;
-bottom: 4px;
-left: 50%;
-transform: translateX(-50%);
-width: 4px;
-height: 4px;
-border-radius: 50%;
-background-color: var(--primary-color);
-} 
