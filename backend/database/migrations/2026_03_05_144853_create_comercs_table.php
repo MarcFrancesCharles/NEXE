@@ -13,6 +13,11 @@ return new class extends Migration
             $table->id('id_comerc'); // PK
             $table->unsignedBigInteger('id_usuari'); // FK, NN
             $table->unsignedBigInteger('id_categoria'); // FK, NN
+            $table->string('descripcio', 255)->nullable();
+            $table->integer('telefon')->nullable();
+            $table->string('email_contacte', 100)->nullable();
+            $table->string('enllac_web', 255)->nullable();
+            $table->string('instagram', 100)->nullable();
             $table->string('nom_comercial', 100); // NN
             $table->string('cif', 20)->unique(); // NN, Unique
             $table->decimal('latitud', 10, 8)->nullable();

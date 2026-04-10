@@ -400,7 +400,6 @@ export class Shop implements OnInit, OnDestroy {
     if (this.imatgeComercSeleccionada) {
       formData.append('imatge', this.imatgeComercSeleccionada);
     }
-    formData.append('_method', 'PUT');
 
     this.auth.actualitzarComerc(formData).subscribe({
       next: (res) => {
