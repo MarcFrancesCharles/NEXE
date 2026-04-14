@@ -3,13 +3,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Auth } from '../../core/services/auth';
-import { QRCodeComponent } from 'angularx-qrcode'; 
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-shop-detail',
   standalone: true,
-  imports: [CommonModule, QRCodeComponent],
+  imports: [CommonModule],
   templateUrl: './shop-detail.html',
   styleUrl: './shop-detail.css'
 })
@@ -28,6 +27,11 @@ export class ShopDetail implements OnInit {
   qrTokenOferta: string = '';
   ofertaSeleccionada: any = null;
   dataCaducitatQR: string = '';
+
+  get qrImageUrl(): string {
+    if (!this.qrTokenOferta) return '';
+    return `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(this.qrTokenOferta)}`;
+  }
 
   carregant: boolean = true;
   errorMissatge: string = '';

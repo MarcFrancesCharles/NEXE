@@ -173,7 +173,7 @@
         <div class="qr-container"
              style="margin: 20px 0; padding: 20px; background: white; border-radius: 15px;
                     border: 2px solid #e5e7eb; display: inline-block;">
-          <qrcode [qrdata]="qrTokenOferta" [width]="250" [errorCorrectionLevel]="'M'"></qrcode>
+          <img [src]="qrImageUrl" alt="Codi QR de bescanvi" width="250" height="250" style="display:block;">
         </div>
 
         <h4>{{ ofertaSeleccionada?.titol }}</h4>
