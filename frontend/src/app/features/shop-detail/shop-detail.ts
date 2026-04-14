@@ -1,16 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Auth } from '../../core/services/auth';
-import { QRCodeComponent } from 'angularx-qrcode'; // Per dibuixar el QR de l'oferta
+import { QRCodeComponent } from 'angularx-qrcode'; 
 import { environment } from '../../../../environments/environment';
-
 
 @Component({
   selector: 'app-shop-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, QRCodeComponent],
+  imports: [CommonModule, QRCodeComponent],
   templateUrl: './shop-detail.html',
   styleUrl: './shop-detail.css'
 })

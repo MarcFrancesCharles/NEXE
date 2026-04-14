@@ -41,7 +41,6 @@ class AuthController extends Controller
                     'id_categoria' => $request->id_categoria,
                     'nom_comercial' => $usuari->nom,
                     'cif' => $request->cif,
-                    'direccio' => $request->direccio,
                     'latitud' => $request->latitud,    
                     'longitud' => $request->longitud,  
                 ]);

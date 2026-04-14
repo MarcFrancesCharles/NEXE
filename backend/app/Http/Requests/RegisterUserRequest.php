@@ -26,9 +26,8 @@ class RegisterUserRequest extends FormRequest
             $regles = array_merge($regles, [
                 'id_categoria' => 'required|exists:categorias,id_categoria',
                 'cif' => 'required|string|max:20',
-                'direccio' => 'required|string|max:255',
-                'latitud' => 'nullable|numeric|between:-90,90',
-                'longitud' => 'nullable|numeric|between:-180,180',
+                'latitud' => 'required|numeric|between:-90,90',
+                'longitud' => 'required|numeric|between:-180,180',
             ]);
         }
 

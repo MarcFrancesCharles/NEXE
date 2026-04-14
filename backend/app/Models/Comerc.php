@@ -17,7 +17,6 @@ class Comerc extends Model
         'id_categoria',
         'nom_comercial',
         'cif',
-        'direccio',
         'latitud',    
         'longitud',
         'imatge_url',

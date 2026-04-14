@@ -49,7 +49,7 @@ export class Explore implements OnInit, AfterViewInit {
 
   // Fem la funció asíncrona per poder fer un import() modern
   async initMap() {
-    // Importació dinàmica nativa (Això no peta amb Vite/esbuild!)
+    // @ts-ignore
     this.L = await import('leaflet');
 
     this.customIcon = this.L.icon({
@@ -134,8 +134,7 @@ export class Explore implements OnInit, AfterViewInit {
     if (this.searchTerm.trim()) {
       const term = this.searchTerm.toLowerCase();
       result = result.filter(c => 
-        c.nom_comercial?.toLowerCase().includes(term) || 
-        c.direccio?.toLowerCase().includes(term)
+        c.nom_comercial?.toLowerCase().includes(term)
       );
     }
 
@@ -179,7 +178,6 @@ export class Explore implements OnInit, AfterViewInit {
           .bindPopup(`
             <div style="text-align: center;">
               <b>${c.nom_comercial}</b><br>
-              <span style="color: #666; font-size: 0.9em;">${c.direccio || 'Sense Adreça'}</span><br>
               <a href="/shop/${c.id_comerc}" style="display: inline-block; margin-top: 5px; color: #4F46E5; text-decoration: none; font-weight: bold;">Veure botiga</a>
             </div>
           `);

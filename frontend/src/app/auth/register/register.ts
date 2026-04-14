@@ -61,16 +61,22 @@ export class Register implements OnInit {
         catCtrl?.setValidators([Validators.required]);
         cifCtrl?.addValidators([Validators.required]);
         dirCtrl?.setValidators([Validators.required]);
+        this.regForm.get('latitud')?.setValidators([Validators.required]);
+        this.regForm.get('longitud')?.setValidators([Validators.required]);
       } else {
         secCtrl?.clearValidators();
         catCtrl?.clearValidators();
         cifCtrl?.removeValidators([Validators.required]);
         dirCtrl?.clearValidators();
+        this.regForm.get('latitud')?.clearValidators();
+        this.regForm.get('longitud')?.clearValidators();
       }
       secCtrl?.updateValueAndValidity();
       catCtrl?.updateValueAndValidity();
       cifCtrl?.updateValueAndValidity();
       dirCtrl?.updateValueAndValidity();
+      this.regForm.get('latitud')?.updateValueAndValidity();
+      this.regForm.get('longitud')?.updateValueAndValidity();
     });
 
     this.regForm.get('id_sector')?.valueChanges.subscribe(pareId => {
@@ -137,6 +143,7 @@ export class Register implements OnInit {
 
     const dadesEnviament = { ...this.regForm.value };
     delete dadesEnviament.id_sector;
+    delete dadesEnviament.direccio;
 
     this.auth.register(dadesEnviament).subscribe({
       next: () => {

@@ -16,10 +16,6 @@ return new class extends Migration
             
             $table->foreign('parent_id')->references('id_categoria')->on('categorias')->onDelete('cascade');
         });
-
-        Schema::table('comercs', function (Blueprint $table) {
-            $table->string('direccio', 255)->nullable()->after('cif');
-        });
     }
     
     public function down(): void
