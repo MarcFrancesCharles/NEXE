@@ -24,11 +24,6 @@ export class Profile implements OnInit {
 
   ngOnInit() {
     this.obtenirDadesPerfil();
-    
-    // Si l'usuari és un client normal (ESTANDARD), demanem el seu Carnet Digital
-    if (this.auth.obtenirRol() === 'ESTANDARD') {
-      this.carregarQr();
-    }
   }
 
   // Creem els headers amb el Token per parlar amb Laravel
@@ -45,17 +40,21 @@ export class Profile implements OnInit {
           this.usuari = res;
           this.carregant = false;
           
-          // Si ja tenim el codi_qr en l'objecte usuari (nou camp persistent), el fem servir
+          // Si ja tenim el codi_qr en el perfil, el fem servir i no cal demanar-ne un altre
           if (this.usuari?.codi_qr) {
             this.qrTokenCarnet = this.usuari.codi_qr;
+          } else if (this.auth.obtenirRol() === 'ESTANDARD') {
+            this.carregarQr();
           }
         },
         error: () => this.carregant = false
       });
   }
 
-  // NOVA FUNCIÓ: Cridem l'API per obtenir el token xifrat
+  // Cridem l'API només si no tenim un token previ
   carregarQr() {
+    if (this.qrTokenCarnet) return;
+    
     this.auth.obtenirCarnetQr().subscribe({
       next: (res) => {
         this.qrTokenCarnet = res.qr_token;

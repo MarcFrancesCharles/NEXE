@@ -61,8 +61,28 @@ export class ShopDetail implements OnInit {
   carregarBotiga(id: string) {
     this.http.get(`${environment.apiUrl}/comerces/${id}`).subscribe({
       next: (res: any) => {
-        this.comerc = res;
-        this.ofertes = res.ofertes || [];
+        // Processem la imatge del comerç
+        let imgComerc = res.imatge_url;
+        if (imgComerc && !imgComerc.startsWith('http')) {
+          imgComerc = `${this.storageUrl}${imgComerc}`;
+        }
+        this.comerc = {
+          ...res,
+          imatge: imgComerc || 'https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?auto=format&fit=crop&q=80&w=1200'
+        };
+
+        // Processem les imatges de les ofertes
+        this.ofertes = (res.ofertes || []).map((o: any, idx: number) => {
+          let imgOferta = o.imatge;
+          if (imgOferta && !imgOferta.startsWith('http')) {
+            imgOferta = `${this.storageUrl}${imgOferta}`;
+          }
+          return {
+            ...o,
+            imatge: imgOferta || `https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800&sig=${idx}`
+          };
+        });
+
         this.carregant = false;
       },
       error: () => {

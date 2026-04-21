@@ -11,9 +11,9 @@
       <div class="settings-card membership-card discrete">
         <div class="qr-container">
           <qrcode [qrdata]="qrTokenCarnet" 
-                  [width]="140" 
-                  [errorCorrectionLevel]="'M'"
-                  [margin]="1"
+                  [width]="160" 
+                  [errorCorrectionLevel]="'L'"
+                  [margin]="2"
                   [colorDark]="'#111827'"
                   [colorLight]="'#ffffff'"></qrcode>
         </div>
@@ -149,5 +149,8 @@
 
 </div>
 } @else {
-<div class="loading-state">Carregant el teu perfil...</div>
+  <div class="profile-loading">
+    <div class="minimal-loader"></div>
+    <p>Carregant el teu perfil...</p>
+  </div>
 }
