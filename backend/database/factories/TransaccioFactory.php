@@ -17,6 +17,8 @@ class TransaccioFactory extends Factory
     public function definition(): array
     {
         return [
+            'id_usuari' => \App\Models\Usuari::factory(),
+            'id_comerc' => \App\Models\Comerc::factory(),
             'tipus' => $this->faker->randomElement(['ACUMULACIO', 'BESCANVI']),
             'punts_mov' => $this->faker->numberBetween(5, 100),
             'data_hora' => $this->faker->dateTimeBetween('-1 year', 'now'),

@@ -6,6 +6,24 @@
       <h1>Perfil</h1>
     </header>
 
+    @if (qrTokenCarnet) {
+    <div class="settings-section qr-section">
+      <div class="settings-card membership-card discrete">
+        <div class="qr-container">
+          <qrcode [qrdata]="qrTokenCarnet" 
+                  [width]="140" 
+                  [errorCorrectionLevel]="'M'"
+                  [margin]="1"
+                  [colorDark]="'#111827'"
+                  [colorLight]="'#ffffff'"></qrcode>
+        </div>
+        <div class="membership-info">
+          <p>El teu codi personal per sumar punts</p>
+        </div>
+      </div>
+    </div>
+    }
+
     <div class="settings-section">
       <div class="settings-section-title">Compte</div>
       <div class="settings-card">
@@ -61,17 +79,6 @@
           </div>
           <div class="settings-value highlights">{{ usuari?.perfil?.punts_totals || 0 }} pts</div>
         </div>
-
-        @if (qrTokenCarnet) {
-        <div class="settings-item" style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 15px;">
-          <h3 style="margin-bottom: 5px; color: #1e293b; font-size: 1.2rem;">El Meu Carnet Nexe</h3>
-          <p style="color: #64748b; font-size: 0.9em; margin-bottom: 20px;">Mostra aquest codi a la botiga per acumular punts per la teva compra.</p>
-          
-          <div style="background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
-            <qrcode [qrdata]="qrTokenCarnet" [width]="220" [errorCorrectionLevel]="'M'"></qrcode>
-          </div>
-        </div>
-        }
       </div>
     </div>
 

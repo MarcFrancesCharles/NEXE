@@ -20,7 +20,19 @@ class Usuari extends Authenticatable
         'contrasenya',
         'rol',
         'estat',
+        'codi_qr',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($usuari) {
+            if (empty($usuari->codi_qr)) {
+                $usuari->codi_qr = 'NX-' . strtoupper(bin2hex(random_bytes(8)));
+            }
+        });
+    }
 
     protected $hidden = [
         'contrasenya', // Amaguem la contrasenya per seguretat

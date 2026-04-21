@@ -19,6 +19,11 @@ class Comerc extends Model
         'cif',
         'latitud',    
         'longitud',
+        'descripcio',
+        'telefon',
+        'email_contacte',
+        'enllac_web',
+        'instagram',
         'imatge_url',
     ];
 

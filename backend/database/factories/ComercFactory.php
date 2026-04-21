@@ -9,11 +9,15 @@ class ComercFactory extends Factory
     public function definition(): array
     {
         return [
-            // Generem dades falses realistes per als nostres comerços de prova
-            'nom_comercial' => fake()->company(),
-            'cif' => fake()->unique()->bothify('B########'), // Format de CIF espanyol bàsic
+            'id_usuari' => \App\Models\Usuari::factory(),
+            'id_categoria' => \App\Models\Categoria::factory(),
+            'nom_comercial' => $this->faker->company(),
+            'cif' => $this->faker->unique()->bothify('B########'),
             'latitud' => $this->faker->latitude(),
             'longitud' => $this->faker->longitude(),
+            'descripcio' => $this->faker->sentence(),
+            'telefon' => $this->faker->numberBetween(600000000, 999999999),
+            'email_contacte' => $this->faker->companyEmail(),
         ];
     }
 }

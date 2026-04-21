@@ -17,6 +17,7 @@ class SolAltaFactory extends Factory
     public function definition(): array
     {
         return [
+            'id_usuari' => \App\Models\Usuari::factory(),
             'dades_fiscals' => $this->faker->text(),
             'estat' => $this->faker->randomElement(['PENDENT', 'APROVADA', 'DENEGADA']),
         ];

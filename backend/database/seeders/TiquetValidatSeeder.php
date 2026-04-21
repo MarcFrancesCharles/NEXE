@@ -2,13 +2,20 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\TiquetValidat;
+use App\Models\Usuari;
+use App\Models\Comerc;
+use Illuminate\Database\Seeder;
 
 class TiquetValidatSeeder extends Seeder
 {
     public function run(): void
     {
-        TiquetValidat::factory(50)->create();
+        $usuaris = Usuari::where('rol', 'ESTANDARD')->get();
+        $comercs = Comerc::all();
+
+        if ($usuaris->isEmpty() || $comercs->isEmpty()) return;
+
+        TiquetValidat::factory()->count(10)->create();
     }
 }

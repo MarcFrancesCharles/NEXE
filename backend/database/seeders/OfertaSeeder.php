@@ -2,21 +2,30 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Comerc;
 use App\Models\Oferta;
+use Illuminate\Database\Seeder;
 
 class OfertaSeeder extends Seeder
 {
     public function run(): void
     {
-        $comercos = Comerc::all();
+        $comercs = Comerc::all();
 
-        foreach ($comercos as $comerc) {
-            // Cada comerç tindrà entre 2 i 5 ofertes
-            Oferta::factory(rand(2, 5))->create([
-                'id_comerc' => $comerc->id_comerc,
-            ]);
+        foreach ($comercs as $comerc) {
+            // Creem 2 o 3 ofertes per comerç
+            $num_ofertas = rand(2, 3);
+            
+            for ($i = 0; $i < $num_ofertas; $i++) {
+                Oferta::create([
+                    'id_comerc' => $comerc->id_comerc,
+                    'titol' => 'Oferta Especial ' . ($i + 1),
+                    'cost_punts' => rand(50, 200),
+                    'estat' => 1, // Activa
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
     }
 }

@@ -17,7 +17,12 @@ class UsuariFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nom' => $this->faker->name(),
+            'correu' => $this->faker->unique()->safeEmail(),
+            'contrasenya' => bcrypt('password'), // Ponemos una contraseña por defecto
+            'rol' => $this->faker->randomElement(['ESTANDARD', 'COMERC', 'ADMIN']),
+            'estat' => 'ACTIU',
+            'codi_qr' => 'NX-' . strtoupper($this->faker->unique()->bothify('????????????????')),
         ];
     }
 }

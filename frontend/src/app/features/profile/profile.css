@@ -445,3 +445,49 @@
     margin-top: 1.2rem;
   }
 }
+/* --- MEMBERSHIP CARD (QR SECTION DISCREET) --- */
+.qr-section {
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.membership-card.discrete {
+  background: #F9FAFB !important;
+  padding: 1.5rem !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 1.5rem !important;
+  text-align: left !important;
+}
+
+.membership-card.discrete .qr-container {
+  padding: 0.5rem;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.membership-card.discrete .membership-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+  line-height: 1.4;
+  max-width: 180px;
+}
+
+/* Forçant aspecte més discret en mòbil també */
+@media (max-width: 768px) {
+  .membership-card.discrete {
+    padding: 1.25rem !important;
+    gap: 1rem !important;
+  }
+  
+  .membership-card.discrete .membership-info p {
+    font-size: 0.85rem;
+  }
+}
+}

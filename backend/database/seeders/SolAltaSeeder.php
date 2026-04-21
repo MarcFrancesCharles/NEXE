@@ -2,23 +2,26 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Usuari;
 use App\Models\SolAlta;
+use App\Models\Usuari;
+use Illuminate\Database\Seeder;
 
 class SolAltaSeeder extends Seeder
 {
     public function run(): void
     {
-        $usuaris = Usuari::where('rol', 'ESTANDARD')->get();
+        $usuaris = Usuari::where('rol', 'COMERC')->get();
 
         if ($usuaris->isEmpty()) return;
 
-        // Alguns usuaris han demanat ser comerç
-        foreach ($usuaris->random(min(5, $usuaris->count())) as $usuari) {
-            SolAlta::factory()->create([
-                'id_usuari' => $usuari->id_usuari,
-            ]);
+        foreach ($usuaris as $usuari) {
+            SolAlta::updateOrCreate(
+                ['id_usuari' => $usuari->id_usuari],
+                [
+                    'dades_fiscals' => 'Dades fiscals de ' . $usuari->correu,
+                    'estat' => 'APROVADA',
+                ]
+            );
         }
     }
 }

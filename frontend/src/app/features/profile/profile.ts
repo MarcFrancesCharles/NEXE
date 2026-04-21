@@ -44,6 +44,11 @@ export class Profile implements OnInit {
         next: (res: any) => {
           this.usuari = res;
           this.carregant = false;
+          
+          // Si ja tenim el codi_qr en l'objecte usuari (nou camp persistent), el fem servir
+          if (this.usuari?.codi_qr) {
+            this.qrTokenCarnet = this.usuari.codi_qr;
+          }
         },
         error: () => this.carregant = false
       });

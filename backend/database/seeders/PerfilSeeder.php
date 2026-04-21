@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Usuari;
 use App\Models\Perfil;
+use Illuminate\Database\Seeder;
 
 class PerfilSeeder extends Seeder
 {
@@ -13,9 +13,12 @@ class PerfilSeeder extends Seeder
         $usuaris = Usuari::all();
 
         foreach ($usuaris as $usuari) {
+            // Només creem perfil si no en té (per evitar duplicats si runneja de nou)
             if (!$usuari->perfil) {
-                Perfil::factory()->create([
+                Perfil::create([
                     'id_usuari' => $usuari->id_usuari,
+                    'punts_totals' => rand(0, 500),
+                    'imatge_url' => null,
                 ]);
             }
         }

@@ -17,6 +17,7 @@ class OfertaFactory extends Factory
     public function definition(): array
     {
         return [
+            'id_comerc' => \App\Models\Comerc::factory(),
             'titol' => $this->faker->sentence(3),
             'descripcio' => $this->faker->paragraph(),
             'cost_punts' => $this->faker->numberBetween(10, 500),

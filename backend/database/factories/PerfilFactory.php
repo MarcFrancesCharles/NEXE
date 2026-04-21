@@ -17,6 +17,7 @@ class PerfilFactory extends Factory
     public function definition(): array
     {
         return [
+            'id_usuari' => \App\Models\Usuari::factory(),
             'punts_totals' => $this->faker->numberBetween(0, 1000),
             'imatge_url' => $this->faker->optional()->imageUrl(200, 200, 'people'),
         ];
