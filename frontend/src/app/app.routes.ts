@@ -9,16 +9,26 @@ import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { ShopDetail } from './features/shop-detail/shop-detail';
 import { ShopRequest } from './features/shop-request/shop-request';
+import { About } from './features/about/about';
+import { Legal } from './features/legal/legal';
+import { Faq } from './features/faq/faq';
+
 
 export const routes: Routes = [
-  { path: '', component: Explore },      // Pàgina principal (Llista de botigues)
-  { path: 'login', component: Login },     // Pantalla de Login
-  { path: 'register', component: Register },  // Pantalla de Registre          
+  { path: '', component: Explore },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
   { path: 'perfil', component: Profile, canActivate: [authGuard] },
   { path: 'solicitar-comerc', component: ShopRequest, canActivate: [authGuard] },
   { path: 'botiga', component: Shop, canActivate: [authGuard, roleGuard] },
-  { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] }, 
+  { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga/crear-oferta', component: CreateOffer, canActivate: [authGuard, roleGuard] },
-  { path: 'shop/:id', component: ShopDetail }, //Aparador
-  { path: '**', redirectTo: '' } // Si s'equivoca de URL, l'enviem a Inici
+  { path: 'shop/:id', component: ShopDetail },
+  
+  // Nuevas rutas para el Footer
+  { path: 'sobre-nosaltres', component: About },
+  { path: 'legal', component: Legal },
+  { path: 'faq', component: Faq },
+  
+  { path: '**', redirectTo: '' }
 ];

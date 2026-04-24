@@ -275,10 +275,25 @@ transition: none;
 overflow: visible;
 }
 
-/* Adjust app-content to not hide behind bottom nav */
+/* --- MAIN CONTENT --- */
 .app-content {
-padding: 1.5rem 1rem;
-padding-bottom: calc(75px + 1.5rem);
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background: #FFFFFF;
+  position: relative;
+  padding: 2.5rem 3rem;
+  
+  /* NUEVAS PROPIEDADES PARA EL FOOTER */
+  display: flex;         /* Activa flexbox en el contenedor principal */
+  flex-direction: column; /* Apila el contenido y el footer verticalmente */
+}
+
+/* NUEVA CLASE PARA EL ENVOLTORIO */
+.main-wrapper {
+  flex: 1; /* Esto es clave: obliga al contenido a ocupar todo el espacio disponible, empujando el footer hacia abajo */
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-header-row, .sidebar-footer { 
@@ -412,4 +427,11 @@ padding: 2.5rem 3rem;
   border-radius: 50%;
   display: inline-block;
   animation: spin 0.8s linear infinite;
+}
+/* Ajuste responsive para el padding en móvil */
+@media (max-width: 768px) {
+  .app-content {
+    padding: 1.5rem 1rem;
+    padding-bottom: calc(75px + 1.5rem); /* Espacio para el nav inferior */
+  }
 }
