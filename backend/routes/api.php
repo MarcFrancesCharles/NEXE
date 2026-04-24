@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\TransaccioController;
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\CategoriaController;
 use App\Http\Middleware\CheckRole;
+use App\Http\Controllers\Api\V1\ContacteController;
 
 // --- RUTES PÚBLIQUES (Sense Token) ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -17,6 +18,8 @@ Route::get('/comerces', [ComercController::class, 'index']); // Llistar comerço
 Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes actives
 Route::get('/categories', [CategoriaController::class, 'index']); // Llistar categories amb subcategories
 Route::get('/comerces/{id}', [ComercController::class, 'show']);
+Route::post('/contacte', [ContacteController::class, 'store']);
+
 
 
 // --- RUTES PROTEGIDES (Amb Token de Sanctum) ---

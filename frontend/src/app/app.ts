@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from './core/services/auth';
+import { Footer } from './core/components/footer/footer'; // Ajusta la ruta si es necesario
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

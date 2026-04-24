@@ -1,0 +1,69 @@
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  animation: fadeInUp 0.4s var(--ease-spring) both;
+}
+
+.about-hero {
+  text-align: center;
+  padding: 3rem 0 4rem 0;
+}
+
+.about-hero h1 {
+  font-size: var(--text-hero);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: var(--text-main);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--green-500) 0%, var(--p-500) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-hero p {
+  font-size: var(--text-xl);
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.about-card {
+  background: var(--surface);
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-2);
+}
+
+.icon-wrapper {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.about-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-main);
+}
+
+.about-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}

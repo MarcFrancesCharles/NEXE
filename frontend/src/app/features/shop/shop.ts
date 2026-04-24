@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -11,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, ZXingScannerModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ZXingScannerModule],
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
