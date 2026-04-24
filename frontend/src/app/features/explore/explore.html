@@ -63,7 +63,10 @@
         </div>
 
         @if (loading) {
-          <div class="loader">Carregant comerços locals...</div>
+          <div class="global-loading-container">
+            <div class="minimal-loader"></div>
+            <p>Carregant comerços locals...</p>
+          </div>
         } @else {
           <div class="shop-grid">
             

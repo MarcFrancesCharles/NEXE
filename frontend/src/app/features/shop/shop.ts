@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
@@ -11,7 +10,7 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, FormsModule, ZXingScannerModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ZXingScannerModule],
   templateUrl: './shop.html',
   styleUrl: './shop.css'
 })
@@ -21,6 +20,7 @@ export class Shop implements OnInit, OnDestroy {
   ofertes: any[] = [];
   termeCerca: string = '';
   mostrantModal = false;
+  carregant = true;
 
   get ofertesFiltrades() {
     if (!this.termeCerca.trim()) return this.ofertes;
@@ -102,10 +102,26 @@ export class Shop implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.carregarLesMevesOfertes();
-    this.carregarElMeuComerc();
-    this.carregarCategories();
-    this.carregarEstadistiques();
+    import('rxjs').then(({ forkJoin }) => {
+      forkJoin([
+        this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() }),
+        this.auth.getElMeuComerc(),
+        this.auth.getCategories(),
+        this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
+      ]).subscribe({
+        next: ([ofertes, comerc, categories, estadistiques]) => {
+          this.ofertes = ofertes;
+          this.comerc = comerc;
+          this.categories = categories;
+          this.estadistiques = estadistiques;
+          this.carregant = false;
+        },
+        error: (err) => {
+          console.error('Error carregant dades del panell:', err);
+          this.carregant = false; // El mostrem igualment o podríem mostrar error
+        }
+      });
+    });
   }
 
   ngOnDestroy() {

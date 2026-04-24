@@ -1,3 +1,4 @@
+@if (!carregant) {
 <div class="shop-dashboard">
   
   <div class="shop-profile-header">
@@ -75,8 +76,6 @@
     </div>
 
   </div>
-
-  <div class="offers-section">
 
   <div class="offers-section">
     <div class="table-toolbar">
@@ -475,3 +474,9 @@
   }
 
 </div>
+} @else {
+  <div class="global-loading-container">
+    <div class="minimal-loader"></div>
+    <p>Preparant el teu panell de control...</p>
+  </div>
+}

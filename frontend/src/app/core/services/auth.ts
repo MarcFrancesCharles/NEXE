@@ -34,6 +34,11 @@ export class Auth {
     return localStorage.getItem('nexe_rol');
   }
 
+  esNormalUser(): boolean {
+    const rol = this.obtenirRol();
+    return !!this.obtenirToken() && rol !== 'ADMIN' && rol !== 'COMERC';
+  }
+
   getCategories(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/categories`);
   }

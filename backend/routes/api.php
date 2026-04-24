@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\OfertaController;
 use App\Http\Controllers\Api\V1\TransaccioController;
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\CategoriaController;
+use App\Http\Controllers\Api\V1\SolicitudComercController;
 use App\Http\Middleware\CheckRole;
 
 // --- RUTES PÚBLIQUES (Sense Token) ---
@@ -28,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json($request->user()->load(['perfil', 'transaccions']));
     });
     Route::put('/perfil-meu', [AuthController::class, 'actualitzarPerfil']);
+    Route::post('/solicituds-comerc', [SolicitudComercController::class, 'store']);
 
     // Rutes Exclusives: ESTÀNDARD (El Client)
     Route::middleware([CheckRole::class.':ESTANDARD'])->group(function () {

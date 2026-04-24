@@ -8,13 +8,14 @@ import { CreateOffer } from './features/shop/create-offer/create-offer';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { ShopDetail } from './features/shop-detail/shop-detail';
-
+import { ShopRequest } from './features/shop-request/shop-request';
 
 export const routes: Routes = [
   { path: '', component: Explore },      // Pàgina principal (Llista de botigues)
   { path: 'login', component: Login },     // Pantalla de Login
   { path: 'register', component: Register },  // Pantalla de Registre          
   { path: 'perfil', component: Profile, canActivate: [authGuard] },
+  { path: 'solicitar-comerc', component: ShopRequest, canActivate: [authGuard] },
   { path: 'botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] }, 
   { path: 'la-meva-botiga/crear-oferta', component: CreateOffer, canActivate: [authGuard, roleGuard] },

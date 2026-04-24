@@ -81,7 +81,7 @@
               <input type="text" formControlName="direccio" (input)="buscarAdreca($event)" placeholder="Escriu el carrer..." autocomplete="off">
               
               @if (buscantAdreca) {
-                <span style="position: absolute; right: 10px; top: 38px; font-size: 0.8rem; color: #64748B;">Buscant...</span>
+                <div class="mini-loader" style="position: absolute; right: 10px; top: 42px;"></div>
               }
 
               @if (adrecesSugerides.length > 0) {
@@ -100,6 +100,7 @@
         }
 
         <button type="submit" class="btn-primary" [disabled]="loading">
+          @if (loading) { <span class="button-spinner"></span> }
           {{ loading ? 'Creant compte...' : 'Registrar-me ara' }}
         </button>
       </form>

@@ -30,6 +30,10 @@ export class App {
     return rol === 'ADMIN' || rol === 'COMERC';
   }
 
+  esUsuariNormal(): boolean {
+    return this.auth.esNormalUser();
+  }
+
   // Funció per tancar sessió
   sortir() {
     this.auth.logout();
