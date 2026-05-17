@@ -13,6 +13,8 @@ import { About } from './features/about/about';
 import { Legal } from './features/legal/legal';
 import { Faq } from './features/faq/faq';
 
+// 1. IMPORTACIÓ DEL NOU COMPONENT ADMIN
+import { AdminDashboard } from './features/admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
   { path: '', component: Explore },
@@ -25,10 +27,19 @@ export const routes: Routes = [
   { path: 'la-meva-botiga/crear-oferta', component: CreateOffer, canActivate: [authGuard, roleGuard] },
   { path: 'shop/:id', component: ShopDetail },
   
-  // Nuevas rutas para el Footer
+  // Rutes del Footer
   { path: 'sobre-nosaltres', component: About },
   { path: 'legal', component: Legal },
   { path: 'faq', component: Faq },
   
+  // 2. LA RUTA D'ADMIN: Va protegida i amb la propietat data
+  { 
+    path: 'admin', 
+    component: AdminDashboard, 
+    canActivate: [authGuard, roleGuard], 
+    data: { role: 'ADMIN' } 
+  },
+  
+  // 3. RUTA COMODÍ (SEMPRE HA D'ANAR AL FINAL DE TOT)
   { path: '**', redirectTo: '' }
 ];

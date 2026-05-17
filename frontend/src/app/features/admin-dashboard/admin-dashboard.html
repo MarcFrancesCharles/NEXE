@@ -1,0 +1,193 @@
+<div class="admin-dashboard-wrapper">
+  <div class="admin-dashboard-container">
+    
+    <header class="admin-header">
+      <div class="header-titles">
+        <h1>Panell d'Administració</h1>
+        <p>Gestió centralitzada i moderació de la plataforma NEXE</p>
+      </div>
+    </header>
+
+    <nav class="admin-nav-tabs">
+      <button (click)="setTab('stats')" [class.active]="activeTab === 'stats'">
+        <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"></path></svg>
+        Estadístiques
+      </button>
+      
+      <button (click)="setTab('usuaris')" [class.active]="activeTab === 'usuaris'">
+        <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        Moderació Usuaris
+      </button>
+      
+      <button (click)="setTab('solicituds')" [class.active]="activeTab === 'solicituds'">
+        <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+        Sol·licituds d'Alta
+        <span *ngIf="solicituds.length > 0" class="badge-count">{{ solicituds.length }}</span>
+      </button>
+      
+      <button (click)="setTab('comerces')" [class.active]="activeTab === 'comerces'">
+        <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        Comerços Actius
+      </button>
+    </nav>
+
+    <section *ngIf="activeTab === 'stats'" class="tab-content fade-in">
+      <div class="stats-grid">
+        <div class="stat-card card-blue">
+          <div class="stat-icon-wrapper">
+            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Usuaris Registrats</span>
+            <span class="stat-value">{{ stats?.total_usuaris || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card-green">
+          <div class="stat-icon-wrapper">
+            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Comerços Actius</span>
+            <span class="stat-value">{{ stats?.total_comerces || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card-purple">
+          <div class="stat-icon-wrapper">
+            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M12 16V5"></path></svg>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Transaccions</span>
+            <span class="stat-value">{{ stats?.transaccions_realitzades || 0 }}</span>
+          </div>
+        </div>
+
+        <div class="stat-card card-amber">
+          <div class="stat-icon-wrapper">
+            <svg class="stat-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Sol·licituds Pendents</span>
+            <span class="stat-value">{{ stats?.solicituds_pendents || 0 }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'usuaris'" class="tab-content fade-in">
+      <div class="table-actions-toolbar">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" [(ngModel)]="cercaUsuari" placeholder="Cercar usuaris per nom o correu..." class="search-input">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Usuari</th>
+              <th>Correu Electrònic</th>
+              <th class="text-center">Estat del Compte</th>
+              <th class="text-right">Accions de Moderació</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuari of usuarisFiltrats">
+              <td>
+                <div class="user-avatar-cell">
+                  <div class="avatar-circle">{{ usuari.nom?.charAt(0).toUpperCase() }}</div>
+                  <span class="font-semibold">{{ usuari.nom }}</span>
+                </div>
+              </td>
+              <td>{{ usuari.correu }}</td>
+              <td class="text-center">
+                <span class="status-pill" [ngClass]="usuari.estat === 'ACTIU' ? 'pill-active' : 'pill-blocked'">
+                  {{ usuari.estat }}
+                </span>
+              </td>
+              <td class="text-right">
+                <button (click)="toggleEstat(usuari.id_usuari)" 
+                        class="btn-action-toggle"
+                        [ngClass]="usuari.estat === 'ACTIU' ? 'btn-danger' : 'btn-success'">
+                  {{ usuari.estat === 'ACTIU' ? 'Bloquejar' : 'Activar' }}
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="usuarisFiltrats.length === 0">
+              <td colspan="4" class="empty-table-msg">No s'han trobat usuaris amb aquest criteri.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'solicituds'" class="tab-content fade-in">
+      <div *ngIf="solicituds.length === 0" class="empty-state-card">
+        <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-4.586a1 1 0 00-.707.293l-1.828 1.828a1 1 0 01-.707.293H8.586a1 1 0 01-.707-.293L6.05 13.586a1 1 0 00-.707-.293H3"></path></svg>
+        <h3>Sense sol·licituds pendents</h3>
+        <p>Totes les sol·licituds d'alta de nous comerços han estat processades correctament.</p>
+      </div>
+
+      <div class="requests-grid">
+        <div *ngFor="let sol of solicituds" class="request-card">
+          <div class="request-card-header">
+            <h3>{{ sol.nom_comercial }}</h3>
+            <span class="status-pill pill-warning">Pendent</span>
+          </div>
+          <div class="request-card-body">
+            <div class="data-field">
+              <span class="field-label">Sol·licitant</span>
+              <span class="field-value">{{ sol.usuari?.nom }}</span>
+            </div>
+            <div class="data-field">
+              <span class="field-label">Categoria</span>
+              <span class="field-value">{{ sol.categoria?.nom_cat || 'N/A' }}</span>
+            </div>
+          </div>
+          <div class="request-card-actions">
+            <button (click)="resoldre(sol.id, 'APROVAR')" class="btn-primary-action">Aprovar Alta</button>
+            <button (click)="resoldre(sol.id, 'DENEGAR')" class="btn-secondary-action">Denegar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'comerces'" class="tab-content fade-in">
+      <div class="table-actions-toolbar">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input type="text" [(ngModel)]="cercaComerc" placeholder="Cercar comerços per nom, CIF o contacte..." class="search-input">
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nom Comercial</th>
+              <th>Identificador Fiscal (CIF)</th>
+              <th>Correu Electronic de Contacte</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let comerc of comercosFiltrats">
+              <td class="font-semibold text-dark">{{ comerc.nom_comercial }}</td>
+              <td class="font-mono text-muted">{{ comerc.cif }}</td>
+              <td>
+                <a [href]="'mailto:' + comerc.email_contacte" class="table-email-link">
+                  {{ comerc.email_contacte }}
+                </a>
+              </td>
+            </tr>
+            <tr *ngIf="comercosFiltrats.length === 0">
+              <td colspan="3" class="empty-table-msg">No s'han trobat comerços registrats.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</div>

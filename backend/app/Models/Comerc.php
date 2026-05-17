@@ -50,4 +50,22 @@ class Comerc extends Model
     {
         return $this->hasMany(Transaccio::class, 'id_comerc', 'id_comerc');
     }
+
+    /**
+     * Accessor de Laravel: Intercepta quan qualsevol lloc de l'API demana el "email_contacte"
+     */
+    public function getEmailContacteAttribute($value)
+    {
+        // 1. Si el camp físic a la base de dades NO està buit, el retornem normalment
+        if (!empty($value)) {
+            return $value;
+        }
+        
+        // 2. Si està buit, naveguem per la relació i agafem el correu original del registre de l'usuari
+        if ($this->usuari) {
+            return $this->usuari->correu;
+        }
+
+        return null;
+    }
 }

@@ -47,6 +47,7 @@ export class Shop implements OnInit, OnDestroy {
 
   // Variables pel Comerç
   comerc: any = null;
+  solicitudComerc: any = null;
   categories: any[] = [];
   mostrantModalComerc = false;
   comercForm: FormGroup;
@@ -103,6 +104,25 @@ export class Shop implements OnInit, OnDestroy {
 
   ngOnInit() {
     import('rxjs').then(({ forkJoin }) => {
+      const headers = this.getHeaders();
+      
+      // Cargar solicitud con manejo de error para usuarios que no se registraron como comercio
+      this.auth.getMiaSolicitudComerc().subscribe({
+        next: (solicitud) => {
+          this.solicitudComerc = solicitud;
+          this.loadDashboardData();
+        },
+        error: () => {
+          // Si no hay solicitud, simplemente continuamos
+          this.solicitudComerc = null;
+          this.loadDashboardData();
+        }
+      });
+    });
+  }
+
+  loadDashboardData() {
+    import('rxjs').then(({ forkJoin }) => {
       forkJoin([
         this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() }),
         this.auth.getElMeuComerc(),
@@ -118,7 +138,7 @@ export class Shop implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.error('Error carregant dades del panell:', err);
-          this.carregant = false; // El mostrem igualment o podríem mostrar error
+          this.carregant = false;
         }
       });
     });

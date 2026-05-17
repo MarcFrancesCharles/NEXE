@@ -1,4 +1,47 @@
 @if (!carregant) {
+
+  <!-- MENSAJE DE ESPERA SI SOLICITUD PENDIENTE -->
+  @if (!comerc && solicitudComerc?.estat === 'PENDENT') {
+    <div class="waiting-validation-banner">
+      <div class="waiting-content">
+        <div class="waiting-icon">⏳</div>
+        <div class="waiting-text">
+          <h2>El teu comercio està en procés de validació</h2>
+          <p>Gràcies per registrar-te com a comerciant a NEXE. L'equip d'administració està revisant la teva sol·licitud.</p>
+          <div class="waiting-info">
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Sol·licitud rebuda: <strong>{{ solicitudComerc?.created_at | date: 'short' }}</strong></span>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Comerç: <strong>{{ solicitudComerc?.nom_comercial }}</strong></span>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path d="M12 6v6l4 2"></path></svg>
+              <span>Revisat en: <strong>24-48 hores</strong></span>
+            </div>
+          </div>
+          <p class="waiting-note">Un cop aprovada, rebràs un correu de confirmació i podràs accedir a tots els teus panells de comerciant.</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (!comerc && solicitudComerc?.estat === 'DENEGADA') {
+    <div class="rejected-validation-banner">
+      <div class="waiting-content">
+        <div class="waiting-icon">❌</div>
+        <div class="waiting-text">
+          <h2>La teva sol·licitud ha estat denegada</h2>
+          <p>Ho sentim, però la teva sol·licitud com a comerciant ha estat rebutjada per l'equip d'NEXE.</p>
+          <p class="waiting-note">Si creus que és un error, pots contactar-nos a suport@nexe.cat per més informació.</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (comerc) {
 <div class="shop-dashboard">
   
   <div class="shop-profile-header">
@@ -474,6 +517,19 @@
   }
 
 </div>
+  } @else {
+    @if (!solicitudComerc) {
+      <div class="no-access-container">
+        <div class="no-access-card">
+          <div class="no-access-icon">🔒</div>
+          <h2>Accés Restringit</h2>
+          <p>Només els comerços aprovats poden accedir a aquest panell.</p>
+          <p class="note">Si desitges registrar-te com a comerciant, utilitza el formulari de sol·licitud disponible al menú principal.</p>
+        </div>
+      </div>
+    }
+  }
+
 } @else {
   <div class="global-loading-container">
     <div class="minimal-loader"></div>

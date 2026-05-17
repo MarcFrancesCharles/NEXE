@@ -5,65 +5,69 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\SolicitudComerc;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class SolicitudComercController extends Controller
 {
+    // Obtener la solicitud del usuario autenticado
+    public function getMiaSolicitud(Request $request)
+    {
+        $userId = $request->user()->id_usuari;
+        $solicitud = SolicitudComerc::where('id_usuari', $userId)->first();
+
+        if (!$solicitud) {
+            return response()->json(['missatge' => 'No tens cap sol·licitud de comerç.'], 404);
+        }
+
+        return response()->json($solicitud);
+    }
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'id_categoria' => 'required|exists:categorias,id_categoria',
-            'nom_comercial' => 'required|string|max:100',
-            'descripcio' => 'nullable|string|max:255',
-            'telefon' => 'nullable|integer',
-            'email_contacte' => 'nullable|email|max:100',
-            'enllac_web' => 'nullable|url|max:255',
-            'instagram' => 'nullable|string|max:100',
-            'cif' => 'required|string|max:20',
-            'latitud' => 'required|numeric',
-            'longitud' => 'required|numeric',
-            'imatge_url' => 'nullable|string', // Pot ser URL o es sobreescriurà si hi ha fitxer
-            'imatge_file' => 'nullable|image|max:2048', // 2MB max
-        ]);
+        try {
+            // 1. Validació bàsica (més relaxada per evitar bloquejos invisibles)
+            $request->validate([
+                'nom_comercial' => 'required|string',
+                'cif' => 'required|string',
+                'id_categoria' => 'required'
+            ]);
 
-        if ($validator->fails()) {
+            // 2. Evitem sol·licituds duplicades
+            $existent = SolicitudComerc::where('id_usuari', $request->user()->id_usuari)
+                               ->where('estat', 'PENDENT')
+                               ->first();
+                               
+            if ($existent) {
+                return response()->json(['error' => 'Ja tens una sol·licitud pendent de revisió.'], 400);
+            }
+
+            // 3. Guardem les dades
+            $solicitud = SolicitudComerc::create([
+                'id_usuari' => $request->user()->id_usuari,
+                'nom_comercial' => $request->input('nom_comercial'),
+                'cif' => $request->input('cif'),
+                'id_categoria' => $request->input('id_categoria'),
+                'descripcio' => $request->input('descripcio'),
+                'telefon' => $request->input('telefon'),
+                'email_contacte' => $request->input('email_contacte'),
+                'enllac_web' => $request->input('enllac_web'),
+                'instagram' => $request->input('instagram'),
+                'latitud' => $request->input('latitud'),
+                'longitud' => $request->input('longitud'),
+                'imatge_url' => $request->input('imatge_url'),
+                'estat' => 'PENDENT',
+            ]);
+
             return response()->json([
-                'missatge' => 'Error de validació',
-                'errors' => $validator->errors()
-            ], 422);
+                'missatge' => 'Sol·licitud enviada correctament! Esperant aprovació.',
+                'solicitud' => $solicitud
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Si falta un camp, el backend ens avisarà
+            return response()->json(['error' => 'Dades incompletes: ' . $e->getMessage()], 422);
+        } catch (\Exception $e) {
+            // Si hi ha un error de base de dades, també el veurem
+            return response()->json(['error' => 'Error intern: ' . $e->getMessage()], 500);
         }
-
-        $usuari = $request->user();
-
-        if ($usuari->rol === 'COMERC' || $usuari->rol === 'ADMIN') {
-            return response()->json(['missatge' => 'Ja ets un comerç o administrador.'], 403);
-        }
-
-        $solicitudExistent = SolicitudComerc::where('id_usuari', $usuari->id_usuari)
-            ->where('estat', 'PENDENT')
-            ->first();
-
-        if ($solicitudExistent) {
-            return response()->json(['missatge' => 'Ja tens una sol·licitud pendent.'], 400);
-        }
-
-        $dades = $validator->validated();
-        
-        // Gestionar la imatge (Arxiu té prioritat sobre URL si s'envien ambdós)
-        if ($request->hasFile('imatge_file')) {
-            $path = $request->file('imatge_file')->store('solicituds', 'public');
-            $dades['imatge_url'] = '/storage/' . $path;
-        }
-
-        $solicitud = SolicitudComerc::create([
-            ...$dades,
-            'id_usuari' => $usuari->id_usuari,
-            'estat' => 'PENDENT'
-        ]);
-
-        return response()->json([
-            'missatge' => 'Sol·licitud enviada correctament',
-            'solicitud' => $solicitud
-        ], 201);
     }
 }

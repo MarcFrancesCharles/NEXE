@@ -163,14 +163,8 @@
           </div>
         }
 
-        @if (successMsg) {
-          <div class="alert-inline success" style="margin-bottom: 1.5rem;">
-            {{ successMsg }}
-          </div>
-        }
-
         <div class="submit-footer">
-          <button type="submit" class="btn-primary-royal" [disabled]="loading || successMsg">
+          <button type="submit" class="btn-primary-royal" [disabled]="loading || showSuccessModal">
             @if (loading) { <span class="button-spinner"></span> }
             {{ loading ? 'Enviant...' : 'Envia la Sol·licitud' }}
           </button>
@@ -220,4 +214,42 @@
     </div>
 
   </div>
+
+  <!-- Modal de Éxito -->
+  @if (showSuccessModal) {
+    <div class="modal-overlay">
+      <div class="modal-content success-modal">
+        <div class="modal-header">
+          <div class="success-icon">✅</div>
+          <h2>¡Sol·licitud Enviada!</h2>
+        </div>
+        
+        <div class="modal-body">
+          <p class="modal-message">
+            Gràcies per unir-te a NEXE! Hem rebut la teva sol·licitud per convertir-te en comerciant.
+          </p>
+          
+          <div class="info-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <div>
+              <strong>¿Què passa ara?</strong>
+              <p>L'equip de NEXE revisar la teva sol·licitud en les pròximes 24-48 hores. Rebràs un email quan sigui aprovada.</p>
+            </div>
+          </div>
+
+          <div class="info-box warning">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <div>
+              <strong>Estàs a l'espera</strong>
+              <p>Mentre revisem la teva sol·licitud, potràs accedir com a usuari estàndard però no com a comerciant.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeSuccessModal()" class="btn-modal-primary">D'acord, Entès</button>
+        </div>
+      </div>
+    </div>
+  }
 </div>

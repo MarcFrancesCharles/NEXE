@@ -48,6 +48,11 @@ export class Auth {
     return this.http.get<any>(`${this.apiUrl}/el-meu-comerc`, { headers });
   }
 
+  getMiaSolicitudComerc(): Observable<any> {
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.obtenirToken()}` });
+    return this.http.get<any>(`${this.apiUrl}/solicituds-comerc/mia`, { headers });
+  }
+
   actualitzarComerc(dades: FormData): Observable<any> {
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.obtenirToken()}` });
     return this.http.post<any>(`${this.apiUrl}/el-meu-comerc`, dades, { headers });
