@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Usuari;
 use App\Models\Perfil;
 use App\Models\Comerc;
+use App\Models\SolicitudComerc;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -36,13 +37,15 @@ class AuthController extends Controller
             ]);
 
             if ($usuari->rol === 'COMERC') {
-                Comerc::create([
+                // Crear una solicitud de comercio pendent en lugar de un comercio directo
+                SolicitudComerc::create([
                     'id_usuari' => $usuari->id_usuari,
                     'id_categoria' => $request->id_categoria,
                     'nom_comercial' => $usuari->nom,
                     'cif' => $request->cif,
                     'latitud' => $request->latitud,    
-                    'longitud' => $request->longitud,  
+                    'longitud' => $request->longitud,
+                    'estat' => 'PENDENT',
                 ]);
             }
 
@@ -51,7 +54,7 @@ class AuthController extends Controller
             $token = $usuari->createToken('auth_token')->plainTextToken;
 
             return response()->json([
-                'missatge' => 'Usuari registrat correctament',
+                'missatge' => 'Usuari registrat correctament. La teva sol·licitud de comercio està pendent de revisió.',
                 'usuari' => $usuari,
                 'token' => $token
             ], 201);

@@ -20,6 +20,7 @@ export class ShopRequest implements OnInit {
   loading = false;
   errorMsg = '';
   successMsg = '';
+  showSuccessModal = false;
   
   categoriesPare: any[] = [];
   subcategoriesActives: any[] = [];
@@ -179,13 +180,18 @@ export class ShopRequest implements OnInit {
     this.http.post(`${environment.apiUrl}/solicituds-comerc`, formData, { headers }).subscribe({
       next: () => {
         this.loading = false;
-        this.successMsg = 'La teva sol·licitud ha estat enviada! L\'equip de NEXE la revisarà aviat.';
-        setTimeout(() => this.router.navigate(['/']), 4000);
+        this.showSuccessModal = true;
+        this.successMsg = '';
       },
       error: (err) => {
         this.loading = false;
-        this.errorMsg = err.error?.missatge || 'Error en enviar la sol·licitud.';
+        this.errorMsg = err.error?.missatge || err.error?.error || 'Error en enviar la sol·licitud.';
       }
     });
+  }
+
+  closeSuccessModal() {
+    this.showSuccessModal = false;
+    this.router.navigate(['/']);
   }
 }

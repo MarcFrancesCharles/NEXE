@@ -1,17 +1,33 @@
 import { inject } from '@angular/core';
-import { Router, CanActivateFn } from '@angular/router';
+import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../services/auth';
 
 export const roleGuard: CanActivateFn = (route, state) => {
-  const auth = inject(Auth);
   const router = inject(Router);
-  const rol = auth.obtenirRol();
+  const auth = inject(Auth);
   
-  // Ara sabem segur que és COMERÇ gràcies a la teva captura
-  if (rol === 'COMERC' || rol === 'ADMIN') {
+  const userRole = auth.obtenirRol();
+  
+  // Llegeix el rol requerit de la ruta (el que hem posat al data: { role: 'ADMIN' })
+  const expectedRole = route.data['role']; 
+
+  // REGLA 1: Si l'usuari és ADMIN i va a la seva ruta, el deixem passar
+  if (userRole === 'ADMIN') {
     return true;
-  } else {
-    router.navigate(['/perfil']);
+  }
+
+  // REGLA 2: Si la ruta demana un rol específic (com ADMIN) i no el tenim, fora
+  if (expectedRole && userRole !== expectedRole) {
+    router.navigate(['/']);
     return false;
   }
+
+  // REGLA 3: Si la ruta no demana rol específic (són les de 'botiga'), demanem ser COMERC
+  if (!expectedRole && userRole === 'COMERC') {
+    return true;
+  }
+
+  // Si res d'això es compleix, enviem l'usuari a l'inici
+  router.navigate(['/']);
+  return false;
 };

@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::put('/perfil-meu', [AuthController::class, 'actualitzarPerfil']);
     Route::post('/solicituds-comerc', [SolicitudComercController::class, 'store']);
+    Route::get('/solicituds-comerc/mia', [SolicitudComercController::class, 'getMiaSolicitud']);
 
     // Rutes Exclusives: ESTÀNDARD (El Client)
     Route::middleware([CheckRole::class.':ESTANDARD'])->group(function () {
@@ -58,8 +59,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutes Exclusives: ADMINISTRADOR
     Route::middleware([CheckRole::class.':ADMIN'])->group(function () {
+        // Estadístiques
+        Route::get('/admin/stats', [AdminController::class, 'getStats']);
+        
+        // Usuaris
         Route::get('/admin/usuaris', [AdminController::class, 'llistarUsuaris']);
-        Route::put('/admin/usuaris/{id}/estat', [AdminController::class, 'canviarEstat']);
+        Route::put('/admin/usuaris/{id}/estat', [AdminController::class, 'canviarEstatUsuari']);
+        
+        // Sol·licituds
+        Route::get('/admin/solicituds', [AdminController::class, 'llistarSolicituds']);
+        Route::post('/admin/solicituds/{id}/resoldre', [AdminController::class, 'resoldreSolicitud']);
+        
+        // Comerços
+        Route::get('/admin/comerces', [AdminController::class, 'llistarComercos']);
     });
 
     // Rutes Exclusives: COMERÇ i ADMIN
