@@ -105,7 +105,16 @@ export class ShopDetail implements OnInit {
   generarQrBescanvi(oferta: any) {
     if (this.elsMeusPunts < oferta.cost_punts) return; // Doble seguretat
 
-    const payload = { id_oferta: oferta.id_oferta };
+    // 1. Doble check: a veces Laravel devuelve 'id' en vez de 'id_oferta' en la serialización
+    const idOfertaReal = oferta.id_oferta || oferta.id; 
+
+    if (!idOfertaReal) {
+       console.error("L'objecte oferta no té cap ID:", oferta);
+       alert("Error intern del frontend: No s'ha trobat l'ID de l'oferta.");
+       return;
+    }
+
+    const payload = { id_oferta: idOfertaReal };
 
     this.http.post(`${environment.apiUrl}/client/oferta-qr`, payload, { headers: this.getHeaders() })
       .subscribe({
@@ -116,7 +125,12 @@ export class ShopDetail implements OnInit {
           this.mostrantQR = true;
         },
         error: (err) => {
-          alert(err.error.missatge || "Error al generar el codi de l'oferta.");
+          // 2. Imprimimos el error real en consola para saber qué pasa
+          console.error("Error retornat pel backend:", err);
+          
+          // 3. Capturamos 'message' (Laravel) o 'missatge' (El teu codi)
+          const missatgeBackend = err.error?.missatge || err.error?.message || "Error desconegut al generar el codi.";
+          alert(`S'ha produït un error: ${missatgeBackend}`);
         }
       });
   }

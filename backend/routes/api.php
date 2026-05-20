@@ -29,7 +29,17 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutes Generals per a qualsevol usuari logat
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/perfil-meu', function (Request $request) {
-        return response()->json($request->user()->load(['perfil', 'transaccions']));
+        return response()->json(
+            $request->user()->load([
+                'perfil', 
+                'transaccions' => function ($query) {
+                    // Ordenamos de más reciente a más antigua
+                    $query->orderBy('data_hora', 'desc')
+                          // Cargamos las relaciones para tener los nombres e imágenes
+                          ->with(['comerc', 'oferta']); 
+                }
+            ])
+        );
     });
     Route::put('/perfil-meu', [AuthController::class, 'actualitzarPerfil']);
     Route::post('/solicituds-comerc', [SolicitudComercController::class, 'store']);

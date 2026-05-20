@@ -9,5 +9,21 @@
 </head>
 <body>
   <app-root></app-root>
+
+  <div id="google_translate_element" style="position: fixed; top: 10px; right: 10px; z-index: 9999;"></div>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      { 
+        pageLanguage: 'ca', // Tu idioma original
+        includedLanguages: 'en,ca', // Los idiomas que quieres ofrecer
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
