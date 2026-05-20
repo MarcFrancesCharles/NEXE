@@ -22,7 +22,7 @@ class UsuariSeeder extends Seeder
             ]
         );
 
-        // Comerç de prova
+        // Comerç de prova principal
         Usuari::updateOrCreate(
             ['correu' => 'comerc@nexe.com'],
             [
@@ -46,7 +46,15 @@ class UsuariSeeder extends Seeder
             ]
         );
 
-        // Generem uns quants usuaris aleatoris
-        Usuari::factory()->count(10)->create();
+        // Generem 4 usuaris addicionals FORÇANT el rol a 'COMERC' perquè el ComercSeeder pugui crear els 5 locals
+        Usuari::factory()->count(4)->create([
+            'rol' => 'COMERC',
+            'estat' => 'ACTIU'
+        ]);
+
+        // Generem usuaris estàndards (clients) aleatoris per omplir la bd
+        Usuari::factory()->count(10)->create([
+            'rol' => 'ESTANDARD'
+        ]);
     }
 }
