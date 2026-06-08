@@ -185,10 +185,17 @@
                   {{ oferta.data_fi ? (oferta.data_fi | date:'dd/MM/yyyy') : 'Sense caducitat' }}
                 </td>
                 <td>
-                  <span class="status-badge" [class.active]="oferta.estat === 1">
-                    <span class="status-dot"></span>
-                    {{ oferta.estat === 1 ? 'Activa' : 'Inactiva' }}
-                  </span>
+                  @if (esProgramadaEnFutur(oferta)) {
+                    <span class="status-badge" style="background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a;">
+                      <span class="status-dot" style="background-color: #f59e0b;"></span>
+                      Programada
+                    </span>
+                  } @else {
+                    <span class="status-badge" [class.active]="oferta.estat === 1">
+                      <span class="status-dot"></span>
+                      {{ oferta.estat === 1 ? 'Activa' : 'Inactiva' }}
+                    </span>
+                  }
                 </td>
                 <td class="table-actions text-right">
                   <button class="btn-icon" title="Modificar" (click)="obrirModalEdicio(oferta)">
@@ -499,6 +506,22 @@
             </div>
           }
 
+          <!-- Programar publicació -->
+          <div class="form-group" style="margin-top: 1rem; margin-bottom: 1rem; padding: 12px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; color: var(--text-dark); margin-bottom: 0;">
+              <input type="checkbox" formControlName="programar" style="width: 18px; height: 18px; accent-color: var(--primary-color); cursor: pointer; margin: 0;">
+              Programar publicació posterior
+            </label>
+            <p class="help-text" style="margin-left: 26px; margin-top: 4px; margin-bottom: 0; font-size: 0.8rem; color: #64748b;">Planifica quan es publicarà l'oferta automàticament.</p>
+
+            @if (crearForm.get('programar')?.value) {
+              <div class="form-group" style="margin-top: 12px; margin-left: 26px; margin-bottom: 0;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-dark);">Data i hora de publicació:</label>
+                <input type="datetime-local" formControlName="data_publicacio" class="form-control" style="width: 100%; max-width: 300px; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; margin-top: 6px;">
+              </div>
+            }
+          </div>
+
           @if (missatgeCrear) {
             <div class="alert-inline" [class.success]="!errorCrear" [class.error]="errorCrear" style="margin-top: 1rem; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600;">
               {{ missatgeCrear }}
@@ -508,7 +531,7 @@
           <div class="modal-actions" style="margin-top: 2rem;">
             <button type="button" class="btn-secondary" (click)="tancarModalCrear()">Cancel·lar</button>
             <button type="submit" class="btn-primary" [disabled]="crearForm.invalid || loadingCrear">
-              {{ loadingCrear ? 'Publicant...' : 'Publicar Oferta' }}
+              {{ loadingCrear ? (crearForm.get('programar')?.value ? 'Programant...' : 'Publicant...') : (crearForm.get('programar')?.value ? 'Programar Oferta' : 'Publicar Oferta') }}
             </button>
           </div>
         </form>

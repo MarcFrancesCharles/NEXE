@@ -85,7 +85,9 @@ export class Shop implements OnInit, OnDestroy {
       descripcio:         ['', [Validators.required]],
       cost_punts:         [50, [Validators.required, Validators.min(1)]],
       tipus_durada:       ['sempre'],
-      data_personalitzada:['']
+      data_personalitzada:[''],
+      programar:          [false],
+      data_publicacio:    ['']
     });
 
     // Formulari del comerç amb els nous camps de contacte
@@ -148,6 +150,12 @@ export class Shop implements OnInit, OnDestroy {
     if (this.mostrantCamera) {
       this.tancarCamera();
     }
+  }
+
+  esProgramadaEnFutur(oferta: any): boolean {
+    if (!oferta.data_publicacio) return false;
+    const dataPub = new Date(oferta.data_publicacio);
+    return dataPub > new Date();
   }
 
   private getHeaders() {
@@ -307,7 +315,8 @@ export class Shop implements OnInit, OnDestroy {
   obrirModalCrear() {
     this.crearForm.reset({
       titol: '', descripcio: '', cost_punts: 50,
-      tipus_durada: 'sempre', data_personalitzada: ''
+      tipus_durada: 'sempre', data_personalitzada: '',
+      programar: false, data_publicacio: ''
     });
     this.missatgeCrear = '';
     this.mostrantModalCrear = true;
@@ -334,18 +343,27 @@ export class Shop implements OnInit, OnDestroy {
                : avui.toISOString().split('T')[0];
     }
 
+    let dataPublicacio = null;
+    if (valors.programar && valors.data_publicacio) {
+      dataPublicacio = valors.data_publicacio.replace('T', ' ');
+      if (dataPublicacio.length === 16) {
+        dataPublicacio += ':00';
+      }
+    }
+
     const payload = {
       titol:      valors.titol,
       descripcio: valors.descripcio,
       cost_punts: valors.cost_punts,
-      data_fi:    dataFi
+      data_fi:    dataFi,
+      data_publicacio: dataPublicacio
     };
 
     this.http.post(`${environment.apiUrl}/ofertes`, payload, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.loadingCrear = false;
         this.errorCrear = false;
-        this.missatgeCrear = '🎉 Oferta publicada amb èxit!';
+        this.missatgeCrear = valors.programar ? '🎉 Oferta programada amb èxit!' : '🎉 Oferta publicada amb èxit!';
         this.carregarLesMevesOfertes();
         setTimeout(() => this.tancarModalCrear(), 2000);
       },

@@ -31,7 +31,9 @@ export class CreateOffer {
       descripcio: ['', [Validators.required]],
       cost_punts: [50, [Validators.required, Validators.min(1)]],
       tipus_durada: ['sempre'], // Per defecte no caduca
-      data_personalitzada: [''] // Només s'usa si trien "personalitzat"
+      data_personalitzada: [''], // Només s'usa si trien "personalitzat"
+      programar: [false],
+      data_publicacio: ['']
     });
   }
 
@@ -56,12 +58,22 @@ export class CreateOffer {
                : avui.toISOString().split('T')[0]; 
     }
 
+    // Calcular data de publicació si es programa
+    let dataPublicacio = null;
+    if (valors.programar && valors.data_publicacio) {
+      dataPublicacio = valors.data_publicacio.replace('T', ' ');
+      if (dataPublicacio.length === 16) {
+        dataPublicacio += ':00';
+      }
+    }
+
     // 2. Preparar el paquet final per a Laravel
     const paquetFinal = {
       titol: valors.titol,
       descripcio: valors.descripcio,
       cost_punts: valors.cost_punts,
-      data_fi: dataFi
+      data_fi: dataFi,
+      data_publicacio: dataPublicacio
     };
 
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });

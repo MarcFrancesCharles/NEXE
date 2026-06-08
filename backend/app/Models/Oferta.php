@@ -19,7 +19,8 @@ class Oferta extends Model
         'cost_punts',
         'estat',
         'data_fi',
-        'imatge'
+        'imatge',
+        'data_publicacio'
     ];
     // Pertany a un COMERÇ 
     public function comerc()

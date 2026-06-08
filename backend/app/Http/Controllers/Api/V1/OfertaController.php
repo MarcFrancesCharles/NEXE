@@ -29,24 +29,30 @@ class OfertaController extends Controller
             'descripcio' => $request->descripcio,
             'cost_punts' => $request->cost_punts,
             'data_fi' => $request->data_fi,       
+            'data_publicacio' => $request->data_publicacio,
             'estat' => 1 // 1 = Activa per defecte
         ]);
 
         return response()->json([
-            'missatge' => 'Oferta publicada correctament!', 
+            'missatge' => 'Oferta creada correctament!', 
             'oferta' => $oferta
         ], 201);
     }
 
     public function index()
     {
-        // Retornem les ofertes actives (estat = 1) i que NO HAN CADUCAT
+        // Retornem les ofertes actives (estat = 1), que NO HAN CADUCAT i que JA S'HAN PUBLICAT
         $ofertes = Oferta::with('comerc')
             ->where('estat', 1)
             ->where(function($query) {
                 // Si la data_fi és Nul·la (per sempre) O bé és més gran o igual que avui
                 $query->whereNull('data_fi')
                       ->orWhere('data_fi', '>=', now());
+            })
+            ->where(function($query) {
+                // Si data_publicacio és Nul·la o és anterior/igual a ara
+                $query->whereNull('data_publicacio')
+                      ->orWhere('data_publicacio', '<=', now());
             })
             ->get();
             

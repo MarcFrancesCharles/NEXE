@@ -26,6 +26,7 @@ class StoreOfertaRequest extends FormRequest
             'cost_punts' => 'required|integer|min:1',
             'descripcio' => 'nullable|string', 
             'data_fi' => 'nullable|date',      
+            'data_publicacio' => 'nullable|date',
         ];
     }
 }
