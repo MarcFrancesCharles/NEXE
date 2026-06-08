@@ -138,10 +138,32 @@
     </section>
 
     <section *ngIf="activeTab === 'usuaris'" class="tab-content fade-in">
-      <div class="table-actions-toolbar">
-        <div class="search-input-wrapper">
+      <div class="table-actions-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <div class="search-input-wrapper" style="flex: 1; min-width: 250px; margin-bottom: 0;">
           <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <input type="text" [(ngModel)]="cercaUsuari" placeholder="Cercar usuaris per nom o correu..." class="search-input">
+          <input type="text" [(ngModel)]="cercaUsuari" placeholder="Cercar per nom o correu..." class="search-input">
+        </div>
+        
+        <!-- Botons de filtre de tipus de compte -->
+        <div class="filter-buttons" style="display: flex; gap: 0.35rem; background: #f1f5f9; padding: 4px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <button type="button" (click)="filtreRol = 'tots'" 
+                  [style.background]="filtreRol === 'tots' ? '#ffffff' : 'transparent'"
+                  [style.box-shadow]="filtreRol === 'tots' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                  style="border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #475569; transition: all 0.2s;">
+            Tots
+          </button>
+          <button type="button" (click)="filtreRol = 'estandard'" 
+                  [style.background]="filtreRol === 'estandard' ? '#ffffff' : 'transparent'"
+                  [style.box-shadow]="filtreRol === 'estandard' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                  style="border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #475569; transition: all 0.2s;">
+            👤 Clients
+          </button>
+          <button type="button" (click)="filtreRol = 'comerc'" 
+                  [style.background]="filtreRol === 'comerc' ? '#ffffff' : 'transparent'"
+                  [style.box-shadow]="filtreRol === 'comerc' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
+                  style="border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #475569; transition: all 0.2s;">
+            🏪 Comerços
+          </button>
         </div>
       </div>
 
@@ -149,7 +171,8 @@
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Usuari</th>
+              <th>Nom</th>
+              <th>Tipus de Compte</th>
               <th>Correu Electrònic</th>
               <th class="text-center">Estat del Compte</th>
               <th class="text-right">Accions de Moderació</th>
@@ -159,9 +182,19 @@
             <tr *ngFor="let usuari of usuarisFiltrats">
               <td>
                 <div class="user-avatar-cell">
-                  <div class="avatar-circle">{{ usuari.nom?.charAt(0).toUpperCase() }}</div>
-                  <span class="font-semibold">{{ usuari.nom }}</span>
+                  <div class="avatar-circle" [style.background-color]="usuari.rol === 'COMERC' ? '#d1fae5' : '#e0f2fe'" [style.color]="usuari.rol === 'COMERC' ? '#065f46' : '#0369a1'">
+                    {{ usuari.nom?.charAt(0).toUpperCase() }}
+                  </div>
+                  <span class="font-semibold" style="color: var(--text-dark);">{{ usuari.nom }}</span>
                 </div>
+              </td>
+              <td>
+                <span class="status-pill" 
+                      [style.background-color]="usuari.rol === 'COMERC' ? '#d1fae5' : '#e0f2fe'" 
+                      [style.color]="usuari.rol === 'COMERC' ? '#065f46' : '#0369a1'"
+                      style="font-weight: 600; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; font-size: 0.75rem;">
+                  {{ usuari.rol === 'COMERC' ? '🏪 Comerç' : '👤 Client' }}
+                </span>
               </td>
               <td>{{ usuari.correu }}</td>
               <td class="text-center">
@@ -178,7 +211,7 @@
               </td>
             </tr>
             <tr *ngIf="usuarisFiltrats.length === 0">
-              <td colspan="4" class="empty-table-msg">No s'han trobat usuaris amb aquest criteri.</td>
+              <td colspan="5" class="empty-table-msg">No s'han trobat comptes amb aquest criteri.</td>
             </tr>
           </tbody>
         </table>
