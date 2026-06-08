@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\CategoriaController;
 use App\Http\Controllers\Api\V1\SolicitudComercController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\Api\V1\ContacteController;
+use App\Http\Controllers\Api\V1\CareersController;
 
 // --- RUTES PÚBLIQUES (Sense Token) ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -20,6 +21,7 @@ Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes 
 Route::get('/categories', [CategoriaController::class, 'index']); // Llistar categories amb subcategories
 Route::get('/comerces/{id}', [ComercController::class, 'show']);
 Route::post('/contacte', [ContacteController::class, 'store']);
+Route::post('/careers', [CareersController::class, 'submit']);
 
 
 

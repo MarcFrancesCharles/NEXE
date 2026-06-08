@@ -12,6 +12,7 @@ import { ShopRequest } from './features/shop-request/shop-request';
 import { About } from './features/about/about';
 import { Legal } from './features/legal/legal';
 import { Faq } from './features/faq/faq';
+import { Careers } from './features/careers/careers';
 
 // 1. IMPORTACIÓ DEL NOU COMPONENT ADMIN
 import { AdminDashboard } from './features/admin-dashboard/admin-dashboard';
@@ -31,6 +32,7 @@ export const routes: Routes = [
   { path: 'sobre-nosaltres', component: About },
   { path: 'legal', component: Legal },
   { path: 'faq', component: Faq },
+  { path: 'treballa-amb-nosaltres', component: Careers },
   
   // 2. LA RUTA D'ADMIN: Va protegida i amb la propietat data
   { 
