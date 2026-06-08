@@ -31,6 +31,14 @@ export class App {
     return rol === 'ADMIN' || rol === 'COMERC';
   }
 
+  esAdminReal(): boolean {
+    return this.auth.obtenirRol() === 'ADMIN';
+  }
+
+  esComercReal(): boolean {
+    return this.auth.obtenirRol() === 'COMERC';
+  }
+
   esUsuariNormal(): boolean {
     return this.auth.esNormalUser();
   }

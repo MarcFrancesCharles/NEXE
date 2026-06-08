@@ -63,11 +63,19 @@ export class AdminDashboard implements OnInit {
     });
   }
 
+  filtreRol: 'tots' | 'estandard' | 'comerc' = 'tots';
+
   // Getters per filtrar en temps real al frontend
   get usuarisFiltrats(): any[] {
-    if (!this.cercaUsuari.trim()) return this.usuaris;
+    let list = this.usuaris;
+    if (this.filtreRol === 'estandard') {
+      list = list.filter(u => u.rol === 'ESTANDARD');
+    } else if (this.filtreRol === 'comerc') {
+      list = list.filter(u => u.rol === 'COMERC');
+    }
+    if (!this.cercaUsuari.trim()) return list;
     const query = this.cercaUsuari.toLowerCase();
-    return this.usuaris.filter(u => 
+    return list.filter(u => 
       u.nom?.toLowerCase().includes(query) || 
       u.correu?.toLowerCase().includes(query)
     );
@@ -81,5 +89,20 @@ export class AdminDashboard implements OnInit {
       c.cif?.toLowerCase().includes(query) ||
       c.email_contacte?.toLowerCase().includes(query)
     );
+  }
+
+  get totalAcumulacions(): number {
+    if (!this.stats?.transaccions_per_comerc) return 0;
+    return this.stats.transaccions_per_comerc.reduce((acc: number, c: any) => acc + (Number(c.acumulacions) || 0), 0);
+  }
+
+  get totalBescanvis(): number {
+    if (!this.stats?.transaccions_per_comerc) return 0;
+    return this.stats.transaccions_per_comerc.reduce((acc: number, c: any) => acc + (Number(c.bescanvis) || 0), 0);
+  }
+
+  get totalTransaccions(): number {
+    if (!this.stats?.transaccions_per_comerc) return 0;
+    return this.stats.transaccions_per_comerc.reduce((acc: number, c: any) => acc + (Number(c.total) || 0), 0);
   }
 }
