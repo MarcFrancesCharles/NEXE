@@ -137,6 +137,16 @@ class ComercController extends Controller
         $comerc = Comerc::findOrFail($id);
         $usuari->comercosSeguint()->syncWithoutDetaching([$comerc->id_comerc]);
 
+        \App\Models\Notificacio::create([
+            'id_usuari' => $usuari->id_usuari,
+            'id_comerc' => $comerc->id_comerc,
+            'titol' => 'Nou comerç seguit! 🏪',
+            'missatge' => "Ara estàs seguint a '" . $comerc->nom_comercial . "'. Rebràs notificacions quan publiquin noves ofertes!",
+            'icona' => '🏪',
+            'categoria' => 'general',
+            'llegida' => false
+        ]);
+
         return response()->json([
             'missatge' => 'Ara estàs seguint aquest comerç.',
             'seguidors_count' => $comerc->seguidors()->count(),
@@ -154,6 +164,16 @@ class ComercController extends Controller
 
         $comerc = Comerc::findOrFail($id);
         $usuari->comercosSeguint()->detach($comerc->id_comerc);
+
+        \App\Models\Notificacio::create([
+            'id_usuari' => $usuari->id_usuari,
+            'id_comerc' => $comerc->id_comerc,
+            'titol' => 'Has deixat de seguir un comerç',
+            'missatge' => "Has deixat de seguir a '" . $comerc->nom_comercial . "'.",
+            'icona' => '📭',
+            'categoria' => 'general',
+            'llegida' => false
+        ]);
 
         return response()->json([
             'missatge' => 'Has deixat de seguir aquest comerç.',
