@@ -95,11 +95,10 @@ class AuthController extends Controller
     {
         $usuari = $request->user();
         $request->validate([
-            'nom' => 'nullable|string|max:100',
             'correu' => 'required|email|unique:usuaris,correu,' . $usuari->id_usuari . ',id_usuari',
             'contrasenya' => 'nullable|min:8',
         ]);
-        $usuari->nom = $request->nom;
+        
         $usuari->correu = $request->correu;
         if ($request->filled('contrasenya')) {
             $usuari->contrasenya = Hash::make($request->contrasenya);

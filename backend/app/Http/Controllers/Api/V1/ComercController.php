@@ -15,7 +15,7 @@ class ComercController extends Controller
     public function index()
     {
         // Retornem els comerços i fem un "with" per incloure el nom de la categoria associada
-        $comercos = Comerc::with('categoria')->get();
+        $comercos = Comerc::with('categoria')->orderBy('nom_comercial', 'asc')->get();
         return response()->json($comercos);
     }
 

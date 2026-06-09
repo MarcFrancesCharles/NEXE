@@ -68,7 +68,6 @@ export class Profile implements OnInit {
   // =======================================================
   editantPerfil: boolean = false;
   editDades = {
-    nom: '',
     correu: '',
     contrasenya: ''
   };
@@ -76,7 +75,6 @@ export class Profile implements OnInit {
   tipusMissatgeEdit: 'success' | 'error' | '' = '';
 
   obrirEdicio() {
-    this.editDades.nom = this.usuari?.nom || '';
     this.editDades.correu = this.usuari?.correu || '';
     this.editDades.contrasenya = '';
     this.missatgeEdit = '';
@@ -90,7 +88,6 @@ export class Profile implements OnInit {
 
   guardarPerfil() {
     const payload: any = {
-      nom: this.editDades.nom,
       correu: this.editDades.correu
     };
 
