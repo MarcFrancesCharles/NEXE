@@ -22,7 +22,12 @@
   } @else {
     <div class="notifications-list">
       @for (notif of notificacions; track notif.id) {
-        <div class="notification-card" [class.unread]="!notif.llegida" [class.read]="notif.llegida">
+        <div class="notification-card" 
+             [class.unread]="!notif.llegida" 
+             [class.read]="notif.llegida"
+             [routerLink]="notif.id_comerc ? ['/shop', notif.id_comerc] : null" 
+             [style.cursor]="notif.id_comerc ? 'pointer' : 'default'"
+             title="Veure comerç">
           <div class="card-icon-area">
             <span class="emoji-icon">{{ notif.icona }}</span>
           </div>
@@ -34,11 +39,11 @@
             <p class="notification-message">{{ notif.missatge }}</p>
             <div class="card-actions">
               @if (!notif.llegida) {
-                <button class="action-btn mark-read" (click)="marcarComALlegida(notif.id)">
+                <button class="action-btn mark-read" (click)="$event.stopPropagation(); marcarComALlegida(notif.id)">
                   Marcar com a llegida
                 </button>
               }
-              <button class="action-btn delete-btn" (click)="eliminarNotificacio(notif.id)" title="Eliminar notificació">
+              <button class="action-btn delete-btn" (click)="$event.stopPropagation(); eliminarNotificacio(notif.id)" title="Eliminar notificació">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 Eliminar
               </button>

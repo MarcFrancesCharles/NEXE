@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { RouterLink } from '@angular/router';
 import { Auth } from '../../core/services/auth';
 import { environment } from '../../../../environments/environment';
 
 interface Notificacio {
   id: number;
+  id_comerc?: number;
   titol: string;
   missatge: string;
   data: Date;
@@ -17,7 +19,7 @@ interface Notificacio {
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css'
 })
@@ -43,6 +45,7 @@ export class Notifications implements OnInit {
         next: (res) => {
           this.notificacions = res.map(n => ({
             id: n.id_notificacio,
+            id_comerc: n.id_comerc,
             titol: n.titol,
             missatge: n.missatge,
             icona: n.icona || '🔔',
