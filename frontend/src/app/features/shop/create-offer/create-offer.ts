@@ -40,22 +40,22 @@ export class CreateOffer {
   crearOferta() {
     if (this.ofertaForm.invalid) return;
     this.loading = true;
-    
+
     // 1. Calcular la data de caducitat segons què hagin triat
     let dataFi = null;
     const valors = this.ofertaForm.value;
-    
+
     if (valors.tipus_durada !== 'sempre') {
       const avui = new Date();
       if (valors.tipus_durada === '1d') avui.setDate(avui.getDate() + 1);
       if (valors.tipus_durada === '3d') avui.setDate(avui.getDate() + 3);
       if (valors.tipus_durada === '1s') avui.setDate(avui.getDate() + 7);
       if (valors.tipus_durada === '1m') avui.setMonth(avui.getMonth() + 1);
-      
+
       // Formategem la data a YYYY-MM-DD perquè Laravel ho entengui bé
-      dataFi = valors.tipus_durada === 'custom' 
-               ? valors.data_personalitzada 
-               : avui.toISOString().split('T')[0]; 
+      dataFi = valors.tipus_durada === 'custom'
+        ? valors.data_personalitzada
+        : avui.toISOString().split('T')[0];
     }
 
     // Calcular data de publicació si es programa

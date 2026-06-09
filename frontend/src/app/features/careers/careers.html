@@ -5,93 +5,111 @@
       <p class="subtitle">Uneix-te a la plataforma NEXE com a administrador o com a comerç.</p>
     </div>
 
-    @if (successMsg) {
-    <div class="alert-success">
-      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="success-icon">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-      </svg>
-      <h4>Sol·licitud enviada correctament!</h4>
-      <p>{{ successMsg }}</p>
-      <button class="btn-primary" (click)="tornar()" style="margin-top: 1.5rem; width: auto;">Tornar a l'inici</button>
-    </div>
-    } @else {
-    <form [formGroup]="careersForm" (ngSubmit)="enviar()">
-      <div class="form-row">
+    @if (estaLogat()) {
+      @if (successMsg) {
+      <div class="alert-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="success-icon">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <h4>Sol·licitud enviada correctament!</h4>
+        <p>{{ successMsg }}</p>
+        <button class="btn-primary" (click)="tornar()" style="margin-top: 1.5rem; width: auto;">Tornar a l'inici</button>
+      </div>
+      } @else {
+      <form [formGroup]="careersForm" (ngSubmit)="enviar()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" formControlName="nom" placeholder="Ex: Joan Garcia" autocomplete="name"
+              [class.input-error]="careersForm.get('nom')?.invalid && careersForm.get('nom')?.touched">
+            @if (careersForm.get('nom')?.touched && careersForm.get('nom')?.invalid) {
+            <span class="err">El nom és obligatori</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Correu electrònic</label>
+            <input type="email" formControlName="correu" placeholder="correu@exemple.cat" autocomplete="email"
+              [class.input-error]="careersForm.get('correu')?.invalid && careersForm.get('correu')?.touched">
+            @if (careersForm.get('correu')?.touched && careersForm.get('correu')?.invalid) {
+            <span class="err">Introdueix un correu vàlid</span>
+            }
+          </div>
+        </div>
+
         <div class="form-group">
-          <label>Nom complet</label>
-          <input type="text" formControlName="nom" placeholder="Ex: Joan Garcia" autocomplete="name"
-            [class.input-error]="careersForm.get('nom')?.invalid && careersForm.get('nom')?.touched">
-          @if (careersForm.get('nom')?.touched && careersForm.get('nom')?.invalid) {
-          <span class="err">El nom és obligatori</span>
+          <label>Què t'interessa?</label>
+          <select formControlName="posicio"
+            [class.input-error]="careersForm.get('posicio')?.invalid && careersForm.get('posicio')?.touched">
+            <option value="">Selecciona una opció...</option>
+            <option value="ADMIN">Treballar com a administrador de la plataforma</option>
+            <option value="COMERC">Vull donar d'alta el meu comerç</option>
+          </select>
+          @if (careersForm.get('posicio')?.touched && careersForm.get('posicio')?.invalid) {
+          <span class="err">Selecciona una opció</span>
           }
         </div>
 
         <div class="form-group">
-          <label>Correu electrònic</label>
-          <input type="email" formControlName="correu" placeholder="correu@exemple.cat" autocomplete="email"
-            [class.input-error]="careersForm.get('correu')?.invalid && careersForm.get('correu')?.touched">
-          @if (careersForm.get('correu')?.touched && careersForm.get('correu')?.invalid) {
-          <span class="err">Introdueix un correu vàlid</span>
+          <label>Carta de presentació o comentari</label>
+          <textarea formControlName="missatge" rows="3" placeholder="Explica'ns breument per què vols unir-te a NEXE..."
+            [class.input-error]="careersForm.get('missatge')?.invalid && careersForm.get('missatge')?.touched"></textarea>
+          @if (careersForm.get('missatge')?.touched && careersForm.get('missatge')?.invalid) {
+          <span class="err">El comentari ha de tenir almenys 10 caràcters</span>
           }
         </div>
-      </div>
 
-      <div class="form-group">
-        <label>Què t'interessa?</label>
-        <select formControlName="posicio"
-          [class.input-error]="careersForm.get('posicio')?.invalid && careersForm.get('posicio')?.touched">
-          <option value="">Selecciona una opció...</option>
-          <option value="ADMIN">Treballar com a administrador de la plataforma</option>
-          <option value="COMERC">Vull donar d'alta el meu comerç</option>
-        </select>
-        @if (careersForm.get('posicio')?.touched && careersForm.get('posicio')?.invalid) {
-        <span class="err">Selecciona una opció</span>
+        <div class="form-group">
+          <label>Documentació necessària (PDF, DOCX)</label>
+          <div class="file-upload-wrapper">
+            <button type="button" class="btn-file-select" (click)="fileInput.click()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="margin-right: 6px; vertical-align: middle;">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              Seleccionar arxiu
+            </button>
+            <span class="file-name-text">
+              {{ selectedFileName || 'Cap arxiu seleccionat' }}
+            </span>
+            <input type="file" #fileInput (change)="onFileChange($event)" accept=".pdf,.doc,.docx" style="display: none;">
+          </div>
+        </div>
+
+        @if (errorMsg) {
+        <div class="alert-error">{{ errorMsg }}</div>
         }
-      </div>
 
-      <div class="form-group">
-        <label>Carta de presentació o comentari</label>
-        <textarea formControlName="missatge" rows="3" placeholder="Explica'ns breument per què vols unir-te a NEXE..."
-          [class.input-error]="careersForm.get('missatge')?.invalid && careersForm.get('missatge')?.touched"></textarea>
-        @if (careersForm.get('missatge')?.touched && careersForm.get('missatge')?.invalid) {
-        <span class="err">El comentari ha de tenir almenys 10 caràcters</span>
-        }
-      </div>
-
-      <div class="form-group">
-        <label>Documentació necessaria (PDF, DOCX)</label>
-        <div class="file-upload-wrapper">
-          <button type="button" class="btn-file-select" (click)="fileInput.click()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              style="margin-right: 6px; vertical-align: middle;">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-            Seleccionar arxiu
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="tornar()">Cancel·lar</button>
+          <button type="submit" class="btn-primary" [disabled]="loading">
+            @if (loading) { <span class="button-spinner"></span> }
+            {{ loading ? 'Enviant...' : 'Enviar sol·licitud' }}
           </button>
-          <span class="file-name-text">
-            {{ selectedFileName || 'Cap arxiu seleccionat' }}
-          </span>
-          <input type="file" #fileInput (change)="onFileChange($event)" accept=".pdf,.doc,.docx" style="display: none;">
+        </div>
+      </form>
+      }
+    } @else {
+      <div class="auth-block">
+        <div class="lock-icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lock-icon">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <h3>Cal tenir un compte</h3>
+        <p>Per poder omplir i enviar el formulari és obligatori disposar d'un compte actiu a NEXE.</p>
+        <div class="auth-actions">
+          <button class="btn-primary" (click)="anarALogin()">Inicia Sessió</button>
+          <button class="btn-secondary" (click)="anarARegister()">Registra't</button>
         </div>
       </div>
-
-      @if (errorMsg) {
-      <div class="alert-error">{{ errorMsg }}</div>
-      }
-
-      <div class="form-actions">
-        <button type="button" class="btn-secondary" (click)="tornar()">Cancel·lar</button>
-        <button type="submit" class="btn-primary" [disabled]="loading">
-          @if (loading) { <span class="button-spinner"></span> }
-          {{ loading ? 'Enviant...' : 'Enviar sol·licitud' }}
-        </button>
-      </div>
-    </form>
     }
   </div>
 </div>

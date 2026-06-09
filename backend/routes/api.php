@@ -22,12 +22,12 @@ Route::get('/ofertes', [OfertaController::class, 'index']);  // Llistar ofertes 
 Route::get('/categories', [CategoriaController::class, 'index']); // Llistar categories amb subcategories
 Route::get('/comerces/{id}', [ComercController::class, 'show']);
 Route::post('/contacte', [ContacteController::class, 'store']);
-Route::post('/careers', [CareersController::class, 'submit']);
 
 
 
 // --- RUTES PROTEGIDES (Amb Token de Sanctum) ---
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/careers', [CareersController::class, 'submit']);
     
     // Rutes Generals per a qualsevol usuari logat
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -93,6 +93,11 @@ Route::middleware('auth:sanctum')->group(function () {
         
         // Comerços
         Route::get('/admin/comerces', [AdminController::class, 'llistarComercos']);
+        
+        // Sol·licituds de Treball / Careers
+        Route::get('/admin/solicituds-treball', [AdminController::class, 'llistarSolicitudsTreball']);
+        Route::delete('/admin/solicituds-treball/{id}', [AdminController::class, 'eliminarSolicitudTreball']);
+        Route::post('/admin/solicituds-treball/{id}/resoldre', [AdminController::class, 'resoldreSolicitudTreball']);
     });
 
     // Rutes Exclusives: COMERÇ i ADMIN

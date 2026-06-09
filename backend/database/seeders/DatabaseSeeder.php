@@ -20,8 +20,13 @@ class DatabaseSeeder extends Seeder
             ComercSeeder::class,
             OfertaSeeder::class,
             SolAltaSeeder::class,
-            TiquetValidatSeeder::class,
+            SolicitudComercSeeder::class,
+            SolicitudTreballSeeder::class,
+            ContacteSeeder::class,
             TransaccioSeeder::class,
+            TiquetValidatSeeder::class,
+            NotificacioSeeder::class,
+            SeguidoresSeeder::class,
         ]);
     }
 }

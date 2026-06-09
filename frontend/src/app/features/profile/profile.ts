@@ -68,6 +68,7 @@ export class Profile implements OnInit {
   // =======================================================
   editantPerfil: boolean = false;
   editDades = {
+    nom: '',
     correu: '',
     contrasenya: ''
   };
@@ -75,6 +76,7 @@ export class Profile implements OnInit {
   tipusMissatgeEdit: 'success' | 'error' | '' = '';
 
   obrirEdicio() {
+    this.editDades.nom = this.usuari?.nom || '';
     this.editDades.correu = this.usuari?.correu || '';
     this.editDades.contrasenya = '';
     this.missatgeEdit = '';
@@ -87,9 +89,13 @@ export class Profile implements OnInit {
   }
 
   guardarPerfil() {
-    const payload: any = {
-      correu: this.editDades.correu
-    };
+    const payload: any = {};
+    
+    if (this.esNormalUser()) {
+      payload.nom = this.editDades.nom;
+    } else {
+      payload.correu = this.editDades.correu;
+    }
 
     if (this.editDades.contrasenya && this.editDades.contrasenya.trim().length > 0) {
       payload.contrasenya = this.editDades.contrasenya;
@@ -108,5 +114,9 @@ export class Profile implements OnInit {
           this.tipusMissatgeEdit = 'error';
         }
       });
+  }
+
+  esNormalUser(): boolean {
+    return this.auth.esNormalUser();
   }
 }

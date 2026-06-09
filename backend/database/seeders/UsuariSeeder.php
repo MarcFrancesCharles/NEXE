@@ -10,7 +10,8 @@ class UsuariSeeder extends Seeder
 {
     public function run(): void
     {
-        // Administrador
+        // 1. ADMINS
+        // Specific Admin
         Usuari::updateOrCreate(
             ['correu' => 'admin@nexe.com'],
             [
@@ -18,11 +19,23 @@ class UsuariSeeder extends Seeder
                 'contrasenya' => Hash::make('admin123'),
                 'rol' => 'ADMIN',
                 'estat' => 'ACTIU',
-                'codi_qr' => 'NX-ADMIN-001',
+                'codi_qr' => 'NX-ADMIN-SPECIFIC',
             ]
         );
+        // 9 Random Admins
+        for ($i = 1; $i <= 9; $i++) {
+            Usuari::create([
+                'nom' => 'Admin Auxiliar ' . $i,
+                'correu' => 'admin' . $i . '@nexe.com',
+                'contrasenya' => Hash::make('password'),
+                'rol' => 'ADMIN',
+                'estat' => 'ACTIU',
+                'codi_qr' => 'NX-ADMIN-00' . $i,
+            ]);
+        }
 
-        // Comerç de prova principal
+        // 2. COMERC
+        // Specific Comerc User
         Usuari::updateOrCreate(
             ['correu' => 'comerc@nexe.com'],
             [
@@ -30,11 +43,23 @@ class UsuariSeeder extends Seeder
                 'contrasenya' => Hash::make('comerc123'),
                 'rol' => 'COMERC',
                 'estat' => 'ACTIU',
-                'codi_qr' => 'NX-COMERC-001',
+                'codi_qr' => 'NX-COMERC-SPECIFIC',
             ]
         );
+        // 9 Random Comerc Users
+        for ($i = 1; $i <= 9; $i++) {
+            Usuari::create([
+                'nom' => 'Comerç Usuari ' . $i,
+                'correu' => 'comerc' . $i . '@nexe.com',
+                'contrasenya' => Hash::make('password'),
+                'rol' => 'COMERC',
+                'estat' => 'ACTIU',
+                'codi_qr' => 'NX-COMERC-00' . $i,
+            ]);
+        }
 
-        // Usuari estàndard de prova
+        // 3. ESTANDARD
+        // Specific Standard User
         Usuari::updateOrCreate(
             ['correu' => 'usuari@nexe.com'],
             [
@@ -42,19 +67,19 @@ class UsuariSeeder extends Seeder
                 'contrasenya' => Hash::make('usuari123'),
                 'rol' => 'ESTANDARD',
                 'estat' => 'ACTIU',
-                'codi_qr' => 'NX-CLIENT-001',
+                'codi_qr' => 'NX-CLIENT-SPECIFIC',
             ]
         );
-
-        // Generem 4 usuaris addicionals FORÇANT el rol a 'COMERC' perquè el ComercSeeder pugui crear els 5 locals
-        Usuari::factory()->count(4)->create([
-            'rol' => 'COMERC',
-            'estat' => 'ACTIU'
-        ]);
-
-        // Generem usuaris estàndards (clients) aleatoris per omplir la bd
-        Usuari::factory()->count(10)->create([
-            'rol' => 'ESTANDARD'
-        ]);
+        // 9 Random Standard Users
+        for ($i = 1; $i <= 9; $i++) {
+            Usuari::create([
+                'nom' => 'Usuari Estandard ' . $i,
+                'correu' => 'usuari' . $i . '@nexe.com',
+                'contrasenya' => Hash::make('password'),
+                'rol' => 'ESTANDARD',
+                'estat' => 'ACTIU',
+                'codi_qr' => 'NX-CLIENT-00' . $i,
+            ]);
+        }
     }
 }

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterOutlet, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { Auth } from './core/services/auth';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -19,6 +19,7 @@ export class App implements OnInit {
   // User name and points for menu
   nomUsuari: string = '';
   puntsUsuari: number = 0;
+  usuariBloquejat: boolean = false;
 
   private getHeaders() {
     return new HttpHeaders({
@@ -56,22 +57,46 @@ export class App implements OnInit {
     return this.auth.esNormalUser();
   }
 
-  // Funció per tancar sessió
-  ngOnInit() {
-    if (!this.estaLogat()) return;
-    // Load user name and points for menu
+  // Funció per carregar el perfil
+  carregarPerfil() {
+    if (!this.estaLogat()) {
+      this.usuariBloquejat = false;
+      this.nomUsuari = '';
+      this.puntsUsuari = 0;
+      return;
+    }
     this.http.get<any>(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
       .subscribe({
         next: (res: any) => {
           this.nomUsuari = res.nom || '';
           this.puntsUsuari = res.perfil?.punts_totals || 0;
+          this.usuariBloquejat = res.estat === 'BLOQUEJAT';
+        },
+        error: (err) => {
+          if (err.status === 401) {
+            this.auth.logout();
+            this.usuariBloquejat = false;
+          }
         }
       });
+  }
+
+  // Funció d'inicialització
+  ngOnInit() {
+    this.carregarPerfil();
+    
+    // Escolta canvis de ruta per recarregar el perfil i verificar si està bloquejat després de fer login
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.carregarPerfil();
+      }
+    });
   }
 
   // Funció per tancar sessió
   sortir() {
     this.auth.logout();
+    this.usuariBloquejat = false;
     this.router.navigate(['/login']);
   }
 }

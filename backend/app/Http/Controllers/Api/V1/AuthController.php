@@ -77,9 +77,6 @@ class AuthController extends Controller
             throw ValidationException::withMessages(['correu' => ['Les credencials són incorrectes.']]);
         }
 
-        if ($usuari->estat === 'BLOQUEJAT') {
-            return response()->json(['missatge' => 'Aquest compte està bloquejat.'], 403);
-        }
 
         $token = $usuari->createToken('auth_token')->plainTextToken;
         return response()->json(['missatge' => 'Sessió iniciada', 'usuari' => $usuari, 'rol' => $usuari->rol, 'token' => $token]);
@@ -94,12 +91,21 @@ class AuthController extends Controller
     public function actualitzarPerfil(Request $request)
     {
         $usuari = $request->user();
-        $request->validate([
-            'correu' => 'required|email|unique:usuaris,correu,' . $usuari->id_usuari . ',id_usuari',
-            'contrasenya' => 'nullable|min:8',
-        ]);
         
-        $usuari->correu = $request->correu;
+        if ($usuari->rol === 'ESTANDARD') {
+            $request->validate([
+                'nom' => 'required|string|max:100',
+                'contrasenya' => 'nullable|min:8',
+            ]);
+            $usuari->nom = $request->nom;
+        } else {
+            $request->validate([
+                'correu' => 'required|email|unique:usuaris,correu,' . $usuari->id_usuari . ',id_usuari',
+                'contrasenya' => 'nullable|min:8',
+            ]);
+            $usuari->correu = $request->correu;
+        }
+        
         if ($request->filled('contrasenya')) {
             $usuari->contrasenya = Hash::make($request->contrasenya);
         }

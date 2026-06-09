@@ -41,4 +41,16 @@ export class AdminService {
   getComercos(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/comerces`, this.getHeaders());
   }
+
+  getSolicitudsTreball(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/solicituds-treball`, this.getHeaders());
+  }
+
+  eliminarSolicitudTreball(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/solicituds-treball/${id}`, this.getHeaders());
+  }
+
+  resoldreSolicitudTreball(id: number, accio: 'APROVAR' | 'DENEGAR'): Observable<any> {
+    return this.http.post(`${this.apiUrl}/solicituds-treball/${id}/resoldre`, { accio }, this.getHeaders());
+  }
 }

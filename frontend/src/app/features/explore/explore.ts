@@ -110,6 +110,9 @@ export class Explore implements OnInit, AfterViewInit {
       next: (dades) => {
         this.comerces = dades.map((comerc, index) => {
           let imatgeOriginal = comerc.imatge_url;
+          if (imatgeOriginal === 'null' || imatgeOriginal === '') {
+            imatgeOriginal = null;
+          }
           if (imatgeOriginal && !imatgeOriginal.startsWith('http')) {
             imatgeOriginal = `${environment.storageUrl}${imatgeOriginal}`;
           }

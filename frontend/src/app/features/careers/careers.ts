@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
+import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-careers',
@@ -12,7 +13,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './careers.html',
   styleUrl: './careers.css'
 })
-export class Careers {
+export class Careers implements OnInit {
   careersForm: FormGroup;
   loading = false;
   successMsg = '';
@@ -22,15 +23,42 @@ export class Careers {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private auth = inject(Auth);
 
   constructor() {
     this.careersForm = this.fb.group({
-      nom: ['', [Validators.required, Validators.minLength(2)]],
-      correu: ['', [Validators.required, Validators.email]],
+      nom: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2)]],
+      correu: [{ value: '', disabled: true }, [Validators.required, Validators.email]],
       posicio: ['', [Validators.required]],
       missatge: ['', [Validators.required, Validators.minLength(10)]],
       cv: [null]
     });
+  }
+
+  estaLogat(): boolean {
+    return !!this.auth.obtenirToken();
+  }
+
+  ngOnInit() {
+    if (this.estaLogat()) {
+      const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
+      this.http.get<any>(`${environment.apiUrl}/perfil-meu`, { headers }).subscribe({
+        next: (res) => {
+          this.careersForm.patchValue({
+            nom: res.nom || '',
+            correu: res.correu || ''
+          });
+        }
+      });
+    }
+  }
+
+  anarALogin() {
+    this.router.navigate(['/login']);
+  }
+
+  anarARegister() {
+    this.router.navigate(['/register']);
   }
 
   onFileChange(event: any) {
@@ -45,6 +73,11 @@ export class Careers {
   }
 
   enviar() {
+    if (!this.estaLogat()) {
+      this.errorMsg = 'Has d\'iniciar sessió per enviar sol·licituds.';
+      return;
+    }
+
     if (this.careersForm.invalid) {
       this.careersForm.markAllAsTouched();
       return;
@@ -61,17 +94,15 @@ export class Careers {
     formData.append('missatge', this.careersForm.get('missatge')?.value);
     formData.append('cv', this.careersForm.get('cv')?.value);
 
-    this.http.post<any>(`${environment.apiUrl}/careers`, formData).subscribe({
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${this.auth.obtenirToken()}` });
+
+    this.http.post<any>(`${environment.apiUrl}/careers`, formData, { headers }).subscribe({
       next: (res) => {
         this.loading = false;
-        this.successMsg = 'Gràcies per el teu interès! Hem rebut la teva sol·licitud correctament i ens posarem en contacte amb tu aviat.';
-        this.careersForm.reset({
-          nom: '',
-          correu: '',
-          posicio: '',
-          missatge: '',
-          cv: null
-        });
+        this.successMsg = 'Sol·licitud tramesa correctament. Estigues pendent de les notificacions a la plataforma, ja que ens posarem en contacte amb tu per allà.';
+        
+        // Recarregar dades inicials després de reset
+        this.ngOnInit();
         this.selectedFileName = '';
       },
       error: (err: any) => {

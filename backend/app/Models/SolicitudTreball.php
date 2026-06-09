@@ -14,5 +14,6 @@ class SolicitudTreball extends Model
         'posicio',
         'missatge',
         'cv_path',
+        'estat',
     ];
 }

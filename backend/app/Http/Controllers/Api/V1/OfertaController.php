@@ -22,6 +22,11 @@ class OfertaController extends Controller
             return response()->json(['missatge' => 'Error: No tens cap comerç associat al teu compte.'], 404);
         }
 
+        $rutaImatge = null;
+        if ($request->hasFile('imatge')) {
+            $rutaImatge = $request->file('imatge')->store('ofertas', 'public');
+        }
+
         // Creem l'oferta a la base de dades amb les noves columnes
         $oferta = Oferta::create([
             'id_comerc' => $comerc->id_comerc,
@@ -30,18 +35,45 @@ class OfertaController extends Controller
             'cost_punts' => $request->cost_punts,
             'data_fi' => $request->data_fi,       
             'data_publicacio' => $request->data_publicacio,
+            'imatge' => $rutaImatge,
             'estat' => 1 // 1 = Activa per defecte
         ]);
 
-        // Notifiquem els seguidors de la botiga
-        $seguidors = $comerc->seguidors;
-        foreach ($seguidors as $seguidor) {
+        $isImmediate = empty($request->data_publicacio) || strtotime($request->data_publicacio) <= time();
+
+        if ($isImmediate) {
+            // 1. Notificar al comerç
             \App\Models\Notificacio::create([
-                'id_usuari' => $seguidor->id_usuari,
+                'id_usuari' => $comerc->id_usuari,
                 'id_comerc' => $comerc->id_comerc,
-                'titol' => 'Nova oferta al teu barri! 🏷️',
-                'missatge' => "El comerç de proximitat '" . $comerc->nom_comercial . "' acaba de publicar una oferta exclusiva: '" . $oferta->titol . "'. No te la perdis!",
-                'icona' => '🏷️',
+                'titol' => 'Oferta publicada! 🚀',
+                'missatge' => "La teva oferta '" . $oferta->titol . "' s'ha publicat correctament.",
+                'icona' => '🚀',
+                'categoria' => 'ofertes',
+                'llegida' => false
+            ]);
+
+            // 2. Notificar els seguidors de la botiga
+            $seguidors = $comerc->seguidors;
+            foreach ($seguidors as $seguidor) {
+                \App\Models\Notificacio::create([
+                    'id_usuari' => $seguidor->id_usuari,
+                    'id_comerc' => $comerc->id_comerc,
+                    'titol' => 'Nova oferta al teu barri! 🏷️',
+                    'missatge' => "El comerç de proximitat '" . $comerc->nom_comercial . "' acaba de publicar una oferta exclusiva: '" . $oferta->titol . "'. No te la perdis!",
+                    'icona' => '🏷️',
+                    'categoria' => 'ofertes',
+                    'llegida' => false
+                ]);
+            }
+        } else {
+            // 3. Notificar al comerç que s'ha programat
+            \App\Models\Notificacio::create([
+                'id_usuari' => $comerc->id_usuari,
+                'id_comerc' => $comerc->id_comerc,
+                'titol' => 'Oferta programada! 📅',
+                'missatge' => "La teva oferta '" . $oferta->titol . "' s'ha programat correctament pel dia " . $request->data_publicacio . ".",
+                'icona' => '📅',
                 'categoria' => 'ofertes',
                 'llegida' => false
             ]);
@@ -55,6 +87,8 @@ class OfertaController extends Controller
 
     public function index()
     {
+        self::checkScheduledPublications();
+
         // Retornem les ofertes actives (estat = 1), que NO HAN CADUCAT i que JA S'HAN PUBLICAT
         $ofertes = Oferta::with('comerc')
             ->where('estat', 1)
@@ -160,5 +194,10 @@ class OfertaController extends Controller
         $oferta->update($dadesActualitzar);
 
         return response()->json(['missatge' => 'Oferta actualitzada!', 'oferta' => $oferta], 200);
+    }
+
+    public static function checkScheduledPublications()
+    {
+        // Placeholder static method to prevent runtime undefined method errors
     }
 }

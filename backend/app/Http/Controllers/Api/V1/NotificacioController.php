@@ -11,6 +11,8 @@ class NotificacioController extends Controller
     // Llistar les notificacions de l'usuari actual
     public function index(Request $request)
     {
+        \App\Http\Controllers\Api\V1\OfertaController::checkScheduledPublications();
+
         $usuari = $request->user();
         $notificacions = Notificacio::where('id_usuari', $usuari->id_usuari)
                                     ->orderBy('created_at', 'desc')

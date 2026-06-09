@@ -24,7 +24,7 @@ export const routes: Routes = [
   { path: '', component: Explore, canActivate: [merchantGuard] },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
-  { path: 'perfil', component: Profile, canActivate: [authGuard] },
+  { path: 'perfil', component: Profile, canActivate: [authGuard, merchantGuard] },
 
   { path: 'botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] },

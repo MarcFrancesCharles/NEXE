@@ -8,8 +8,10 @@ use App\Models\Comerc;
 use App\Models\SolAlta;
 use App\Models\SolicitudComerc;
 use App\Models\Transaccio;
+use App\Models\SolicitudTreball;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -89,6 +91,13 @@ class AdminController extends Controller
             if ($request->accio === 'APROVAR') {
                 $solicitud->estat = 'APROVADA';
                 
+                // Actualitzar el rol de l'usuari a COMERC
+                $usuari = Usuari::find($solicitud->id_usuari);
+                if ($usuari) {
+                    $usuari->rol = 'COMERC';
+                    $usuari->save();
+                }
+                
                 // Crear el comerç amb les dades de la sol·licitud
                 Comerc::create([
                     'id_usuari' => $solicitud->id_usuari,
@@ -125,5 +134,66 @@ class AdminController extends Controller
     public function llistarComercos()
     {
         return response()->json(Comerc::with('usuari')->get());
+    }
+
+    // 5. GESTIÓ DE SOL·LICITUDS DE TREBALL (CAREERS)
+    public function llistarSolicitudsTreball()
+    {
+        $solicituds = SolicitudTreball::orderBy('created_at', 'desc')->get()->map(function($sol) {
+            $sol->cv_url = asset('storage/' . $sol->cv_path);
+            return $sol;
+        });
+        return response()->json($solicituds);
+    }
+
+    public function eliminarSolicitudTreball($id)
+    {
+        $sol = SolicitudTreball::findOrFail($id);
+        
+        if ($sol->cv_path && Storage::disk('public')->exists($sol->cv_path)) {
+            Storage::disk('public')->delete($sol->cv_path);
+        }
+        
+        $sol->delete();
+        return response()->json(['missatge' => 'Sol·licitud de treball eliminada correctament.']);
+    }
+
+    public function resoldreSolicitudTreball(Request $request, $id)
+    {
+        $request->validate([
+            'accio' => 'required|in:APROVAR,DENEGAR'
+        ]);
+
+        $sol = SolicitudTreball::findOrFail($id);
+        $sol->estat = ($request->accio === 'APROVAR') ? 'APROVADA' : 'DENEGADA';
+        $sol->save();
+
+        // Cerca si hi ha un usuari registrat amb aquest correu per notificar-lo
+        $usuari = Usuari::where('correu', $sol->correu)->first();
+        if ($usuari) {
+            if ($request->accio === 'APROVAR') {
+                $usuari->rol = $sol->posicio;
+                $usuari->save();
+            }
+
+            $titol = ($request->accio === 'APROVAR') ? 'Sol·licitud Aprovada! 🎉' : 'Sol·licitud Rebutjada ❌';
+            $missatge = ($request->accio === 'APROVAR')
+                ? "La teva sol·licitud per unir-te com a " . ($sol->posicio === 'COMERC' ? 'comerç' : 'administrador') . " ha estat aprovada."
+                : "La teva sol·licitud per unir-te com a " . ($sol->posicio === 'COMERC' ? 'comerç' : 'administrador') . " ha estat rebutjada.";
+
+            \App\Models\Notificacio::create([
+                'id_usuari' => $usuari->id_usuari,
+                'titol' => $titol,
+                'missatge' => $missatge,
+                'icona' => ($sol->posicio === 'COMERC') ? '🏪' : '💼',
+                'categoria' => 'sistema',
+                'llegida' => false
+            ]);
+        }
+
+        return response()->json([
+            'missatge' => 'Sol·licitud de treball actualitzada correctament.',
+            'solicitud' => $sol
+        ]);
     }
 }

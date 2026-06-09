@@ -147,6 +147,17 @@ class ComercController extends Controller
             'llegida' => false
         ]);
 
+        // Notificar al comerç que té un nou seguidor
+        \App\Models\Notificacio::create([
+            'id_usuari' => $comerc->id_usuari,
+            'id_comerc' => $comerc->id_comerc,
+            'titol' => 'Nou seguidor! 👤',
+            'missatge' => "L'usuari '" . $usuari->nom . "' ha començat a seguir el teu comerç.",
+            'icona' => '👤',
+            'categoria' => 'general',
+            'llegida' => false
+        ]);
+
         return response()->json([
             'missatge' => 'Ara estàs seguint aquest comerç.',
             'seguidors_count' => $comerc->seguidors()->count(),

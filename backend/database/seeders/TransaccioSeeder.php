@@ -20,29 +20,34 @@ class TransaccioSeeder extends Seeder
         }
 
         foreach ($usuaris as $usuari) {
-            // Un par de transacciones por usuario
-            $comerc = $comercs->random();
-            
-            // Acumulació
-            Transaccio::create([
-                'id_usuari' => $usuari->id_usuari,
-                'id_comerc' => $comerc->id_comerc,
-                'tipus' => 'ACUMULACIO',
-                'punts_mov' => rand(10, 50),
-                'data_hora' => now()->subDays(rand(1, 10)),
-            ]);
-
-            // Bescanvi (si n'hi ha ofertes disponibles)
-            $oferta = Oferta::where('id_comerc', $comerc->id_comerc)->first();
-            if ($oferta) {
+            // Cada usuari tindrà entre 3 i 6 transaccions d'acumulació de punts
+            $num_acumulacions = rand(3, 6);
+            for ($i = 0; $i < $num_acumulacions; $i++) {
+                $comerc = $comercs->random();
                 Transaccio::create([
                     'id_usuari' => $usuari->id_usuari,
                     'id_comerc' => $comerc->id_comerc,
-                    'id_oferta' => $oferta->id_oferta,
-                    'tipus' => 'BESCANVI',
-                    'punts_mov' => -$oferta->cost_punts,
-                    'data_hora' => now()->subDays(rand(0, 5)),
+                    'tipus' => 'ACUMULACIO',
+                    'punts_mov' => rand(15, 80),
+                    'data_hora' => now()->subDays(rand(5, 30)),
                 ]);
+            }
+
+            // Cada usuari tindrà entre 1 i 3 transaccions de bescanvi d'ofertes
+            $num_bescanvis = rand(1, 3);
+            for ($j = 0; $j < $num_bescanvis; $j++) {
+                $comerc = $comercs->random();
+                $oferta = Oferta::where('id_comerc', $comerc->id_comerc)->inRandomOrder()->first();
+                if ($oferta) {
+                    Transaccio::create([
+                        'id_usuari' => $usuari->id_usuari,
+                        'id_comerc' => $comerc->id_comerc,
+                        'id_oferta' => $oferta->id_oferta,
+                        'tipus' => 'BESCANVI',
+                        'punts_mov' => -$oferta->cost_punts,
+                        'data_hora' => now()->subDays(rand(1, 5)),
+                    ]);
+                }
             }
         }
     }

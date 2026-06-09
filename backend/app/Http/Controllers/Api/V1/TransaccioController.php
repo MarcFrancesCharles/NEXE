@@ -179,6 +179,17 @@ class TransaccioController extends Controller
                 'llegida' => false
             ]);
 
+            // Notificar al comerç que s'ha bescanviat una oferta seva
+            \App\Models\Notificacio::create([
+                'id_usuari' => $comerc->id_usuari,
+                'id_comerc' => $comerc->id_comerc,
+                'titol' => 'Oferta bescanviada! 🎁',
+                'missatge' => "Un client ha bescanviat la teva oferta '" . $oferta->titol . "' per " . $oferta->cost_punts . " punts.",
+                'icona' => '🎁',
+                'categoria' => 'punts',
+                'llegida' => false
+            ]);
+
             DB::commit();
 
             return response()->json([

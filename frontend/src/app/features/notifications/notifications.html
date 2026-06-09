@@ -25,7 +25,7 @@
         <div class="notification-card" 
              [class.unread]="!notif.llegida" 
              [class.read]="notif.llegida"
-             [routerLink]="notif.id_comerc ? ['/shop', notif.id_comerc] : null" 
+             [routerLink]="notif.id_comerc ? ['/shop', notif.id_comerc] : []" 
              [style.cursor]="notif.id_comerc ? 'pointer' : 'default'"
              title="Veure comerç">
           <div class="card-icon-area">

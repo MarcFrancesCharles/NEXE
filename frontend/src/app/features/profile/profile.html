@@ -23,7 +23,7 @@
     <div class="settings-section">
       <div class="settings-section-title">Compte</div>
       <div class="settings-card">
-        <div class="settings-item">
+        <div class="settings-item" [class.clickable]="esNormalUser()" (click)="esNormalUser() ? obrirEdicio() : null">
           <div class="settings-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -35,9 +35,18 @@
             <span class="settings-label">Nom</span>
           </div>
           <div class="settings-value">{{ usuari?.nom || 'Usuari' }}</div>
+          @if (esNormalUser()) {
+          <div class="settings-edit-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          </div>
+          }
         </div>
 
-        <div class="settings-item clickable" (click)="obrirEdicio()">
+        <div class="settings-item" [class.clickable]="!esNormalUser()" (click)="!esNormalUser() ? obrirEdicio() : null">
           <div class="settings-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,6 +58,7 @@
             <span class="settings-label">Correu electrònic</span>
           </div>
           <div class="settings-value">{{ usuari?.correu || 'No especificat' }}</div>
+          @if (!esNormalUser()) {
           <div class="settings-edit-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -56,6 +66,7 @@
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </div>
+          }
         </div>
 
         <div class="settings-item clickable" (click)="obrirEdicio()">
@@ -76,6 +87,15 @@
             </svg>
           </div>
         </div>
+
+        @if (esNormalUser()) {
+          <div class="settings-item" style="border-top: 1px solid #f1f5f9; padding-top: 12px; margin-top: 4px; font-size: 0.8rem; color: #64748b; line-height: 1.4; display: flex; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #64748b; flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <div>
+              <strong>Nota:</strong> Per motius de seguretat, el correu electrònic no es pot modificar directament. Posa't en contacte amb el suport a <a href="mailto:suport@nexe.cat" style="color: #059669; font-weight: bold; text-decoration: underline;">suport@nexe.cat</a> per fer qualsevol canvi.
+            </div>
+          </div>
+        }
       </div>
     </div>
 
@@ -110,7 +130,11 @@
       <button class="close-btn" (click)="tancarEdicio()">&times;</button>
     </div>
     <div class="edit-form">
-      <div class="form-group">
+      <div class="form-group" *ngIf="esNormalUser()">
+        <label>Nom complet</label>
+        <input type="text" [(ngModel)]="editDades.nom" placeholder="El teu nom complet">
+      </div>
+      <div class="form-group" *ngIf="!esNormalUser()">
         <label>Correu electrònic</label>
         <input type="email" [(ngModel)]="editDades.correu" placeholder="Correu electrònic">
       </div>
@@ -127,7 +151,7 @@
 
       <div class="edit-actions">
         <button class="btn-cancel" (click)="tancarEdicio()">Cancel·lar</button>
-        <button class="btn-save" (click)="guardarPerfil()" [disabled]="!editDades.correu">Guardar canvis</button>
+        <button class="btn-save" (click)="guardarPerfil()" [disabled]="esNormalUser() ? !editDades.nom : !editDades.correu">Guardar canvis</button>
       </div>
     </div>
   </div>

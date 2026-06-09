@@ -336,12 +336,14 @@ export class Shop implements OnInit, OnDestroy {
       tipus_durada: 'sempre', data_personalitzada: '',
       programar: false, data_publicacio: ''
     });
+    this.imatgeSeleccionada = null;
     this.missatgeCrear = '';
     this.mostrantModalCrear = true;
   }
 
   tancarModalCrear() {
     this.mostrantModalCrear = false;
+    this.imatgeSeleccionada = null;
   }
 
   publicarOferta() {
@@ -369,15 +371,23 @@ export class Shop implements OnInit, OnDestroy {
       }
     }
 
-    const payload = {
-      titol:      valors.titol,
-      descripcio: valors.descripcio,
-      cost_punts: valors.cost_punts,
-      data_fi:    dataFi,
-      data_publicacio: dataPublicacio
-    };
+    const formData = new FormData();
+    formData.append('titol', valors.titol);
+    formData.append('cost_punts', valors.cost_punts.toString());
+    if (valors.descripcio) {
+      formData.append('descripcio', valors.descripcio);
+    }
+    if (dataFi) {
+      formData.append('data_fi', dataFi);
+    }
+    if (dataPublicacio) {
+      formData.append('data_publicacio', dataPublicacio);
+    }
+    if (this.imatgeSeleccionada) {
+      formData.append('imatge', this.imatgeSeleccionada);
+    }
 
-    this.http.post(`${environment.apiUrl}/ofertes`, payload, { headers: this.getHeaders() }).subscribe({
+    this.http.post(`${environment.apiUrl}/ofertes`, formData, { headers: this.getHeaders() }).subscribe({
       next: () => {
         this.loadingCrear = false;
         this.errorCrear = false;

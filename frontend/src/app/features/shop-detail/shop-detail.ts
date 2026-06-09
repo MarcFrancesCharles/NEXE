@@ -64,6 +64,9 @@ export class ShopDetail implements OnInit {
       next: (res: any) => {
         // Processem la imatge del comerç
         let imgComerc = res.imatge_url;
+        if (imgComerc === 'null' || imgComerc === '') {
+          imgComerc = null;
+        }
         if (imgComerc && !imgComerc.startsWith('http')) {
           imgComerc = `${this.storageUrl}${imgComerc}`;
         }
@@ -81,12 +84,15 @@ export class ShopDetail implements OnInit {
           })
           .map((o: any, idx: number) => {
             let imgOferta = o.imatge;
+            if (imgOferta === 'null' || imgOferta === '') {
+              imgOferta = null;
+            }
             if (imgOferta && !imgOferta.startsWith('http')) {
               imgOferta = `${this.storageUrl}${imgOferta}`;
             }
             return {
               ...o,
-              imatge: imgOferta || `https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800&sig=${idx}`
+              imatge: imgOferta || `https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800`
             };
           });
 

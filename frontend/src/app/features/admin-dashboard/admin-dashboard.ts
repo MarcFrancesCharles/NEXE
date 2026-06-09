@@ -14,10 +14,12 @@ export class AdminDashboard implements OnInit {
   private adminService = inject(AdminService);
 
   activeTab: 'stats' | 'usuaris' | 'solicituds' | 'comerces' = 'stats';
+  subTabSolicituds: 'comerc' | 'treball' = 'comerc';
   
   stats: any = {};
   usuaris: any[] = [];
   solicituds: any[] = [];
+  solicitudsTreball: any[] = [];
   comerces: any[] = [];
 
   // Filtres de cerca sol·licitats pel manual d'usuari
@@ -26,6 +28,7 @@ export class AdminDashboard implements OnInit {
 
   ngOnInit() {
     this.loadStats();
+    this.loadSolicituds();
   }
 
   setTab(tab: 'stats' | 'usuaris' | 'solicituds' | 'comerces') {
@@ -46,6 +49,7 @@ export class AdminDashboard implements OnInit {
 
   loadSolicituds() {
     this.adminService.getSolicituds().subscribe(res => this.solicituds = res);
+    this.adminService.getSolicitudsTreball().subscribe(res => this.solicitudsTreball = res);
   }
 
   loadComerces() {
@@ -57,38 +61,145 @@ export class AdminDashboard implements OnInit {
   }
 
   resoldre(id: number, accio: 'APROVAR' | 'DENEGAR') {
-    this.adminService.resoldreSolicitud(id, accio).subscribe(() => {
-      this.loadSolicituds();
-      this.loadStats();
-    });
+    const missatge = accio === 'APROVAR' 
+      ? 'Estàs segur que vols aprovar aquesta sol·licitud?' 
+      : 'Estàs segur que vols denegar aquesta sol·licitud?';
+    if (confirm(missatge)) {
+      this.adminService.resoldreSolicitud(id, accio).subscribe(() => {
+        this.loadSolicituds();
+        this.loadStats();
+      });
+    }
   }
 
-  filtreRol: 'tots' | 'estandard' | 'comerc' = 'tots';
+  eliminarSolicitudTreball(id: number) {
+    if (confirm('Estàs segur que vols eliminar definitivament aquesta sol·licitud?')) {
+      this.adminService.eliminarSolicitudTreball(id).subscribe(() => {
+        this.loadSolicituds();
+      });
+    }
+  }
+
+  resoldreSolicitudTreball(id: number, accio: 'APROVAR' | 'DENEGAR') {
+    const missatge = accio === 'APROVAR'
+      ? 'Estàs segur que vols aprovar aquesta sol·licitud de treball? Això actualitzarà el rol de l\'usuari.'
+      : 'Estàs segur que vols denegar aquesta sol·licitud de treball?';
+    if (confirm(missatge)) {
+      this.adminService.resoldreSolicitudTreball(id, accio).subscribe(() => {
+        this.loadSolicituds();
+        this.loadStats();
+      });
+    }
+  }
+
+  get solicitudsTreballComerc(): any[] {
+    return this.solicitudsTreball.filter(s => s.posicio === 'COMERC');
+  }
+
+  get solicitudsTreballAdmin(): any[] {
+    return this.solicitudsTreball.filter(s => s.posicio === 'ADMIN');
+  }
+
+  get totalSolicitudsPendents(): number {
+    return this.solicitudsTreball.filter(s => s.estat === 'PENDENT').length;
+  }
+
+  get solicitudsComercPendents(): number {
+    return this.solicitudsTreball.filter(s => s.posicio === 'COMERC' && s.estat === 'PENDENT').length;
+  }
+
+  get solicitudsAdminPendents(): number {
+    return this.solicitudsTreball.filter(s => s.posicio === 'ADMIN' && s.estat === 'PENDENT').length;
+  }
+
+  filtreEstat: 'tots' | 'actius' | 'bloquejats' = 'tots';
+  ordenacio: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' = 'recents';
 
   // Getters per filtrar en temps real al frontend
   get usuarisFiltrats(): any[] {
-    let list = this.usuaris;
-    if (this.filtreRol === 'estandard') {
-      list = list.filter(u => u.rol === 'ESTANDARD');
-    } else if (this.filtreRol === 'comerc') {
-      list = list.filter(u => u.rol === 'COMERC');
+    let list = this.usuaris.filter(u => u.rol === 'ESTANDARD');
+    
+    if (this.filtreEstat === 'actius') {
+      list = list.filter(u => u.estat === 'ACTIU');
+    } else if (this.filtreEstat === 'bloquejats') {
+      list = list.filter(u => u.estat === 'BLOQUEJAT');
     }
-    if (!this.cercaUsuari.trim()) return list;
-    const query = this.cercaUsuari.toLowerCase();
-    return list.filter(u => 
-      u.nom?.toLowerCase().includes(query) || 
-      u.correu?.toLowerCase().includes(query)
-    );
+
+    if (this.cercaUsuari.trim()) {
+      const query = this.cercaUsuari.toLowerCase();
+      list = list.filter(u => 
+        u.nom?.toLowerCase().includes(query) || 
+        u.correu?.toLowerCase().includes(query)
+      );
+    }
+
+    // Ordenació: per defecte, els més nous a dalt (comparant created_at o id_usuari)
+    list.sort((a, b) => {
+      if (this.ordenacio === 'recents') {
+        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_usuari || 0);
+        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_usuari || 0);
+        return valB - valA;
+      } else if (this.ordenacio === 'antics') {
+        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_usuari || 0);
+        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_usuari || 0);
+        return valA - valB;
+      } else if (this.ordenacio === 'nom-asc') {
+        return (a.nom || '').localeCompare(b.nom || '');
+      } else if (this.ordenacio === 'nom-desc') {
+        return (b.nom || '').localeCompare(a.nom || '');
+      }
+      return 0;
+    });
+
+    return list;
+  }
+
+  filtreEstatComerc: 'tots' | 'actius' | 'bloquejats' = 'tots';
+  ordenacioComerc: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' = 'recents';
+
+  toggleEstatComerc(idUsuari: number) {
+    this.adminService.toggleEstatUsuari(idUsuari).subscribe(() => this.loadComerces());
   }
 
   get comercosFiltrats(): any[] {
-    if (!this.cercaComerc.trim()) return this.comerces;
-    const query = this.cercaComerc.toLowerCase();
-    return this.comerces.filter(c => 
-      c.nom_comercial?.toLowerCase().includes(query) || 
-      c.cif?.toLowerCase().includes(query) ||
-      c.email_contacte?.toLowerCase().includes(query)
-    );
+    let list = this.comerces;
+
+    // Filtre d'estat (basat en l'estat de l'usuari vinculat al comerç)
+    if (this.filtreEstatComerc === 'actius') {
+      list = list.filter(c => c.usuari?.estat === 'ACTIU');
+    } else if (this.filtreEstatComerc === 'bloquejats') {
+      list = list.filter(c => c.usuari?.estat === 'BLOQUEJAT');
+    }
+
+    // Filtre per text de cerca
+    if (this.cercaComerc.trim()) {
+      const query = this.cercaComerc.toLowerCase();
+      list = list.filter(c => 
+        c.nom_comercial?.toLowerCase().includes(query) || 
+        c.cif?.toLowerCase().includes(query) ||
+        c.email_contacte?.toLowerCase().includes(query)
+      );
+    }
+
+    // Ordenació per defecte (més nous primer)
+    list.sort((a, b) => {
+      if (this.ordenacioComerc === 'recents') {
+        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_comerc || 0);
+        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_comerc || 0);
+        return valB - valA;
+      } else if (this.ordenacioComerc === 'antics') {
+        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_comerc || 0);
+        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_comerc || 0);
+        return valA - valB;
+      } else if (this.ordenacioComerc === 'nom-asc') {
+        return (a.nom_comercial || '').localeCompare(b.nom_comercial || '');
+      } else if (this.ordenacioComerc === 'nom-desc') {
+        return (b.nom_comercial || '').localeCompare(a.nom_comercial || '');
+      }
+      return 0;
+    });
+
+    return list;
   }
 
   get totalAcumulacions(): number {

@@ -78,6 +78,14 @@ textarea {
   resize: vertical;
 }
 
+input:disabled {
+  background: #EAF0ED;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  border-color: #CBD5E1;
+  opacity: 0.85;
+}
+
 select {
   cursor: pointer;
   appearance: none;
@@ -259,6 +267,60 @@ select {
   }
 }
 
+
+.auth-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  animation: scaleIn 0.3s var(--ease-spring) both;
+}
+
+.lock-icon-wrapper {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--green-500);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.lock-icon {
+  stroke: var(--green-500);
+}
+
+.auth-block h3 {
+  font-size: 1.4rem;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.auth-block p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.auth-actions .btn-primary, .auth-actions .btn-secondary {
+  flex: 1;
+  max-width: 180px;
+  text-align: center;
+}
+
 @media (max-width: 550px) {
   .careers-card {
     padding: 1.5rem;
@@ -272,6 +334,16 @@ select {
   .form-actions {
     flex-direction: column-reverse;
     gap: 0.5rem;
+  }
+  
+  .auth-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .auth-actions .btn-primary, .auth-actions .btn-secondary {
+    max-width: 100%;
+    width: 100%;
   }
   
   .btn-primary, .btn-secondary {
