@@ -174,6 +174,21 @@ class AdminController extends Controller
             if ($request->accio === 'APROVAR') {
                 $usuari->rol = $sol->posicio;
                 $usuari->save();
+
+                // Si la posició aprovada és COMERC, creem un comerç bàsic perquè pugui accedir al seu panell i configurar-lo
+                if ($sol->posicio === 'COMERC' && !Comerc::where('id_usuari', $usuari->id_usuari)->exists()) {
+                    $categoria = \App\Models\Categoria::first();
+                    Comerc::create([
+                        'id_usuari' => $usuari->id_usuari,
+                        'id_categoria' => $categoria ? $categoria->id_categoria : 1,
+                        'nom_comercial' => 'El meu comerç ' . $usuari->nom,
+                        'cif' => 'B' . rand(10000000, 99999999),
+                        'email_contacte' => $usuari->correu,
+                        'descripcio' => 'Edita aquestes dades per personalitzar el teu comerç.',
+                        'latitud' => 41.6167,
+                        'longitud' => 0.6222,
+                    ]);
+                }
             }
 
             $titol = ($request->accio === 'APROVAR') ? 'Sol·licitud Aprovada! 🎉' : 'Sol·licitud Rebutjada ❌';
