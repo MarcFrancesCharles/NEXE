@@ -435,3 +435,106 @@ padding: 2.5rem 3rem;
     padding-bottom: calc(75px + 1.5rem); /* Espacio para el nav inferior */
   }
 }
+
+/* Points Box in Sidebar */
+.nav-points-box {
+  margin: 0.75rem 0.5rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.03) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.points-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.points-icon {
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+.points-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.points-label {
+  font-size: 0.7rem;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.points-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Collapsed sidebar support */
+.app-sidebar.collapsed .nav-points-box {
+  padding: 0.75rem 0.5rem;
+  margin: 0.5rem 0.25rem;
+  background: transparent;
+  border-color: transparent;
+}
+
+.app-sidebar.collapsed .points-content {
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-sidebar.collapsed .points-label {
+  display: none;
+}
+
+.app-sidebar.collapsed .points-value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Responsive / Mobile styles */
+@media (max-width: 768px) {
+  .nav-points-box {
+    margin: 0;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .points-content {
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .points-icon {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .points-text {
+    align-items: center;
+  }
+  
+  .points-label {
+    display: none;
+  }
+  
+  .points-value {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #059669;
+  }
+}

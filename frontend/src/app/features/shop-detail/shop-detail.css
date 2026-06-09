@@ -311,6 +311,9 @@
   padding: 0.15rem 0.45rem;
   border-radius: 5px;
   margin-left: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .offer-content p {

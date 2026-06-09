@@ -16,8 +16,9 @@ export class App implements OnInit {
   private auth = inject(Auth);
   private http = inject(HttpClient);
 
-  // User name for menu
+  // User name and points for menu
   nomUsuari: string = '';
+  puntsUsuari: number = 0;
 
   private getHeaders() {
     return new HttpHeaders({
@@ -57,10 +58,14 @@ export class App implements OnInit {
 
   // Funció per tancar sessió
   ngOnInit() {
-    // Load user name for menu
-    this.http.get(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
+    if (!this.estaLogat()) return;
+    // Load user name and points for menu
+    this.http.get<any>(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
       .subscribe({
-        next: (res: any) => this.nomUsuari = res.nom || ''
+        next: (res: any) => {
+          this.nomUsuari = res.nom || '';
+          this.puntsUsuari = res.perfil?.punts_totals || 0;
+        }
       });
   }
 

@@ -35,15 +35,6 @@
         }
       </div>
 
-      <!-- Saldo -->
-      @if (socClient) {
-        <div class="sidebar-section">
-          <div class="flat-wallet">
-            <span class="wallet-label">El teu saldo</span>
-            <span class="wallet-balance">{{ elsMeusPunts }} Punts Nexe</span>
-          </div>
-        </div>
-      }
 
       <!-- Detalls de contacte -->
       <div class="sidebar-section">
@@ -127,7 +118,10 @@
                 <div class="offer-content">
                   <div class="offer-header">
                     <h3>{{ oferta.titol }}</h3>
-                    <div class="cost-badge">{{ oferta.cost_punts }} pts</div>
+                    <div class="cost-badge">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: #065F46; fill: none;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                      {{ oferta.cost_punts }} pts
+                    </div>
                   </div>
                   <p>{{ oferta.descripcio || 'Bescanvia els teus punts per aquesta oferta exclusiva.' }}</p>
                   
@@ -136,7 +130,10 @@
                       @if (elsMeusPunts >= oferta.cost_punts) {
                         <button class="btn-flat-action" (click)="generarQrBescanvi(oferta)">Bescanviar</button>
                       } @else {
-                        <button class="btn-flat-disabled" disabled>Falten {{ oferta.cost_punts - elsMeusPunts }} pts</button>
+                        <button class="btn-flat-disabled" disabled style="display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.7;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                          Falten {{ oferta.cost_punts - elsMeusPunts }} pts
+                        </button>
                       }
                     } @else {
                       <button class="btn-flat-disabled" disabled>Inicia sessió</button>
