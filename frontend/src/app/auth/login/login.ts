@@ -40,10 +40,12 @@ export class Login {
         this.auth.guardarToken(res.token, rolUsuari);
 
         //SEMAFOR
-        if (rolUsuari === 'COMERC' || rolUsuari === 'ADMIN') {
+        if (rolUsuari === 'ADMIN') {
+          this.router.navigate(['/admin']);
+        } else if (rolUsuari === 'COMERC') {
           this.router.navigate(['/la-meva-botiga']);
         } else {
-          this.router.navigate(['/perfil']); //CLIENTS NORMALS VAN A PERFIL, COMERÇS VAN A LA SEVA BOTIGA
+          this.router.navigate(['/perfil']);
         }
       },
       error: () => {

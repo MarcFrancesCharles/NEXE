@@ -8,9 +8,35 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #333;
+  text-decoration: none;
+  padding: 0.4rem 0.6rem 0.4rem 0.35rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  margin-left: -0.35rem;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.btn-back:hover {
+  color: #111827;
+  background: #F3F4F6;
+}
+
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .shop-wide-layout {
@@ -184,7 +210,8 @@
 
 .shop-cover {
   width: 100%;
-  height: 160px; /* Molt més compacte */
+  height: 160px;
+  /* Molt més compacte */
   background-size: cover;
   background-position: center;
   border-radius: 16px;
@@ -220,7 +247,10 @@
   border-bottom: 1px solid #E5E7EB;
 }
 
-.section-header h2 { margin-bottom: 0; }
+.section-header h2 {
+  margin-bottom: 0;
+}
+
 .section-header .count {
   font-size: 0.8rem;
   color: #9CA3AF;
@@ -244,7 +274,8 @@
 }
 
 .offer-image {
-  height: 110px; /* Més compacte */
+  height: 110px;
+  /* Més compacte */
   background-size: cover;
   background-position: center;
   background-color: #F9FAFB;
@@ -348,7 +379,10 @@
   margin-bottom: 2rem;
 }
 
-.minimal-modal h3 { margin: 0; font-size: 1.25rem; }
+.minimal-modal h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
 
 .close-minimal-btn {
   background: transparent;
@@ -367,7 +401,10 @@
   border: 1px solid #E2E8F0;
 }
 
-.qr-box img { display: block; border-radius: 8px; }
+.qr-box img {
+  display: block;
+  border-radius: 8px;
+}
 
 .expiry-warning {
   margin-top: 1.5rem;
@@ -379,7 +416,8 @@
 }
 
 /* ===================== STATES ===================== */
-.shop-error, .shop-loading {
+.shop-error,
+.shop-loading {
   padding: 10rem 2rem;
   text-align: center;
 }
@@ -391,13 +429,15 @@
     flex-direction: column;
     gap: 2rem;
   }
+
   .shop-sidebar {
     flex: none;
     width: 100%;
     position: static;
   }
+
   .shop-cover {
     height: 250px;
     margin-bottom: 2rem;
   }
-}
+}

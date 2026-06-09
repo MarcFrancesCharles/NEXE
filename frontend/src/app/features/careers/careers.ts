@@ -27,9 +27,9 @@ export class Careers {
     this.careersForm = this.fb.group({
       nom: ['', [Validators.required, Validators.minLength(2)]],
       correu: ['', [Validators.required, Validators.email]],
-      posicio: ['ADMIN', [Validators.required]],
+      posicio: ['', [Validators.required]],
       missatge: ['', [Validators.required, Validators.minLength(10)]],
-      cv: [null, [Validators.required]]
+      cv: [null]
     });
   }
 
@@ -68,7 +68,7 @@ export class Careers {
         this.careersForm.reset({
           nom: '',
           correu: '',
-          posicio: 'ADMIN',
+          posicio: '',
           missatge: '',
           cv: null
         });

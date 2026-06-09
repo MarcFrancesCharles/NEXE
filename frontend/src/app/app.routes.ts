@@ -10,7 +10,7 @@ import { CreateOffer } from './features/shop/create-offer/create-offer';
 import { authGuard } from './core/guards/auth-guard';
 import { roleGuard } from './core/guards/role-guard';
 import { ShopDetail } from './features/shop-detail/shop-detail';
-import { ShopRequest } from './features/shop-request/shop-request';
+
 import { About } from './features/about/about';
 import { Legal } from './features/legal/legal';
 import { Faq } from './features/faq/faq';
@@ -25,7 +25,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'perfil', component: Profile, canActivate: [authGuard] },
-  { path: 'solicitar-comerc', component: ShopRequest, canActivate: [authGuard] },
+
   { path: 'botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga/crear-oferta', component: CreateOffer, canActivate: [authGuard, roleGuard] },
