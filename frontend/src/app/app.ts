@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from './core/services/auth';
-import { Footer } from './core/components/footer/footer'; // Ajusta la ruta si es necesario
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Footer } from './core/components/footer/footer';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +12,18 @@ import { Footer } from './core/components/footer/footer'; // Ajusta la ruta si e
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   private auth = inject(Auth);
+  private http = inject(HttpClient);
+
+  // User name for menu
+  nomUsuari: string = '';
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.auth.obtenirToken()}`
+    });
+  }
   private router = inject(Router);
 
   isSidebarCollapsed: boolean = false;
@@ -41,6 +53,15 @@ export class App {
 
   esUsuariNormal(): boolean {
     return this.auth.esNormalUser();
+  }
+
+  // Funció per tancar sessió
+  ngOnInit() {
+    // Load user name for menu
+    this.http.get(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => this.nomUsuari = res.nom || ''
+      });
   }
 
   // Funció per tancar sessió

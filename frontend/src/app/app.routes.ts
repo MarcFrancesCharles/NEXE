@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { Explore } from './features/explore/explore';
+import { merchantGuard } from './core/guards/merchant-guard';
+
 import { Login } from './auth/login/login';
 import { Register } from './auth/register/register';
 import { Shop } from './features/shop/shop';
@@ -19,7 +21,7 @@ import { AdminDashboard } from './features/admin-dashboard/admin-dashboard';
 import { Notifications } from './features/notifications/notifications';
 
 export const routes: Routes = [
-  { path: '', component: Explore },
+  { path: '', component: Explore, canActivate: [merchantGuard] },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'perfil', component: Profile, canActivate: [authGuard] },

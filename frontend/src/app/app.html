@@ -1,7 +1,7 @@
 <div class="app-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
   <aside class="app-sidebar" [class.collapsed]="isSidebarCollapsed">
     <div class="sidebar-header-row">
-      <div class="sidebar-brand" routerLink="/">
+      <div class="sidebar-brand" [routerLink]="esComercReal() ? '/la-meva-botiga' : '/'">
         <div class="logo-icon-sm">N</div>
         <span class="logo-text-sm">NEXE</span>
       </div>
@@ -13,7 +13,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      @if (!esAdminReal()) {
+      @if (!esAdminReal() && !esComercReal()) {
         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           <span>Explorar</span>
@@ -45,7 +45,7 @@
         @if (!esAdminReal()) {
           <a routerLink="/perfil" routerLinkActive="active" class="nav-item">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span>El meu Perfil</span>
+            <span>{{ nomUsuari }}</span>
           </a>
         }
 

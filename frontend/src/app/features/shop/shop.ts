@@ -49,6 +49,8 @@ export class Shop implements OnInit, OnDestroy {
   comerc: any = null;
   solicitudComerc: any = null;
   categories: any[] = [];
+  ofertaEliminarId: number | null = null;
+  confirmDeleteVisible: boolean = false;
   mostrantModalComerc = false;
   comercForm: FormGroup;
   imatgeComercSeleccionada: File | null = null;
@@ -250,15 +252,31 @@ export class Shop implements OnInit, OnDestroy {
   }
 
   eliminarOferta(id: number) {
-    if (confirm('Estàs segur que vols eliminar aquesta oferta?')) {
-      this.http.delete(`${environment.apiUrl}/ofertes/${id}`, { headers: this.getHeaders() })
-        .subscribe({
-          next: () => { this.ofertes = this.ofertes.filter(o => o.id_oferta !== id); },
-          error: () => alert('Error eliminant l\'oferta.')
-        });
-    }
+    this.ofertaEliminarId = id;
+    this.confirmDeleteVisible = true;
   }
 
+  confirmarEliminar() {
+    if (this.ofertaEliminarId === null) return;
+    this.http.delete(`${environment.apiUrl}/ofertes/${this.ofertaEliminarId}`, { headers: this.getHeaders() })
+      .subscribe({
+        next: () => {
+          this.ofertes = this.ofertes.filter(o => o.id_oferta !== this.ofertaEliminarId);
+          this.confirmDeleteVisible = false;
+          this.ofertaEliminarId = null;
+        },
+        error: () => {
+          alert('Error eliminant l\'oferta.');
+          this.confirmDeleteVisible = false;
+          this.ofertaEliminarId = null;
+        }
+      });
+  }
+
+  cancelarEliminar() {
+    this.confirmDeleteVisible = false;
+    this.ofertaEliminarId = null;
+  }
   obrirModalEdicio(oferta: any) {
     this.ofertaEditantId = oferta.id_oferta;
     this.imatgeSeleccionada = null;

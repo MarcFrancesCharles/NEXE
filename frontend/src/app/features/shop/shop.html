@@ -256,6 +256,21 @@
       </div>
     </div>
   }
+  @if (confirmDeleteVisible) {
+    <div class="modal-overlay" (click)="cancelarEliminar()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Confirmar Eliminació</h3>
+          <button class="close-btn" (click)="cancelarEliminar()">✕</button>
+        </div>
+        <p>Estàs segur que vols eliminar aquesta oferta?</p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" (click)="cancelarEliminar()">Cancel·lar</button>
+          <button type="button" class="btn-primary" (click)="confirmarEliminar()">Confirmar</button>
+        </div>
+      </div>
+    </div>
+  }
 
   @if (mostrantCamera) {
   <div class="modal-overlay" (click)="tancarCamera()">

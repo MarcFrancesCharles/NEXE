@@ -1,9 +1,12 @@
 import { Component, OnInit, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { Auth } from '../../core/services/auth';
+
+
 
 @Component({
   selector: 'app-explore',
@@ -14,6 +17,17 @@ import { environment } from '../../../../environments/environment';
 })
 export class Explore implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
+  private auth = inject(Auth);
+
+  // User name for welcome message
+  nomUsuari: string = '';
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.auth.obtenirToken()}`
+    });
+  }
+
   // Injectem el PLATFORM_ID per saber si som al navegador o al servidor
   private platformId = inject(PLATFORM_ID); 
 
@@ -36,6 +50,13 @@ export class Explore implements OnInit, AfterViewInit {
   private L: any; 
 
   ngOnInit() {
+    // Load user name for greeting
+    this.http.get(`${environment.apiUrl}/perfil-meu`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => this.nomUsuari = res.nom || ''
+      });
+    this.carregarCategories();
+    this.carregarComerces();
     this.carregarCategories();
     this.carregarComerces();
   }

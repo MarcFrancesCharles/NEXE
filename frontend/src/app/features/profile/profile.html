@@ -10,12 +10,8 @@
     <div class="settings-section qr-section">
       <div class="settings-card membership-card discrete">
         <div class="qr-container">
-          <qrcode [qrdata]="qrTokenCarnet" 
-                  [width]="120" 
-                  [errorCorrectionLevel]="'L'"
-                  [margin]="2"
-                  [colorDark]="'#111827'"
-                  [colorLight]="'#ffffff'"></qrcode>
+          <qrcode [qrdata]="qrTokenCarnet" [width]="120" [errorCorrectionLevel]="'L'" [margin]="2"
+            [colorDark]="'#111827'" [colorLight]="'#ffffff'"></qrcode>
         </div>
         <div class="membership-info">
           <p>El teu codi personal per sumar punts</p>
@@ -29,7 +25,11 @@
       <div class="settings-card">
         <div class="settings-item">
           <div class="settings-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
           </div>
           <div class="settings-content">
             <span class="settings-label">Nom</span>
@@ -39,26 +39,41 @@
 
         <div class="settings-item clickable" (click)="obrirEdicio()">
           <div class="settings-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
           </div>
           <div class="settings-content">
             <span class="settings-label">Correu electrònic</span>
           </div>
           <div class="settings-value">{{ usuari?.correu || 'No especificat' }}</div>
           <div class="settings-edit-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
           </div>
         </div>
 
         <div class="settings-item clickable" (click)="obrirEdicio()">
           <div class="settings-icon" style="color: #3b82f6;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
           </div>
           <div class="settings-content">
             <span class="settings-label" style="color: #3b82f6; font-weight: 600;">Modificar contrasenya</span>
           </div>
           <div class="settings-value">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
           </div>
         </div>
       </div>
@@ -69,7 +84,12 @@
       <div class="settings-card">
         <div class="settings-item">
           <div class="settings-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
           </div>
           <div class="settings-content">
             <span class="settings-label">Saldo actual</span>
@@ -86,13 +106,23 @@
         <div class="settings-item">
           <div class="settings-icon">
             @if (tx.tipus === 'ACUMULACIO') {
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
             } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
             }
           </div>
           <div class="settings-content">
-            <span class="settings-label">{{ tx.tipus === 'ACUMULACIO' ? 'Punts acumulats' : 'Oferta bescanviada' }}</span>
+            <span class="settings-label">{{ tx.tipus === 'ACUMULACIO' ? 'Punts acumulats' : 'Oferta bescanviada'
+              }}</span>
             <span class="settings-sub">{{ tx.created_at | date:'dd/MM/yyyy - HH:mm' }}</span>
           </div>
           <div class="settings-value transaction-value" [class.positive]="tx.punts_mov > 0">
@@ -142,8 +172,8 @@
 
 </div>
 } @else {
-  <div class="profile-loading">
-    <div class="minimal-loader"></div>
-    <p>Carregant el teu perfil...</p>
-  </div>
+<div class="profile-loading">
+  <div class="minimal-loader"></div>
+  <p>Carregant el teu perfil...</p>
+</div>
 }
