@@ -1,0 +1,51 @@
+<div class="notifications-container">
+  <header class="notifications-header">
+    <div class="header-left">
+      <h2>Notificacions</h2>
+      <p class="subtitle">Gestiona les teves alertes, actualitzacions de comptes i premis.</p>
+    </div>
+    @if (notificacions.length > 0) {
+      <button class="btn-clear-all" (click)="marcarTotesLlegides()" [disabled]="totalNoLlegides === 0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        Marcar totes com a llegides
+      </button>
+    }
+  </header>
+
+  @if (notificacions.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🔔</div>
+      <h3>Tot al dia!</h3>
+      <p>No tens cap notificació nova en aquest moment. Et mantindrem informat quan hi hagi novetats.</p>
+      <button class="btn-reset" (click)="carregarNotificacions()">Actualitzar notificacions</button>
+    </div>
+  } @else {
+    <div class="notifications-list">
+      @for (notif of notificacions; track notif.id) {
+        <div class="notification-card" [class.unread]="!notif.llegida" [class.read]="notif.llegida">
+          <div class="card-icon-area">
+            <span class="emoji-icon">{{ notif.icona }}</span>
+          </div>
+          <div class="card-content-area">
+            <div class="card-header">
+              <h3 class="notification-title">{{ notif.titol }}</h3>
+              <span class="notification-time">{{ notif.data | date:'shortTime' }} • {{ notif.data | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <p class="notification-message">{{ notif.missatge }}</p>
+            <div class="card-actions">
+              @if (!notif.llegida) {
+                <button class="action-btn mark-read" (click)="marcarComALlegida(notif.id)">
+                  Marcar com a llegida
+                </button>
+              }
+              <button class="action-btn delete-btn" (click)="eliminarNotificacio(notif.id)" title="Eliminar notificació">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

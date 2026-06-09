@@ -2,9 +2,9 @@
 
 .shop-detail-container {
   width: 100%;
-  max-width: 1720px;
+  max-width: 1300px;
   margin: 0 auto;
-  padding: 2rem 4rem;
+  padding: 1rem 1.5rem;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -15,85 +15,126 @@
 
 .shop-wide-layout {
   display: flex;
-  gap: 5rem;
+  gap: 2rem;
   align-items: flex-start;
 }
 
 
 /* ===================== SIDEBAR ===================== */
 .shop-sidebar {
-  flex: 0 0 320px;
+  flex: 0 0 250px;
   position: sticky;
-  top: 2rem;
+  top: 1.5rem;
 }
 
 .sidebar-card.Brand {
-  padding-bottom: 2rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #E5E7EB;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .shop-avatar {
-  width: 80px;
-  height: 80px;
+  width: 48px;
+  height: 48px;
   background: #F3F4F6;
   color: #111827;
-  font-size: 2rem;
+  font-size: 1.25rem;
   font-weight: 800;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 16px;
-  margin-bottom: 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
   border: 1px solid #E5E7EB;
 }
 
 .brand-info h1 {
-  font-size: 1.75rem;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.3rem;
+  margin: 0 0 0.25rem 0;
   color: #111827;
   letter-spacing: -0.03em;
 }
 
 .category-tag {
   display: inline-block;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: #6B7280;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+.brand-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.btn-follow {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid #111827;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #111827;
+  color: white;
+}
+
+.btn-follow:hover {
+  background: #000;
+  border-color: #000;
+}
+
+.btn-follow.following {
+  background: white;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+}
+
+.btn-follow.following:hover {
+  background: #FEF2F2;
+  color: #DC2626;
+  border-color: #FCA5A5;
+}
+
 .sidebar-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .section-label {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #9CA3AF;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Flat Wallet */
 .flat-wallet {
   background: #F9FAFB;
   border: 1px solid #E5E7EB;
-  padding: 1.5rem;
-  border-radius: 16px;
+  padding: 1rem;
+  border-radius: 10px;
 }
 
 .wallet-label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   color: #6B7280;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
 }
 
 .wallet-balance {
-  font-size: 1.25rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #111827;
 }
@@ -102,20 +143,20 @@
 .contact-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.4rem;
 }
 
 .contact-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
   background: white;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border-radius: 8px;
   text-decoration: none;
   color: #374151;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 500;
   transition: all 0.2s;
 }
@@ -143,30 +184,30 @@
 
 .shop-cover {
   width: 100%;
-  height: 450px;
+  height: 160px; /* Molt més compacte */
   background-size: cover;
   background-position: center;
-  border-radius: 24px;
+  border-radius: 16px;
   background-color: #F3F4F6;
-  margin-bottom: 4rem;
+  margin-bottom: 1.5rem;
   border: 1px solid #E5E7EB;
 }
 
 .main-section {
-  margin-bottom: 5rem;
+  margin-bottom: 1.75rem;
 }
 
 .main-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
   color: #111827;
   letter-spacing: -0.02em;
 }
 
 .description p {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: #4B5563;
-  line-height: 1.8;
+  line-height: 1.5;
   max-width: 800px;
 }
 
@@ -174,14 +215,14 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid #E5E7EB;
 }
 
 .section-header h2 { margin-bottom: 0; }
 .section-header .count {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #9CA3AF;
   font-weight: 500;
 }
@@ -189,21 +230,21 @@
 /* Flat Offers Grid */
 .flat-offers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
 }
 
 .flat-offer-card {
   background: white;
   border: 1px solid #E5E7EB;
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .offer-image {
-  height: 200px;
+  height: 110px; /* Més compacte */
   background-size: cover;
   background-position: center;
   background-color: #F9FAFB;
@@ -211,7 +252,7 @@
 }
 
 .offer-content {
-  padding: 1.5rem;
+  padding: 0.85rem;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -221,43 +262,43 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.4rem;
 }
 
 .offer-header h3 {
-  font-size: 1.15rem;
+  font-size: 0.95rem;
   margin: 0;
   color: #111827;
   flex: 1;
 }
 
 .cost-badge {
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 800;
   background: #ECFDF5;
   color: #065F46;
-  padding: 0.25rem 0.6rem;
-  border-radius: 8px;
-  margin-left: 1rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 5px;
+  margin-left: 0.75rem;
 }
 
 .offer-content p {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #6B7280;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
+  line-height: 1.35;
+  margin-bottom: 1rem;
   flex: 1;
 }
 
 .btn-flat-action {
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.6rem;
   background: #111827;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -268,13 +309,13 @@
 
 .btn-flat-disabled {
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.6rem;
   background: #F3F4F6;
   color: #9CA3AF;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   cursor: not-allowed;
 }
 

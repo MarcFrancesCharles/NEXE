@@ -41,9 +41,10 @@ export class Explore implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    // Només executem el mapa si estem 100% segurs que som al navegador
     if (isPlatformBrowser(this.platformId)) {
-      this.initMap();
+      setTimeout(() => {
+        this.initMap();
+      }, 100);
     }
   }
 

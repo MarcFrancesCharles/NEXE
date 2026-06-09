@@ -12,10 +12,22 @@
         </div>
         <div class="brand-info">
           <h1>{{ comerc.nom_comercial }}</h1>
-          @if (comerc.categoria) {
-            <p class="category-tag">{{ comerc.categoria.nom_cat }}</p>
-          }
+          <div class="brand-meta">
+            @if (comerc.categoria) {
+              <span class="category-tag">{{ comerc.categoria.nom_cat }}</span>
+            }
+          </div>
         </div>
+
+        @if (socClient) {
+          <button class="btn-follow" [class.following]="comerc.seguint" (click)="toggleSeguir()">
+            @if (comerc.seguint) {
+              <span>✓ Seguint</span>
+            } @else {
+              <span>Seguir</span>
+            }
+          </button>
+        }
       </div>
 
       <!-- Saldo -->

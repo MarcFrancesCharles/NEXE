@@ -33,6 +33,20 @@ class OfertaController extends Controller
             'estat' => 1 // 1 = Activa per defecte
         ]);
 
+        // Notifiquem els seguidors de la botiga
+        $seguidors = $comerc->seguidors;
+        foreach ($seguidors as $seguidor) {
+            \App\Models\Notificacio::create([
+                'id_usuari' => $seguidor->id_usuari,
+                'id_comerc' => $comerc->id_comerc,
+                'titol' => 'Nova oferta al teu barri! 🏷️',
+                'missatge' => "El comerç de proximitat '" . $comerc->nom_comercial . "' acaba de publicar una oferta exclusiva: '" . $oferta->titol . "'. No te la perdis!",
+                'icona' => '🏷️',
+                'categoria' => 'ofertes',
+                'llegida' => false
+            ]);
+        }
+
         return response()->json([
             'missatge' => 'Oferta creada correctament!', 
             'oferta' => $oferta

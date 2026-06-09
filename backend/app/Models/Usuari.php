@@ -61,4 +61,10 @@ class Usuari extends Authenticatable
     {
         return $this->hasMany(Transaccio::class, 'id_usuari', 'id_usuari');
     }
+
+    // Relació N:M amb COMERÇOS seguint (seguidors)
+    public function comercosSeguint()
+    {
+        return $this->belongsToMany(Comerc::class, 'seguidors', 'id_usuari', 'id_comerc')->withTimestamps();
+    }
 }

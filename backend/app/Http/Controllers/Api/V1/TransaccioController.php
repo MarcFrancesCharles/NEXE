@@ -97,6 +97,16 @@ class TransaccioController extends Controller
                 'data_hora' => now(),
             ]);
 
+            \App\Models\Notificacio::create([
+                'id_usuari' => $id_client,
+                'id_comerc' => $comerc->id_comerc,
+                'titol' => 'Has rebut punts! 💰',
+                'missatge' => "El comerç '" . $comerc->nom_comercial . "' t'ha afegit " . $puntsGuanyats . " punts NEXE després de validar la teva darrera compra. Segueix sumant!",
+                'icona' => '✨',
+                'categoria' => 'punts',
+                'llegida' => false
+            ]);
+
             DB::commit();
 
             return response()->json([
@@ -157,6 +167,16 @@ class TransaccioController extends Controller
                 'tipus' => 'BESCANVI',
                 'punts_mov' => $oferta->cost_punts,
                 'data_hora' => now(),
+            ]);
+
+            \App\Models\Notificacio::create([
+                'id_usuari' => $id_client,
+                'id_comerc' => $comerc->id_comerc,
+                'titol' => 'Oferta bescanviada! 🎁',
+                'missatge' => "Has bescanviat correctament " . $oferta->cost_punts . " punts per l'oferta '" . $oferta->titol . "' al comerç '" . $comerc->nom_comercial . "'.",
+                'icona' => '🎁',
+                'categoria' => 'punts',
+                'llegida' => false
             ]);
 
             DB::commit();

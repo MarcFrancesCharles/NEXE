@@ -59,7 +59,8 @@ export class ShopDetail implements OnInit {
   }
 
   carregarBotiga(id: string) {
-    this.http.get(`${environment.apiUrl}/comerces/${id}`).subscribe({
+    const headers = this.auth.obtenirToken() ? this.getHeaders() : undefined;
+    this.http.get(`${environment.apiUrl}/comerces/${id}`, headers ? { headers } : {}).subscribe({
       next: (res: any) => {
         // Processem la imatge del comerç
         let imgComerc = res.imatge_url;
@@ -72,16 +73,22 @@ export class ShopDetail implements OnInit {
         };
 
         // Processem les imatges de les ofertes
-        this.ofertes = (res.ofertes || []).map((o: any, idx: number) => {
-          let imgOferta = o.imatge;
-          if (imgOferta && !imgOferta.startsWith('http')) {
-            imgOferta = `${this.storageUrl}${imgOferta}`;
-          }
-          return {
-            ...o,
-            imatge: imgOferta || `https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800&sig=${idx}`
-          };
-        });
+        const ara = new Date();
+        this.ofertes = (res.ofertes || [])
+          .filter((o: any) => {
+            if (!o.data_publicacio) return true;
+            return new Date(o.data_publicacio) <= ara;
+          })
+          .map((o: any, idx: number) => {
+            let imgOferta = o.imatge;
+            if (imgOferta && !imgOferta.startsWith('http')) {
+              imgOferta = `${this.storageUrl}${imgOferta}`;
+            }
+            return {
+              ...o,
+              imatge: imgOferta || `https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800&sig=${idx}`
+            };
+          });
 
         this.carregant = false;
       },
@@ -90,6 +97,22 @@ export class ShopDetail implements OnInit {
         this.carregant = false;
       }
     });
+  }
+
+  toggleSeguir() {
+    if (!this.socClient || !this.comerc) return;
+
+    const action = this.comerc.seguint ? 'deixar-seguir' : 'seguir';
+    this.http.post(`${environment.apiUrl}/comerces/${this.comerc.id_comerc}/${action}`, {}, { headers: this.getHeaders() })
+      .subscribe({
+        next: (res: any) => {
+          this.comerc.seguint = res.seguint;
+          this.comerc.seguidors_count = res.seguidors_count;
+        },
+        error: (err) => {
+          console.error("Error al seguir/deixar de seguir:", err);
+        }
+      });
   }
 
   carregarElsMeusPunts() {

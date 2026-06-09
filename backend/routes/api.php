@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\SolicitudComercController;
 use App\Http\Middleware\CheckRole;
 use App\Http\Controllers\Api\V1\ContacteController;
 use App\Http\Controllers\Api\V1\CareersController;
+use App\Http\Controllers\Api\V1\NotificacioController;
 
 // --- RUTES PÚBLIQUES (Sense Token) ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,11 +48,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/solicituds-comerc', [SolicitudComercController::class, 'store']);
     Route::get('/solicituds-comerc/mia', [SolicitudComercController::class, 'getMiaSolicitud']);
 
+    // Notificacions
+    Route::get('/notificacions', [NotificacioController::class, 'index']);
+    Route::post('/notificacions/{id}/llegida', [NotificacioController::class, 'marcarComALlegida']);
+    Route::post('/notificacions/llegides-totes', [NotificacioController::class, 'marcarTotesLlegides']);
+    Route::delete('/notificacions/{id}', [NotificacioController::class, 'eliminarNotificacio']);
+
     // Rutes Exclusives: ESTÀNDARD (El Client)
     Route::middleware([CheckRole::class.':ESTANDARD'])->group(function () {
         // Generació de QRs xifrats per mostrar a la botiga
         Route::get('/client/carnet-qr', [TransaccioController::class, 'generarQrCarnet']);
         Route::post('/client/oferta-qr', [TransaccioController::class, 'generarQrOferta']);
+        Route::post('/comerces/{id}/seguir', [ComercController::class, 'seguirComerc']);
+        Route::post('/comerces/{id}/deixar-seguir', [ComercController::class, 'deixarSeguirComerc']);
     });
 
     // Rutes Exclusives: COMERC (El Botiguer)

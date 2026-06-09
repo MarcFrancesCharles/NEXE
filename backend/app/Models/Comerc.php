@@ -51,6 +51,12 @@ class Comerc extends Model
         return $this->hasMany(Transaccio::class, 'id_comerc', 'id_comerc');
     }
 
+    // Relació N:M amb USUARIS seguidors
+    public function seguidors()
+    {
+        return $this->belongsToMany(Usuari::class, 'seguidors', 'id_comerc', 'id_usuari')->withTimestamps();
+    }
+
     /**
      * Accessor de Laravel: Intercepta quan qualsevol lloc de l'API demana el "email_contacte"
      */

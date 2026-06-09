@@ -16,6 +16,7 @@ import { Careers } from './features/careers/careers';
 
 // 1. IMPORTACIÓ DEL NOU COMPONENT ADMIN
 import { AdminDashboard } from './features/admin-dashboard/admin-dashboard';
+import { Notifications } from './features/notifications/notifications';
 
 export const routes: Routes = [
   { path: '', component: Explore },
@@ -27,6 +28,7 @@ export const routes: Routes = [
   { path: 'la-meva-botiga', component: Shop, canActivate: [authGuard, roleGuard] },
   { path: 'la-meva-botiga/crear-oferta', component: CreateOffer, canActivate: [authGuard, roleGuard] },
   { path: 'shop/:id', component: ShopDetail },
+  { path: 'notificacions', component: Notifications, canActivate: [authGuard] },
   
   // Rutes del Footer
   { path: 'sobre-nosaltres', component: About },

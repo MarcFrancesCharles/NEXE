@@ -20,36 +20,33 @@
     </div>
   </section>
 
+  <!-- Barra de Filtres Horitzontal (Deixat com estava originalment però horitzontal i compacte) -->
+  <div class="filters-horizontal-bar">
+    <div class="filter-item">
+      <label>Sector d'activitat</label>
+      <select [(ngModel)]="categoriaSeleccionada" (ngModelChange)="onCategoriaPareChange()" class="premium-select-compact">
+        <option value="">Tots els sectors</option>
+        @for (cat of categoriesPare; track cat.id_categoria) {
+          <option [value]="cat.id_categoria">{{ cat.icona }} {{ cat.nom_cat }}</option>
+        }
+      </select>
+    </div>
+
+    @if (subcategoriesActives.length > 0) {
+      <div class="filter-item animate-fade-in">
+        <label>Especialitat</label>
+        <select [(ngModel)]="subcategoriaSeleccionada" (ngModelChange)="aplicarFiltres()" class="premium-select-compact">
+          <option value="">Totes les especialitats</option>
+          @for (sub of subcategoriesActives; track sub.id_categoria) {
+            <option [value]="sub.id_categoria">{{ sub.nom_cat }}</option>
+          }
+        </select>
+      </div>
+    }
+  </div>
+
   <div class="explore-layout">
     
-    <aside class="filters-sidebar">
-      <div class="filter-card">
-        <h3>Filtra per Categoria</h3>
-        
-        <div class="form-group">
-          <label>Sector d'activitat</label>
-          <select [(ngModel)]="categoriaSeleccionada" (ngModelChange)="onCategoriaPareChange()" class="premium-select">
-            <option value="">Tots els sectors</option>
-            @for (cat of categoriesPare; track cat.id_categoria) {
-              <option [value]="cat.id_categoria">{{ cat.icona }} {{ cat.nom_cat }}</option>
-            }
-          </select>
-        </div>
-
-        @if (subcategoriesActives.length > 0) {
-          <div class="form-group animate-fade-in">
-            <label>Especialitat</label>
-            <select [(ngModel)]="subcategoriaSeleccionada" (ngModelChange)="aplicarFiltres()" class="premium-select">
-              <option value="">Totes les especialitats</option>
-              @for (sub of subcategoriesActives; track sub.id_categoria) {
-                <option [value]="sub.id_categoria">{{ sub.nom_cat }}</option>
-              }
-            </select>
-          </div>
-        }
-      </div>
-    </aside>
-
     <main class="content-area">
       
       <div class="map-wrapper">
@@ -77,18 +74,13 @@
                 </div>
                 
                 <div class="shop-content-wrapper">
-                  <div class="shop-info">
-                    <h3>{{ comerc.nom_comercial }}</h3>
-                    <p class="location">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                      {{ comerc.direccio || 'Lleida, Centre' }}
-                    </p>
-                  </div>
-                  
-                  <div class="shop-footer">
-                    <div class="points-badge">
-                      <span class="points-icon">⭐</span>
-                      <span>Acumula punts</span>
+                  <div class="shop-info-row">
+                    <div class="shop-info">
+                      <h3>{{ comerc.nom_comercial }}</h3>
+                      <p class="location">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        {{ comerc.direccio || 'Lleida, Centre' }}
+                      </p>
                     </div>
                     <button class="btn-shop-action" aria-label="Veure botiga">
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
@@ -114,4 +106,5 @@
     </main>
 
   </div>
+
 </div>

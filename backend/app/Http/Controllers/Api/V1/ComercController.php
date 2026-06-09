@@ -102,7 +102,7 @@ class ComercController extends Controller
     }
 
     // Retorna la informació pública d'un comerç i les seves ofertes ACTIVES
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $comerc = Comerc::with(['categoria', 'ofertes' => function ($query) {
             $query->where('estat', 1) // Només ofertes actives
@@ -112,6 +112,53 @@ class ComercController extends Controller
                   ->orderBy('cost_punts', 'asc');
         }])->findOrFail($id);
 
-        return response()->json($comerc);
+        $seguidorsCount = $comerc->seguidors()->count();
+        $seguint = false;
+        $usuari = $request->user('sanctum');
+        if ($usuari && $usuari->rol === 'ESTANDARD') {
+            $seguint = $usuari->comercosSeguint()->where('seguidors.id_comerc', $comerc->id_comerc)->exists();
+        }
+
+        $comercArray = $comerc->toArray();
+        $comercArray['seguidors_count'] = $seguidorsCount;
+        $comercArray['seguint'] = $seguint;
+
+        return response()->json($comercArray);
+    }
+
+    // Seguir un comerç
+    public function seguirComerc(Request $request, $id)
+    {
+        $usuari = $request->user();
+        if ($usuari->rol !== 'ESTANDARD') {
+            return response()->json(['missatge' => 'Només els clients poden seguir comerços.'], 403);
+        }
+
+        $comerc = Comerc::findOrFail($id);
+        $usuari->comercosSeguint()->syncWithoutDetaching([$comerc->id_comerc]);
+
+        return response()->json([
+            'missatge' => 'Ara estàs seguint aquest comerç.',
+            'seguidors_count' => $comerc->seguidors()->count(),
+            'seguint' => true
+        ]);
+    }
+
+    // Deixar de seguir un comerç
+    public function deixarSeguirComerc(Request $request, $id)
+    {
+        $usuari = $request->user();
+        if ($usuari->rol !== 'ESTANDARD') {
+            return response()->json(['missatge' => 'Només els clients poden deixar de seguir comerços.'], 403);
+        }
+
+        $comerc = Comerc::findOrFail($id);
+        $usuari->comercosSeguint()->detach($comerc->id_comerc);
+
+        return response()->json([
+            'missatge' => 'Has deixat de seguir aquest comerç.',
+            'seguidors_count' => $comerc->seguidors()->count(),
+            'seguint' => false
+        ]);
     }
 }
