@@ -99,43 +99,6 @@
       </div>
     </div>
 
-    <div class="settings-section">
-      <div class="settings-section-title">Historial de moviments</div>
-      <div class="settings-card">
-        @for (tx of usuari?.transaccions; track tx.id_transaccio) {
-        <div class="settings-item">
-          <div class="settings-icon">
-            @if (tx.tipus === 'ACUMULACIO') {
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-              <polyline points="17 6 23 6 23 12"></polyline>
-            </svg>
-            } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-              stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-              <line x1="3" y1="6" x2="21" y2="6"></line>
-              <path d="M16 10a4 4 0 0 1-8 0"></path>
-            </svg>
-            }
-          </div>
-          <div class="settings-content">
-            <span class="settings-label">{{ tx.tipus === 'ACUMULACIO' ? 'Punts acumulats' : 'Oferta bescanviada'
-              }}</span>
-            <span class="settings-sub">{{ tx.created_at | date:'dd/MM/yyyy - HH:mm' }}</span>
-          </div>
-          <div class="settings-value transaction-value" [class.positive]="tx.punts_mov > 0">
-            {{ tx.tipus === 'ACUMULACIO' ? '+' : '-' }}{{ tx.punts_mov }}
-          </div>
-        </div>
-        } @empty {
-        <div class="settings-empty">
-          <p>Encara no tens cap moviment. Mostra el teu carnet a les botigues per començar a sumar punts!</p>
-        </div>
-        }
-      </div>
-    </div>
 
   </div>
 
