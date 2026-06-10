@@ -148,7 +148,13 @@
             </button>
           }
         </div>
-      </div>
+      <select [(ngModel)]="sortOption" class="sort-select">
+  <option value="newest">Més noves primer</option>
+  <option value="expiry">Data de caducitat (pròximes primer)</option>
+  <option value="points">Punts (major a menor)</option>
+  <option value="title">Títol (A‑Z)</option>
+</select>
+</div>
     </div>
 
     @if (ofertesFiltrades.length === 0) {
@@ -198,8 +204,14 @@
                     {{ oferta.cost_punts }} Pts
                   </span>
                 </td>
-                <td class="text-muted">
-                  {{ oferta.data_fi ? (oferta.data_fi | date:'dd/MM/yyyy') : 'Sense caducitat' }}
+                <td [class.expiry-near]="esCaducitatApropa(oferta.data_fi)">
+                  @if (esCaducitatApropa(oferta.data_fi)) {
+                    <span class="expiry-warning-badge" title="La data de caducitat és propera. Edita l'oferta per ampliar-la.">
+                      ⚠️ {{ oferta.data_fi | date:'dd/MM/yyyy' }}
+                    </span>
+                  } @else {
+                    {{ oferta.data_fi ? (oferta.data_fi | date:'dd/MM/yyyy') : 'Sense caducitat' }}
+                  }
                 </td>
                 <td>
                   @if (esProgramadaEnFutur(oferta)) {

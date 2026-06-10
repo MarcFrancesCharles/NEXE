@@ -19,13 +19,44 @@ export class Shop implements OnInit, OnDestroy {
   storageUrl = environment.storageUrl;
   ofertes: any[] = [];
   termeCerca: string = '';
+  // Sorting option: 'newest' (default), 'expiry', 'points', 'title'
+  sortOption: string = 'newest';
   mostrantModal = false;
   carregant = true;
 
   get ofertesFiltrades() {
-    if (!this.termeCerca.trim()) return this.ofertes;
-    const term = this.termeCerca.toLowerCase().trim();
-    return this.ofertes.filter(o => o.titol?.toLowerCase().includes(term));
+    // Apply search filter
+    let result = this.ofertes;
+    if (this.termeCerca.trim()) {
+      const term = this.termeCerca.toLowerCase().trim();
+      result = result.filter(o => o.titol?.toLowerCase().includes(term));
+    }
+    // Apply sorting based on selected option
+    switch (this.sortOption) {
+      case 'expiry':
+        result = result.slice().sort((a, b) => {
+          const da = a.data_fi ? new Date(a.data_fi).getTime() : Infinity;
+          const db = b.data_fi ? new Date(b.data_fi).getTime() : Infinity;
+          return da - db; // soonest expiry first
+        });
+        break;
+      case 'points':
+        result = result.slice().sort((a, b) => (b.cost_punts || 0) - (a.cost_punts || 0));
+        break;
+      case 'title':
+        result = result.slice().sort((a, b) => {
+          const ta = (a.titol || '').toLowerCase();
+          const tb = (b.titol || '').toLowerCase();
+          return ta.localeCompare(tb);
+        });
+        break;
+      case 'newest':
+      default:
+        // Assuming higher id_oferta means newer
+        result = result.slice().sort((a, b) => (b.id_oferta || 0) - (a.id_oferta || 0));
+        break;
+    }
+    return result;
   }
 
   // Variables per la Càmera QR
@@ -112,39 +143,39 @@ export class Shop implements OnInit, OnDestroy {
       
       // Cargar solicitud con manejo de error para usuarios que no se registraron como comercio
       this.auth.getMiaSolicitudComerc().subscribe({
-        next: (solicitud) => {
-          this.solicitudComerc = solicitud;
-          this.loadDashboardData();
-        },
-        error: () => {
-          // Si no hay solicitud, simplemente continuamos
-          this.solicitudComerc = null;
-          this.loadDashboardData();
-        }
-      });
+          next: (solicitud: any) => {
+            this.solicitudComerc = solicitud;
+            this.loadDashboardData();
+          },
+          error: (err: any) => {
+            // Si no hay solicitud, simplemente continuamos
+            this.solicitudComerc = null;
+            this.loadDashboardData();
+          }
+        });
     });
   }
 
   loadDashboardData() {
     import('rxjs').then(({ forkJoin }) => {
       forkJoin([
-        this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() }),
-        this.auth.getElMeuComerc(),
-        this.auth.getCategories(),
-        this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
-      ]).subscribe({
-        next: ([ofertes, comerc, categories, estadistiques]) => {
-          this.ofertes = ofertes;
-          this.comerc = comerc;
-          this.categories = categories;
-          this.estadistiques = estadistiques;
-          this.carregant = false;
-        },
-        error: (err) => {
-          console.error('Error carregant dades del panell:', err);
-          this.carregant = false;
-        }
-      });
+          this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() }),
+          this.auth.getElMeuComerc(),
+          this.auth.getCategories(),
+          this.http.get<any>(`${environment.apiUrl}/comerc/vendes`, { headers: this.getHeaders() })
+        ]).subscribe({
+          next: ([ofertes, comerc, categories, estadistiques]: [any[], any, any[], any]) => {
+            this.ofertes = ofertes;
+            this.comerc = comerc;
+            this.categories = categories;
+            this.estadistiques = estadistiques;
+            this.carregant = false;
+          },
+          error: (err: any) => {
+            console.error('Error carregant dades del panell:', err);
+            this.carregant = false;
+          }
+        });
     });
   }
 
@@ -158,6 +189,17 @@ export class Shop implements OnInit, OnDestroy {
     if (!oferta.data_publicacio) return false;
     const dataPub = new Date(oferta.data_publicacio);
     return dataPub > new Date();
+  }
+
+  esCaducitatApropa(dataFi: string | null | undefined): boolean {
+    if (!dataFi) return false;
+    const avui = new Date();
+    avui.setHours(0, 0, 0, 0);
+    const caducitat = new Date(dataFi);
+    caducitat.setHours(0, 0, 0, 0);
+    const diffTime = caducitat.getTime() - avui.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays >= 0 && diffDays <= 5;
   }
 
   private getHeaders() {
@@ -245,10 +287,10 @@ export class Shop implements OnInit, OnDestroy {
 
   carregarLesMevesOfertes() {
     this.http.get<any[]>(`${environment.apiUrl}/les-meves-ofertes`, { headers: this.getHeaders() })
-      .subscribe({
-        next: (res) => { this.ofertes = res; },
-        error: (err) => console.error('Error carregant les ofertes:', err)
-      });
+          .subscribe({
+            next: (res: any[]) => { this.ofertes = res; },
+            error: (err: any) => console.error('Error carregant les ofertes:', err)
+          });
   }
 
   eliminarOferta(id: number) {
@@ -259,18 +301,19 @@ export class Shop implements OnInit, OnDestroy {
   confirmarEliminar() {
     if (this.ofertaEliminarId === null) return;
     this.http.delete(`${environment.apiUrl}/ofertes/${this.ofertaEliminarId}`, { headers: this.getHeaders() })
-      .subscribe({
-        next: () => {
-          this.ofertes = this.ofertes.filter(o => o.id_oferta !== this.ofertaEliminarId);
-          this.confirmDeleteVisible = false;
-          this.ofertaEliminarId = null;
-        },
-        error: () => {
-          alert('Error eliminant l\'oferta.');
-          this.confirmDeleteVisible = false;
-          this.ofertaEliminarId = null;
-        }
-      });
+          .subscribe({
+            next: () => {
+              this.ofertes = this.ofertes.filter(o => o.id_oferta !== this.ofertaEliminarId);
+              this.confirmDeleteVisible = false;
+              this.ofertaEliminarId = null;
+            },
+            error: (err: any) => {
+              alert('Error eliminant l\'oferta.');
+              console.error(err);
+              this.confirmDeleteVisible = false;
+              this.ofertaEliminarId = null;
+            }
+          });
   }
 
   cancelarEliminar() {
@@ -388,37 +431,37 @@ export class Shop implements OnInit, OnDestroy {
     }
 
     this.http.post(`${environment.apiUrl}/ofertes`, formData, { headers: this.getHeaders() }).subscribe({
-      next: () => {
-        this.loadingCrear = false;
-        this.errorCrear = false;
-        this.missatgeCrear = valors.programar ? '🎉 Oferta programada amb èxit!' : '🎉 Oferta publicada amb èxit!';
-        this.carregarLesMevesOfertes();
-        setTimeout(() => this.tancarModalCrear(), 2000);
-      },
-      error: (err) => {
-        this.loadingCrear = false;
-        this.errorCrear = true;
-        this.missatgeCrear = err.error?.message || 'Error en publicar. Revisa les dades.';
-      }
-    });
+        next: () => {
+          this.loadingCrear = false;
+          this.errorCrear = false;
+          this.missatgeCrear = valors.programar ? '🎉 Oferta programada amb èxit!' : '🎉 Oferta publicada amb èxit!';
+          this.carregarLesMevesOfertes();
+          setTimeout(() => this.tancarModalCrear(), 2000);
+        },
+        error: (err: any) => {
+          this.loadingCrear = false;
+          this.errorCrear = true;
+          this.missatgeCrear = err.error?.message || 'Error en publicar. Revisa les dades.';
+        }
+      });
   }
 
   // --- COMERÇ ---
 
   carregarElMeuComerc() {
     this.auth.getElMeuComerc().subscribe({
-      next: (res) => {
-        this.comerc = res;
-      },
-      error: (err) => console.error('Error carregant el comerç:', err)
-    });
+        next: (res: any) => {
+          this.comerc = res;
+        },
+        error: (err: any) => console.error('Error carregant el comerç:', err)
+      });
   }
 
   carregarCategories() {
     this.auth.getCategories().subscribe({
-      next: (res) => this.categories = res,
-      error: (err) => console.error('Error carregant categories:', err)
-    });
+        next: (res: any) => this.categories = res,
+        error: (err: any) => console.error('Error carregant categories:', err)
+      });
   }
 
   obrirModalComerc() {

@@ -279,3 +279,20 @@ select.form-control {
   color: #475569;
   margin-bottom: 0.5rem;
 }
+
+/* Expiry Near Warning Style */
+.expiry-near {
+  color: #EF4444 !important;
+  font-weight: 700;
+}
+.expiry-warning-badge {
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FCA5A5;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
