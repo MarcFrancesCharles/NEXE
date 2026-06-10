@@ -27,7 +27,6 @@
       <button (click)="setTab('solicituds')" [class.active]="activeTab === 'solicituds'">
         <svg class="tab-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
         Sol·licituds
-        <span *ngIf="totalSolicitudsPendents > 0" class="badge-count">{{ totalSolicitudsPendents }}</span>
       </button>
     </nav>
 
@@ -226,14 +225,12 @@
                 [style.box-shadow]="subTabSolicituds === 'comerc' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
                 style="border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #475569; transition: all 0.2s;">
           🏪 Registre de Comerços
-          <span *ngIf="solicitudsComercPendents > 0" class="badge-count" style="margin-left: 0.25rem;">{{ solicitudsComercPendents }}</span>
         </button>
         <button type="button" (click)="subTabSolicituds = 'treball'" 
                 [style.background]="subTabSolicituds === 'treball' ? '#ffffff' : 'transparent'"
                 [style.box-shadow]="subTabSolicituds === 'treball' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'"
                 style="border: none; padding: 6px 14px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; cursor: pointer; color: #475569; transition: all 0.2s;">
           💼 Administradors
-          <span *ngIf="solicitudsAdminPendents > 0" class="badge-count" style="margin-left: 0.25rem;">{{ solicitudsAdminPendents }}</span>
         </button>
       </div>
 
