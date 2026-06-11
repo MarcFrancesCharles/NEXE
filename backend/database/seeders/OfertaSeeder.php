@@ -125,18 +125,6 @@ class OfertaSeeder extends Seeder
                     'descripcio' => 'Millora el rendiment i evita sobreescalfaments. Inclou neteja de ventiladors i canvi de pasta tèrmica.',
                     'cost_punts' => 90,
                     'imatge' => 'https://images.unsplash.com/photo-1588508065123-287b28e013da?auto=format&fit=crop&q=80&w=800'
-                ],
-                [
-                    'titol' => 'Pendrive USB de 64GB ultra ràpid',
-                    'descripcio' => 'Memòria flash USB 3.2 de gran capacitat i resistent, ideal per guardar documents i fitxers.',
-                    'cost_punts' => 45,
-                    'imatge' => 'https://images.unsplash.com/photo-1622760825370-d79047970d4d?auto=format&fit=crop&q=80&w=800'
-                ],
-                [
-                    'titol' => 'Descompte de 15€ en reparacions',
-                    'descripcio' => 'Estalvia en qualsevol reparació de maquinari o eliminació de virus al nostre taller informàtic.',
-                    'cost_punts' => 75,
-                    'imatge' => 'https://images.unsplash.com/photo-1597872200319-3814819c8047?auto=format&fit=crop&q=80&w=800'
                 ]
             ],
             // 7. Òptica Claravisió
@@ -209,12 +197,6 @@ class OfertaSeeder extends Seeder
                     'descripcio' => 'Emporta\'t una planta fàcil de cuidar de la varietat Pothos o Cinta en test de ceràmica bàsic.',
                     'cost_punts' => 35,
                     'imatge' => 'https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&q=80&w=800'
-                ],
-                [
-                    'titol' => 'Ram de 3 roses fresques vermelles',
-                    'descripcio' => 'Detall bonic i romàntic. Tres roses fresques vermelles ornamentades amb fulles verdes elegants.',
-                    'cost_punts' => 50,
-                    'imatge' => 'https://images.unsplash.com/photo-1559563458-527298c27178?auto=format&fit=crop&q=80&w=800'
                 ],
                 [
                     'titol' => 'Fertilitzant líquid universal (1L)',
