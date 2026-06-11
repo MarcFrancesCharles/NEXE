@@ -6,7 +6,6 @@ use App\Models\Notificacio;
 use App\Models\Usuari;
 use App\Models\Comerc;
 use App\Models\SolicitudComerc;
-use App\Models\Contacte;
 use Illuminate\Database\Seeder;
 
 class NotificacioSeeder extends Seeder
@@ -16,7 +15,6 @@ class NotificacioSeeder extends Seeder
         $all_users = Usuari::all();
         $comercs = Comerc::all();
         $solicituds = SolicitudComerc::all();
-        $contactes = Contacte::all();
 
         foreach ($all_users as $usuari) {
             // 1. NOTIFICACIONS PER A ADMINS
@@ -35,30 +33,7 @@ class NotificacioSeeder extends Seeder
                     ]);
                 }
 
-                // Notificació de missatge de contacte rebut
-                $contactePendent = $contactes->where('estat', 'pendent')->first();
-                if ($contactePendent) {
-                    Notificacio::create([
-                        'id_usuari' => $usuari->id_usuari,
-                        'id_comerc' => null,
-                        'titol' => 'Missatge de suport rebut ✉️',
-                        'missatge' => "S'ha rebut una nova consulta de " . $contactePendent->nom . " amb assumpte: '" . $contactePendent->assumpte . "'.",
-                        'icona' => '✉️',
-                        'categoria' => 'suport',
-                        'llegida' => false,
-                    ]);
-                }
 
-                // Notificació de sistema general
-                Notificacio::create([
-                    'id_usuari' => $usuari->id_usuari,
-                    'id_comerc' => null,
-                    'titol' => 'Còpia de seguretat del sistema ⚙️',
-                    'missatge' => 'La còpia de seguretat diària de la base de dades s\'ha completat correctament.',
-                    'icona' => '⚙️',
-                    'categoria' => 'sistema',
-                    'llegida' => true,
-                ]);
             }
 
             // 2. NOTIFICACIONS PER A COMERÇOS

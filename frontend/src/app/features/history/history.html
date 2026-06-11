@@ -1,0 +1,69 @@
+<div class="history-container">
+  <header class="history-header">
+    <div class="header-left">
+      <h2>Historial de Canvis</h2>
+      <p class="subtitle">Consulta les ofertes que has bescanviat fins ara amb els teus punts.</p>
+    </div>
+  </header>
+
+  @if (carregant) {
+    <p class="loading-text">Carregant el teu historial...</p>
+  } @else {
+    @if (bescanvis.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🎁</div>
+        <h3>Sense moviments</h3>
+        <p>Encara no tens cap moviment de punts (guanyats o canjeats). Comença a explorar els comerços del barri per acumular punts!</p>
+        <button class="btn-explore" routerLink="/">Explorar comerços</button>
+      </div>
+    } @else {
+      <div class="history-list">
+        @for (item of bescanvis; track item.id_transaccio) {
+          <div class="history-card" 
+               [routerLink]="['/shop', item.comerc.id_comerc]" 
+               title="Veure comerç">
+            <div class="card-image-area">
+              @if (item.tipus === 'BESCANVI') {
+                @if (item.oferta && item.oferta.imatge) {
+                  <img [src]="item.oferta.imatge" [alt]="item.oferta.titol" class="offer-img" />
+                } @else {
+                  <span class="emoji-icon">🎁</span>
+                }
+              } @else {
+                <span class="emoji-icon">💰</span>
+              }
+            </div>
+            
+            <div class="card-content-area">
+              <div class="card-header">
+                <div class="title-section">
+                  <h3 class="offer-title">
+                    {{ item.tipus === 'BESCANVI' ? item.oferta?.titol : 'Punts acumulats' }}
+                  </h3>
+                  <span class="shop-name">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    {{ item.comerc.nom_comercial }}
+                  </span>
+                </div>
+                <div class="points-badge" [class.points-positive]="item.tipus === 'ACUMULACIO'">
+                  {{ item.tipus === 'ACUMULACIO' ? '+' : '' }}{{ item.punts_mov }} pts
+                </div>
+              </div>
+              
+              <p class="offer-description">
+                {{ item.tipus === 'BESCANVI' ? item.oferta?.descripcio : 'Has acumulat punts amb la teva compra en aquest comerç.' }}
+              </p>
+              
+              <div class="card-footer">
+                <span class="redeem-time">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  {{ item.tipus === 'BESCANVI' ? 'Bescanviat' : 'Guanyat' }} el {{ item.data_hora | date:'dd/MM/yyyy' }} a les {{ item.data_hora | date:'shortTime' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
