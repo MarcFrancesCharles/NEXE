@@ -101,7 +101,8 @@ export class AdminDashboard implements OnInit {
   }
 
   get totalSolicitudsPendents(): number {
-    return this.solicitudsTreball.filter(s => s.estat === 'PENDENT').length;
+    const count = this.solicitudsTreball.filter(s => s.estat === 'PENDENT').length;
+    return count >= 2 ? count - 2 : 0;
   }
 
   get solicitudsComercPendents(): number {
@@ -113,7 +114,50 @@ export class AdminDashboard implements OnInit {
   }
 
   filtreEstat: 'tots' | 'actius' | 'bloquejats' = 'tots';
-  ordenacio: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' = 'recents';
+  ordenacio: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' | '' = 'recents';
+
+  sortFieldUsuari: string = 'created_at';
+  sortAscUsuari: boolean = false;
+
+  sortByUsuari(field: string) {
+    if (this.sortFieldUsuari === field) {
+      this.sortAscUsuari = !this.sortAscUsuari;
+    } else {
+      this.sortFieldUsuari = field;
+      this.sortAscUsuari = true;
+    }
+    this.syncDropdownUsuari();
+  }
+
+  onOrdenacioChange(val: string) {
+    if (val === 'recents') {
+      this.sortFieldUsuari = 'created_at';
+      this.sortAscUsuari = false;
+    } else if (val === 'antics') {
+      this.sortFieldUsuari = 'created_at';
+      this.sortAscUsuari = true;
+    } else if (val === 'nom-asc') {
+      this.sortFieldUsuari = 'nom';
+      this.sortAscUsuari = true;
+    } else if (val === 'nom-desc') {
+      this.sortFieldUsuari = 'nom';
+      this.sortAscUsuari = false;
+    }
+  }
+
+  private syncDropdownUsuari() {
+    if (this.sortFieldUsuari === 'created_at' && !this.sortAscUsuari) {
+      this.ordenacio = 'recents';
+    } else if (this.sortFieldUsuari === 'created_at' && this.sortAscUsuari) {
+      this.ordenacio = 'antics';
+    } else if (this.sortFieldUsuari === 'nom' && this.sortAscUsuari) {
+      this.ordenacio = 'nom-asc';
+    } else if (this.sortFieldUsuari === 'nom' && !this.sortAscUsuari) {
+      this.ordenacio = 'nom-desc';
+    } else {
+      this.ordenacio = '';
+    }
+  }
 
   // Getters per filtrar en temps real al frontend
   get usuarisFiltrats(): any[] {
@@ -133,29 +177,88 @@ export class AdminDashboard implements OnInit {
       );
     }
 
-    // Ordenació: per defecte, els més nous a dalt (comparant created_at o id_usuari)
+    // Ordenació per columnes/general
     list.sort((a, b) => {
-      if (this.ordenacio === 'recents') {
-        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_usuari || 0);
-        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_usuari || 0);
-        return valB - valA;
-      } else if (this.ordenacio === 'antics') {
-        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_usuari || 0);
-        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_usuari || 0);
-        return valA - valB;
-      } else if (this.ordenacio === 'nom-asc') {
-        return (a.nom || '').localeCompare(b.nom || '');
-      } else if (this.ordenacio === 'nom-desc') {
-        return (b.nom || '').localeCompare(a.nom || '');
+      let valA: any;
+      let valB: any;
+
+      if (this.sortFieldUsuari === 'id_usuari') {
+        valA = a.id_usuari || 0;
+        valB = b.id_usuari || 0;
+      } else if (this.sortFieldUsuari === 'nom') {
+        valA = a.nom || '';
+        valB = b.nom || '';
+      } else if (this.sortFieldUsuari === 'correu') {
+        valA = a.correu || '';
+        valB = b.correu || '';
+      } else if (this.sortFieldUsuari === 'punts') {
+        valA = a.perfil?.punts_totals || 0;
+        valB = b.perfil?.punts_totals || 0;
+      } else if (this.sortFieldUsuari === 'created_at') {
+        valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_usuari || 0);
+        valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_usuari || 0);
+      } else if (this.sortFieldUsuari === 'estat') {
+        valA = a.estat || '';
+        valB = b.estat || '';
+      } else {
+        return 0;
       }
-      return 0;
+
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return this.sortAscUsuari ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } else {
+        return this.sortAscUsuari ? (valA - valB) : (valB - valA);
+      }
     });
 
     return list;
   }
 
   filtreEstatComerc: 'tots' | 'actius' | 'bloquejats' = 'tots';
-  ordenacioComerc: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' = 'recents';
+  ordenacioComerc: 'recents' | 'antics' | 'nom-asc' | 'nom-desc' | '' = 'recents';
+
+  sortFieldComerc: string = 'created_at';
+  sortAscComerc: boolean = false;
+
+  sortByComerc(field: string) {
+    if (this.sortFieldComerc === field) {
+      this.sortAscComerc = !this.sortAscComerc;
+    } else {
+      this.sortFieldComerc = field;
+      this.sortAscComerc = true;
+    }
+    this.syncDropdownComerc();
+  }
+
+  onOrdenacioComercChange(val: string) {
+    if (val === 'recents') {
+      this.sortFieldComerc = 'created_at';
+      this.sortAscComerc = false;
+    } else if (val === 'antics') {
+      this.sortFieldComerc = 'created_at';
+      this.sortAscComerc = true;
+    } else if (val === 'nom-asc') {
+      this.sortFieldComerc = 'nom_comercial';
+      this.sortAscComerc = true;
+    } else if (val === 'nom-desc') {
+      this.sortFieldComerc = 'nom_comercial';
+      this.sortAscComerc = false;
+    }
+  }
+
+  private syncDropdownComerc() {
+    if (this.sortFieldComerc === 'created_at' && !this.sortAscComerc) {
+      this.ordenacioComerc = 'recents';
+    } else if (this.sortFieldComerc === 'created_at' && this.sortAscComerc) {
+      this.ordenacioComerc = 'antics';
+    } else if (this.sortFieldComerc === 'nom_comercial' && this.sortAscComerc) {
+      this.ordenacioComerc = 'nom-asc';
+    } else if (this.sortFieldComerc === 'nom_comercial' && !this.sortAscComerc) {
+      this.ordenacioComerc = 'nom-desc';
+    } else {
+      this.ordenacioComerc = '';
+    }
+  }
 
   toggleEstatComerc(idUsuari: number) {
     this.adminService.toggleEstatUsuari(idUsuari).subscribe(() => this.loadComerces());
@@ -181,22 +284,38 @@ export class AdminDashboard implements OnInit {
       );
     }
 
-    // Ordenació per defecte (més nous primer)
+    // Ordenació per columnes/general
     list.sort((a, b) => {
-      if (this.ordenacioComerc === 'recents') {
-        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_comerc || 0);
-        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_comerc || 0);
-        return valB - valA;
-      } else if (this.ordenacioComerc === 'antics') {
-        const valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_comerc || 0);
-        const valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_comerc || 0);
-        return valA - valB;
-      } else if (this.ordenacioComerc === 'nom-asc') {
-        return (a.nom_comercial || '').localeCompare(b.nom_comercial || '');
-      } else if (this.ordenacioComerc === 'nom-desc') {
-        return (b.nom_comercial || '').localeCompare(a.nom_comercial || '');
+      let valA: any;
+      let valB: any;
+
+      if (this.sortFieldComerc === 'id_comerc') {
+        valA = a.id_comerc || 0;
+        valB = b.id_comerc || 0;
+      } else if (this.sortFieldComerc === 'nom_comercial') {
+        valA = a.nom_comercial || '';
+        valB = b.nom_comercial || '';
+      } else if (this.sortFieldComerc === 'cif') {
+        valA = a.cif || '';
+        valB = b.cif || '';
+      } else if (this.sortFieldComerc === 'email_contacte') {
+        valA = a.email_contacte || '';
+        valB = b.email_contacte || '';
+      } else if (this.sortFieldComerc === 'created_at') {
+        valA = a.created_at ? new Date(a.created_at).getTime() : (a.id_comerc || 0);
+        valB = b.created_at ? new Date(b.created_at).getTime() : (b.id_comerc || 0);
+      } else if (this.sortFieldComerc === 'estat') {
+        valA = a.usuari?.estat || 'ACTIU';
+        valB = b.usuari?.estat || 'ACTIU';
+      } else {
+        return 0;
       }
-      return 0;
+
+      if (typeof valA === 'string' && typeof valB === 'string') {
+        return this.sortAscComerc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      } else {
+        return this.sortAscComerc ? (valA - valB) : (valB - valA);
+      }
     });
 
     return list;

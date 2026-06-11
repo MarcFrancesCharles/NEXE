@@ -427,3 +427,35 @@
 .font-mono { font-family: monospace; }
 .text-center { text-align: center; }
 .text-right { text-align: right; }
+
+/* Capçaleres de taula ordenables (Sortable Columns) */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sortable-header:hover {
+  background-color: #e2e8f0 !important;
+  color: var(--text-dark) !important;
+}
+
+.sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+  vertical-align: middle;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+
+.sortable-header:hover .sort-indicator {
+  color: #475569;
+}
+
+.sort-indicator.active {
+  color: var(--primary-color) !important;
+  font-weight: bold;
+}

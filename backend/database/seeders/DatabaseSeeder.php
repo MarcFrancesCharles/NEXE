@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             SolAltaSeeder::class,
             SolicitudComercSeeder::class,
             SolicitudTreballSeeder::class,
+            SolicitudRolSeeder::class,
             ContacteSeeder::class,
             TransaccioSeeder::class,
             TiquetValidatSeeder::class,

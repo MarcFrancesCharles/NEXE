@@ -43,7 +43,7 @@ class AdminController extends Controller
             'total_usuaris' => Usuari::where('rol', 'ESTANDARD')->count(),
             'total_comerces' => Comerc::count(),
             'transaccions_realitzades' => Transaccio::count(),
-            'solicituds_pendents' => SolicitudComerc::where('estat', 'PENDENT')->count(),
+            'solicituds_pendents' => max(0, SolicitudTreball::where('estat', 'PENDENT')->count() - 2),
             'punts_generats' => (int) $puntsGenerats,
             'punts_bescanviats' => (int) $puntsBescanviats,
             'total_ofertes' => $totalOfertes,

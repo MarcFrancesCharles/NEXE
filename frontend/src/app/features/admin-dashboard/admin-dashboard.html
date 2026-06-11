@@ -73,7 +73,7 @@
           </div>
           <div class="stat-data">
             <span class="stat-label">Sol·licituds Pendents</span>
-            <span class="stat-value">{{ (stats?.solicituds_pendents || 0) | number }}</span>
+            <span class="stat-value">{{ totalSolicitudsPendents | number }}</span>
           </div>
         </div>
       </div>
@@ -155,11 +155,12 @@
           <!-- Selector d'ordenació -->
           <div class="sort-select-wrapper" style="display: flex; align-items: center; gap: 0.5rem; background: #f1f5f9; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
             <span style="font-size: 0.8rem; font-weight: 600; color: #475569; padding-left: 4px;">Ordenar:</span>
-            <select [(ngModel)]="ordenacio" style="border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; background: #ffffff; color: #475569; cursor: pointer; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+            <select [(ngModel)]="ordenacio" (ngModelChange)="onOrdenacioChange($event)" style="border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; background: #ffffff; color: #475569; cursor: pointer; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
               <option value="recents">Més nous primer</option>
               <option value="antics">Més antics primer</option>
               <option value="nom-asc">Nom (A-Z)</option>
               <option value="nom-desc">Nom (Z-A)</option>
+              <option *ngIf="ordenacio === ''" value="">Personalitzat</option>
             </select>
           </div>
         </div>
@@ -169,12 +170,42 @@
         <table class="admin-table">
           <thead>
             <tr>
-              <th style="width: 70px;">ID</th>
-              <th>Nom</th>
-              <th>Correu Electrònic</th>
-              <th class="text-center">Punts</th>
-              <th class="text-center">Data Registre</th>
-              <th class="text-center">Estat del Compte</th>
+              <th (click)="sortByUsuari('id_usuari')" class="sortable-header" style="width: 100px;">
+                ID
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'id_usuari'">
+                  {{ sortFieldUsuari === 'id_usuari' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByUsuari('nom')" class="sortable-header">
+                Nom
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'nom'">
+                  {{ sortFieldUsuari === 'nom' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByUsuari('correu')" class="sortable-header">
+                Correu Electrònic
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'correu'">
+                  {{ sortFieldUsuari === 'correu' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByUsuari('punts')" class="sortable-header text-center">
+                Punts
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'punts'">
+                  {{ sortFieldUsuari === 'punts' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByUsuari('created_at')" class="sortable-header text-center">
+                Data Registre
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'created_at'">
+                  {{ sortFieldUsuari === 'created_at' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByUsuari('estat')" class="sortable-header text-center">
+                Estat del Compte
+                <span class="sort-indicator" [class.active]="sortFieldUsuari === 'estat'">
+                  {{ sortFieldUsuari === 'estat' ? (sortAscUsuari ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
               <th class="text-right">Accions de Moderació</th>
             </tr>
           </thead>
@@ -390,11 +421,12 @@
           <!-- Selector d'ordenació per a comerços -->
           <div class="sort-select-wrapper" style="display: flex; align-items: center; gap: 0.5rem; background: #f1f5f9; padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0;">
             <span style="font-size: 0.8rem; font-weight: 600; color: #475569; padding-left: 4px;">Ordenar:</span>
-            <select [(ngModel)]="ordenacioComerc" style="border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; background: #ffffff; color: #475569; cursor: pointer; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
+            <select [(ngModel)]="ordenacioComerc" (ngModelChange)="onOrdenacioComercChange($event)" style="border: none; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; background: #ffffff; color: #475569; cursor: pointer; outline: none; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: all 0.2s;">
               <option value="recents">Més nous primer</option>
               <option value="antics">Més antics primer</option>
               <option value="nom-asc">Nom (A-Z)</option>
               <option value="nom-desc">Nom (Z-A)</option>
+              <option *ngIf="ordenacioComerc === ''" value="">Personalitzat</option>
             </select>
           </div>
         </div>
@@ -404,12 +436,42 @@
         <table class="admin-table">
           <thead>
             <tr>
-              <th style="width: 70px;">ID</th>
-              <th>Nom Comercial</th>
-              <th>Identificador Fiscal (CIF)</th>
-              <th>Correu Electrònic de Contacte</th>
-              <th class="text-center">Data Registre</th>
-              <th class="text-center">Estat del Compte</th>
+              <th (click)="sortByComerc('id_comerc')" class="sortable-header" style="width: 100px;">
+                ID
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'id_comerc'">
+                  {{ sortFieldComerc === 'id_comerc' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByComerc('nom_comercial')" class="sortable-header">
+                Nom Comercial
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'nom_comercial'">
+                  {{ sortFieldComerc === 'nom_comercial' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByComerc('cif')" class="sortable-header">
+                Identificador Fiscal (CIF)
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'cif'">
+                  {{ sortFieldComerc === 'cif' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByComerc('email_contacte')" class="sortable-header">
+                Correu Electrònic de Contacte
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'email_contacte'">
+                  {{ sortFieldComerc === 'email_contacte' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByComerc('created_at')" class="sortable-header text-center">
+                Data Registre
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'created_at'">
+                  {{ sortFieldComerc === 'created_at' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
+              <th (click)="sortByComerc('estat')" class="sortable-header text-center">
+                Estat del Compte
+                <span class="sort-indicator" [class.active]="sortFieldComerc === 'estat'">
+                  {{ sortFieldComerc === 'estat' ? (sortAscComerc ? '▲' : '▼') : '↕' }}
+                </span>
+              </th>
               <th class="text-right">Accions de Moderació</th>
             </tr>
           </thead>
